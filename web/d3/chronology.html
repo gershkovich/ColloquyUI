@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!-- adapted from mbostock v4 area brush http://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172-->
+<meta charset="utf-8">
+<head>
+
+    <script  type="text/javascript" language="JavaScript"  src="../lib/d3.js"></script>
+    <script  type="text/javascript" language="JavaScript"  src="chronology.js"></script>
+
+    <STYLE>
+        .line_box {
+            fill: #d2cc97;
+            stroke: #d2cc97;
+            stroke-width: 2;
+        }
+
+
+        .circle_event {
+            fill: #fbfff4;
+            stroke: #a09f6e;
+            stroke-width: 1;
+        }
+
+        div.tooltip {
+            position: absolute;
+            text-align: center;
+            height: 18px;
+            padding: 2px;
+            font: 0.8em "Open Sans", sans-serif;
+            text-decoration-color: goldenrod;
+            background: #cde7f8;
+            border: 0px;
+            border-radius: 0.2em;
+            pointer-events: none;
+            text-wrap: none;
+        }
+
+    </STYLE>
+    
+</head>
+<body>
+
+<div id="div_for_svg"></div>
+
+
+<script language="JavaScript">
+
+    var divId = "#div_for_svg";
+
+    var client = new XMLHttpRequest();
+
+    client.open('GET', 'data/tolstoy_letters.csv');
+
+    client.onloadend = function () {
+
+        var text = client.responseText;
+
+        buildChronologyChart(divId, text, "Letters");
+
+    };
+
+    client.send();
+
+
+</script>
+</body>
