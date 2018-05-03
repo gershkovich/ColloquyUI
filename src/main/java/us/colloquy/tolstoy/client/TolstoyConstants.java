@@ -122,4 +122,6 @@ public interface TolstoyConstants extends Constants {
     String lettersCheckboxLabel();
 
     String documentTerm();
+
+    String searchExamplesWindowHeader();
 }
