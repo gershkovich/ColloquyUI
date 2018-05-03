@@ -65,9 +65,7 @@ public class SearchExamplesPopUp
 
         dialogBox.setAnimationEnabled(true);
 
-        //SafeHtml safeValue = SafeHtmlUtils.fromString("<b>Select Operating Room Locations</b>");
-
-        dialogBox.setHTML("<span class=\"header_label\"><b>Select Operating Room Locations</b></span>");
+        dialogBox.setHTML("<span class=\"header_label\"><b>" + constants.searchExamplesWindowHeader() + "</b></span>");
 
         dialogBox.setWidget(mainPanel);
     }
