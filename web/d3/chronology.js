@@ -218,7 +218,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
         //todo call function to load letters by range and selected text
 
 
-        tstUplink(formatDate(x.domain()[0]) , formatDate(x.domain()[1]));
+     //   tstUplink(formatDate(x.domain()[0]) , formatDate(x.domain()[1]));
     
 
        // console.log("month diff: " + monthsDiff);
@@ -326,7 +326,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
 }
 
-    tstUplink(formatDate(x.domain()[0]) , formatDate(x.domain()[1]));
+  //  tstUplink(formatDate(x.domain()[0]) , formatDate(x.domain()[1]));
 
     function type(d) {
         d.date = parseDate(d.date);
