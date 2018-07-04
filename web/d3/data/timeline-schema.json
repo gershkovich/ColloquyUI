@@ -11,23 +11,31 @@
                         "work" : {
                                 "type": "array",
                                 "items": {
-                                        "type": "array",
-                                        "items": {
-                                                "$ref": "#/definitions/date-optday"
-                                        },
-                                        "minItems": 2,
-                                        "maxItems": 2
-                                }
-                        },
-                        "milestone": {
-                                "type": "array",
-                                "items": {
                                         "type": "object",
                                         "properties": {
-                                                "desc": {"$ref": "#/definitions/bilingual"},
-                                                "date": {"$ref": "#/definitions/date-optday"}
+                                                "start": {
+                                                        "$ref": "#/definitions/date-optday"
+                                                },
+                                                "end": {
+                                                        "$ref": "#/definitions/date-optday"
+                                                },
+                                                "detail": {
+                                                        "type": "string"
+                                                },
+                                                "precision": {
+                                                        "enum": ["appx", "exact"]
+                                                },
+                                                "activity": {
+                                                        "enum": ["conception", "work"]
+                                                },
+                                                "breaks": {
+                                                        "type": "boolean"
+                                                }
                                         }
                                 }
+                        },
+                        "pub" : {
+                                "type": "integer"
                         }
                 }
         },
