@@ -42,14 +42,18 @@ def add_row_number(works):
                         else:
                                 for i in itertools.count():
                                         if i not in row_assm:
-                                                print(i)
                                                 open_works[endpoint["title"]] = i
                                                 break
                         
                 else:
                         closed_works[endpoint["title"]] = open_works[endpoint["title"]]
                         open_works[endpoint["title"]] = -1
-        print(closed_works)
+
+        for i, row in enumerate(works):
+                display_row = closed_works[works[i]["title"]["ru"]]
+                works[i]["display_row"] = display_row
+        
+        return works
 
 def us_date_to_iso_date(us_str):
         if str(us_str) == "nan":
@@ -67,5 +71,7 @@ df = pd.read_csv("work-dates.csv", sep="@")
 df["EndDate"] = df["EndDate"].apply(us_date_to_iso_date, convert_dtype=True)
 df["StartDate"] = df["StartDate"].apply(us_date_to_iso_date, convert_dtype=True)
 titles = df["WorkTitle"].unique()
+df.fillna("", inplace=True)
+
 out = list([format_by_title(t, df) for t in titles])
-add_row_number(out)
+print(dumps(add_row_number(out)))
