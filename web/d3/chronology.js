@@ -9,7 +9,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
         var parseDate = d3.timeParse("%Y-%m-%d");
 
-        var formatDate = d3.timeFormat("%Y-%m-%d");
+        var parseUsDate = d3.timeParse("%m/%d/%Y");
 
         var monthFormatter = d3.timeFormat('%Y-%b');
 
@@ -81,12 +81,106 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 { x: "1870-2-24", y: 0 }
         ];
 
-        var workRecord = [{ "title": { "en": "Childhood", "ru": "\u0414\u0435\u0442\u0441\u0442\u0432\u043e" },
-                        "pub": 1852.0, 
-                        "work": [{ "precision": "accurate", "detail": NaN, "breaks": false, "start": "1851-01-18", "activity": "work", "end": "1852-07-03" }] },
-                      { "title": { "en": "A History of Yesterday", "ru": "\u0418\u0441\u0442\u043e\u0440\u0438\u044f \u0432\u0447\u0435\u0440\u0430\u0448\u043d\u0435\u0433\u043e \u0434\u043d\u044f" }, "pub": 1928.0, "work": [{ "precision": "accurate", "detail": NaN, "breaks": false, "start": "1851-03", "activity": "work", "end": "1851-03" }] }, { "title": { "en": "Boyhood ", "ru": "\u041e\u0442\u0440\u043e\u0447\u0435\u0441\u0442\u0432\u0430" }, "pub": 1854.0, "work": [{ "precision": "accurate", "detail": NaN, "breaks": false, "start": "1852-11-29", "activity": "work", "end": "1854-03-14" }] }, { "title": { "en": "Youth ", "ru": "\u042e\u043d\u043e\u0441\u0442\u044c" }, "pub": 1857.0, "work": [{ "precision": "accurate", "detail": NaN, "breaks": false, "start": "1855-03-12", "activity": "work", "end": "1856-09-24" }] }, { "title": { "en": "The Raid", "ru": "\u041d\u0430\u0431\u0435\u0433" }, "pub": 1853.0, "work": [{ "precision": "accurate", "detail": NaN, "breaks": false, "start": "1852-06-15", "activity": "work", "end": "1852-12-24" }] }, { "title": { "en": "A Billiard-Marker's Notes", "ru": "\u0417\u0430\u043f\u0438\u0441\u043a\u0438 \u043c\u0430\u0440\u043a\u0451\u0440\u0430" }, "pub": 1855.0, "work": [{ "precision": "accurate", "detail": NaN, "breaks": false, "start": "1853-09-13", "activity": "work", "end": "1854-02" }] }, { "title": { "en": "The Wood-Felling", "ru": "\u0420\u0443\u0431\u043a\u0430 \u043b\u0435\u0441\u0430" }, "pub": 1855.0, "work": [{ "precision": "approximate", "detail": NaN, "breaks": false, "start": "1854-07-01", "activity": "work", "end": "1854-09-01" }, { "precision": "accurate", "detail": NaN, "breaks": false, "start": "1855-06-01", "activity": "work", "end": "1855-07-18" }] }, { "title": { "en": "Sevastopol in December 1854", "ru": "\u0421\u0435\u0432\u0430\u0441\u0442\u043e\u043f\u043e\u043b\u044c \u0432 \u0434\u0435\u043a\u0430\u0431\u0440\u0435 \u043c\u0435\u0441\u044f\u0446\u0435" }, "pub": 1855.0, "work": [{ "precision": "accurate", "detail": NaN, "breaks": false, "start": "1855-03-15", "activity": "work", "end": "1855-04-25" }] }, { "title": { "en": "Sevastopol in May 1855", "ru": "\u0421\u0435\u0432\u0430\u0441\u0442\u043e\u043f\u043e\u043b\u044c \u0432 \u043c\u0430\u0435" }, "pub": 1855.0, "work": [{ "precision": "accurate", "detail": NaN, "breaks": false, "start": "1855-07-18", "activity": "work", "end": "1855-07-26" }] }, { "title": { "en": "Sevastopol in August 1855", "ru": "\u0421\u0435\u0432\u0430\u0441\u0442\u043e\u043f\u043e\u043b\u044c \u0432 \u0430\u0432\u0433\u0443\u0441\u0442\u0435 1855 \u0433\u043e\u0434\u0430" }, "pub": 1856.0, "work": [{ "precision": "accurate", "detail": NaN, "breaks": false, "start": "1855-09-19", "activity": "work", "end": "1855-12-27" }] }, { "title": { "en": "The Snowstorm", "ru": "\u041c\u0435\u0442\u0435\u043b\u044c" }, "pub": 1856.0, "work": [{ "precision": "accurate", "detail": NaN, "breaks": false, "start": "1854-01-24", "activity": "conception ", "end": "1854-01-24" }, { "precision": "accurate", "detail": NaN, "breaks": false, "start": "1856-01-15", "activity": "work", "end": "1856-02-12" }] }, { "title": { "en": "Two Hussars", "ru": "\u0414\u0432\u0430 \u0433\u0443\u0441\u0430\u0440\u0430" }, "pub": 1856.0, "work": [{ "precision": "accurate", "detail": NaN, "breaks": false, "start": "1856-03-12", "activity": "work", "end": "1856-04-14" }] }, { "title": { "en": NaN, "ru": "\u0418\u0437 \u043a\u0430\u0432\u043a\u0430\u0437\u0441\u043a\u0438\u0445 \u0432\u043e\u0441\u043f\u043e\u043c\u0438\u043d\u0430\u043d\u0438\u0439. \u0420\u0430\u0437\u0436\u0430\u043b\u043e\u0432\u0430\u043d\u043d\u044b\u0439" }, "pub": 1856.0, "work": [{ "precision": "approximate", "detail": NaN, "breaks": false, "start": "1853-12-15", "activity": "conception", "end": "1854-12-15" }, { "precision": "accurate", "detail": NaN, "breaks": false, "start": "1856-11-01", "activity": "work", "end": "1856-11-30" }] }, { "title": { "en": "A Landlord's Morning", "ru": "\u0423\u0442\u0440\u043e \u043f\u043e\u043c\u0435\u0449\u0438\u043a\u0430" }, "pub": 1856.0, "work": [{ "precision": "approximate", "detail": NaN, "breaks": false, "start": "1852-06-15", "activity": "conception", "end": "1852-08-15" }, { "precision": "approximate", "detail": NaN, "breaks": true, "start": "1852-08-15", "activity": "work", "end": "1856-11-29" }] }, { "title": { "en": "Lucerne", "ru": "\u041b\u044e\u0446\u0435\u0440\u043d" }, "pub": 1857.0, "work": [{ "precision": "accurate", "detail": "written in Switzerland ", "breaks": false, "start": "1857-07-07", "activity": "work", "end": "1857-07-11" }] }, { "title": { "en": "Albert ", "ru": "\u0410\u043b\u044c\u0431\u0435\u0440\u0442" }, "pub": 1858.0, "work": [{ "precision": "accurate", "detail": NaN, "breaks": false, "start": "1857-01-07", "activity": "conception", "end": "1858-01-07" }, { "precision": "accurate", "detail": NaN, "breaks": true, "start": "1857-01-07", "activity": "work ", "end": "1858-03-17" }] }, { "title": { "en": "Three Deaths", "ru": "\u0422\u0440\u0438 \u0441\u043c\u0435\u0440\u0442\u0438" }, "pub": 1859.0, "work": [{ "precision": "accurate", "detail": NaN, "breaks": false, "start": "1858-01-15", "activity": "work", "end": "1858-01-24" }] }, { "title": { "en": "Family Happiness", "ru": "\u0421\u0435\u043c\u0435\u0439\u043d\u043e\u0435 \u0441\u0447\u0430\u0441\u0442\u0438\u0435" }, "pub": 1859.0, "work": [{ "precision": "approximate", "detail": NaN, "breaks": false, "start": "1857-08-16", "activity": "conception", "end": "1857-08-16" }, { "precision": "approximate", "detail": NaN, "breaks": false, "start": "1858-10-30", "activity": "work", "end": "1858-04-09" }] }, { "title": { "en": "The Cossacks", "ru": "\u041a\u0430\u0437\u0430\u043a\u0438" }, "pub": 1864.0, "work": [{ "precision": "approximate", "detail": "first concieved in verse", "breaks": false, "start": "1852-05-10", "activity": "conception", "end": "1853-10-21" }, { "precision": "approximate", "detail": NaN, "breaks": true, "start": "1853-08-28", "activity": "work (1st period)", "end": "1854-01-01" }, { "precision": "approximate", "detail": NaN, "breaks": true, "start": "1857-05-15", "activity": "work (2nd  period)", "end": "1858-12-31" }, { "precision": "approximate", "detail": NaN, "breaks": false, "start": "1863-12-01", "activity": "work (3rd period)", "end": "1864-01-01" }] }, { "title": { "en": "Polik\u00fashka", "ru": "\u041f\u043e\u043b\u0438\u043a\u0443\u0448\u043a\u0430" }, "pub": 1863.0, "work": [{ "precision": "approximate", "detail": NaN, "breaks": false, "start": "1861-03-15", "activity": "conception", "end": "1862-03-15" }, { "precision": "approximate", "detail": NaN, "breaks": true, "start": "1861-05-06", "activity": "work", "end": "1862-10-15" }] }, { "title": { "en": "The Decembrists", "ru": "\u0414\u0435\u043a\u0430\u0431\u0440\u0438\u0441\u0442\u044b" }, "pub": NaN, "work": [{ "precision": NaN, "detail": NaN, "breaks": false, "start": "", "activity": NaN, "end": "" }] }, { "title": { "en": "Tikhon and Malania", "ru": "\u0422\u0438\u0445\u043e\u043d \u0438 \u041c\u0430\u043b\u0430\u043d\u044c\u044f" }, "pub": 1911.0, "work": [{ "precision": "approximate", "detail": "Unfinished", "breaks": true, "start": "1860-11-15", "activity": "work", "end": "1862-12-15" }] }, { "title": { "en": NaN, "ru": "\u0418\u0434\u0438\u043b\u043b\u0438\u044f: \u041e\u043d\u043e \u0437\u0430\u0440\u0430\u0431\u043e\u0442\u043a\u0438 \u0445\u043e\u0440\u043e\u0448\u043e, \u0434\u0430 \u0438 \u0433\u0440\u0435\u0445 \u0431\u044b\u0432\u0430\u0435\u0442 \u043e\u0442 \u0442\u043e\u0433\u043e" }, "pub": 1911.0, "work": [{ "precision": "approximate", "detail": "Unfinished", "breaks": true, "start": "1860-05-25", "activity": "work", "end": "1860-10-28" }] }, { "title": { "en": "War and Peace ", "ru": "\u0412\u043e\u0439\u043d\u0430 \u0438 \u043c\u0438\u0440 " }, "pub": NaN, "work": [{ "precision": "approximate", "detail": NaN, "breaks": false, "start": "1863-02-15", "activity": "work on what Tolstoy referred to as the novel of \"1812\" ", "end": "1864-02-15" }, { "precision": "accurate", "detail": "Part I completed, send to Russkii Vestnik", "breaks": false, "start": "1864-02-15", "activity": "work", "end": "1865-01-03" }, { "precision": "approximate", "detail": "correcting proofs of part I", "breaks": false, "start": "1865-01-03", "activity": "work", "end": "1865-02-28" }, { "precision": "accurate", "detail": "Part III", "breaks": false, "start": "1865-11-01", "activity": "work", "end": "1866-01-01" }, { "precision": "approximate", "detail": "Part IV", "breaks": false, "start": "1866-01-15", "activity": "work", "end": "1866-02-15" }] }, { "title": { "en": "War and Peace ", "ru": "\u0432\u043e\u0439\u043d\u0430 \u0438 \u043c\u0438\u0440 " }, "pub": NaN, "work": [{ "precision": "accurate", "detail": "Part II", "breaks": false, "start": "1865-03-01", "activity": "work", "end": "1865-11-01" }] }]
+        d3.dsv("@","data/work-dates.csv", function(data){
+                return {
+                        "ru-title": data.WorkTitle,
+                        "en-title": data.EnglishTitle,
+                        "activity": data.Activity,
+                        "breaks": (data.Breaks === "multiple"),
+                        "detail": data.Detail,
+                        "start": parseUsDate(data.StartDate),
+                        "end": parseUsDate(data.EndDate),
+                        "precision": data.Precision,
+                        "publication": +data.Publication
+                };
+        }).then(function(data){
+                console.log(data);
+                var data_extent = d3.nest()
+                        .key(function(d){ return d["ru-title"] })
+                        .rollup(function(v){ return {
+                                "max-extent": d3.max(v, function(d){return d["end"];}),
+                                "min-extent": d3.min(v, function(d){return d["start"];})
+                                };
+                        })
+                        .entries(data);
+                
+                var endpoints = [];
+                data_extent.forEach(function(title){
+                        endpoints.push({
+                                "title": title["key"], 
+                                "date": title["value"]["max-extent"],
+                                "type": "close"
+                        });
+                        endpoints.push({
+                                "title": title["key"],
+                                "date": title["value"]["min-extent"],
+                                "type": "open"
+                        });
+                });
 
-        var work_rectangles = getWorkRectangles(workRecord);
+                endpoints.sort((a, b) => {
+                        if (a["date"] < b["date"]){
+                                return -1;
+                        }
+                        else if (a["date"] == b["date"]){
+                                if (a["type"] == "close"){
+                                        return -1;
+                                }
+                                else if (b["type"] == "close"){
+                                        return 1;
+                                }
+                                else{
+                                        return 0;
+                                }
+                        }
+                        else{
+                                return 1;
+                        }
+                });
+
+                //console.log(endpoints);
+                
+                var open_works = {};
+                var closed_works = {};
+                endpoints.forEach(function(pt){
+                        //console.log(JSON.stringify(open_works));
+                        if (pt["type"] === "open"){
+                                var row_assm = Object.values(open_works);
+                                if (row_assm.length === 0) {
+                                        open_works[pt["title"]] = 0;
+                                }
+                                else{
+                                        //console.log(row_assm);
+                                        for (i = 0; true; i++){
+                                                if (!row_assm.includes(i)){
+                                                        open_works[pt["title"]] = i;
+                                                        break;
+                                                }
+                                        }
+                                }
+                        }
+                        else{
+                                closed_works[pt["title"]] = open_works[pt["title"]];
+                                open_works[pt["title"]] = -1;
+                        }
+                });
+                console.log(closed_works);
+
+                //rejoin row number to existing data
+                var render_data = [];
+                data.forEach(function(row){
+                        row["row-number"] = closed_works[row["ru-title"]];
+                        render_data.push(row);
+                });
+
+                //write rendering function
+                var nest_render = d3.nest()
+                        .key(function(d){return d["row-number"];})
+                        .key(function(d){return d["ru-title"];})
+                        .entries(render_data);
+                
+                console.log(nest_render);
+        });
 
         var div = d3.select("body").append("div")
                 .attr("class", "tooltip")
@@ -382,23 +476,27 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 });
         }
 
-        function getWorkRectangles(work_periods){
+        /* function getRenderingData(work_periods){
                 work_rect = []
-                for (title in work_periods){
-                        title_work = {"title": title, rect: []};
-                        title_work_rect = []
-                        for (period in title["work"]){
-                                title_work_rect.push([
-                                        { x: period["start"], y: 1},
-                                        { x: period["end"], y: 1 },
-                                        { x: period["end"], y: 0 },
-                                        { x: period["start"], y: 0 }
-                                ])
+                let i;
+                for (i = 0; i < work_periods.length; i++){
+                        let title = work_periods[i];
+                        let j;
+                        for (j = 0; j < title["work"].length; j++){
+                                let period = title["work"][j];
+                                let title_work = {"ru-title": title["title"]["ru"]};
+                                let rect = [
+                                        { x: period["start"], y: period["display_row"] + 1},
+                                        { x: period["end"], y: period["display_row"] + 1 },
+                                        { x: period["end"], y: period["display_row"] },
+                                        { x: period["start"], y: period["display_row"] }
+                                ];
+                                title_work["rect"] = rect;
+                                work_rect.push(title_work);
                         }
-                        work_rect.push(title_rect);
                 }
-                return null;
-        }
+                return work_rect;
+        } */
 
         renderAxes(svg);
 
@@ -430,8 +528,8 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         });
 
 
-
-                svg.selectAll("ellipse")
+                
+                /* svg.selectAll("ellipse")
                         .data(events)
                         .enter().append("ellipse")
                         .attr("class", "circle_event")
@@ -457,7 +555,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         .ease(d3.easeLinear).attr("cx", function (d) { return x(parseDate(d.x)) + margin.left; })
                         .attr("cy", function (d) { return y_event(d.y); })
                         .attr("rx", 5)           // set the x radius
-                        .attr("ry", 4);
+                        .attr("ry", 4); */
 
         }
 
