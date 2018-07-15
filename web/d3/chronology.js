@@ -69,7 +69,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
 
         var y_event = d3.scaleLinear()
-                .domain([0, 10])
+                .domain([0, 7])
                 .range([height - margin.bottom, margin.bottom]);
 
         var duration = 500;
@@ -81,7 +81,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 { x: "1870-2-24", y: 0 }
         ];
 
-        d3.dsv("@","data/work-dates.csv", function(data){
+        d3.dsv("@", "data/work-dates.csv", function (data) {
                 return {
                         "ru-title": data.WorkTitle,
                         "en-title": data.EnglishTitle,
@@ -93,21 +93,21 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         "precision": data.Precision,
                         "publication": +data.Publication
                 };
-        }).then(function(data){
-                console.log(data);
+        }).then(function (data) {
                 var data_extent = d3.nest()
-                        .key(function(d){ return d["ru-title"] })
-                        .rollup(function(v){ return {
-                                "max-extent": d3.max(v, function(d){return d["end"];}),
-                                "min-extent": d3.min(v, function(d){return d["start"];})
+                        .key(function (d) { return d["ru-title"] })
+                        .rollup(function (v) {
+                                return {
+                                        "max-extent": d3.max(v, function (d) { return d["end"]; }),
+                                        "min-extent": d3.min(v, function (d) { return d["start"]; })
                                 };
                         })
                         .entries(data);
-                
+
                 var endpoints = [];
-                data_extent.forEach(function(title){
+                data_extent.forEach(function (title) {
                         endpoints.push({
-                                "title": title["key"], 
+                                "title": title["key"],
                                 "date": title["value"]["max-extent"],
                                 "type": "close"
                         });
@@ -119,73 +119,178 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 });
 
                 endpoints.sort((a, b) => {
-                        if (a["date"] < b["date"]){
+                        if (a["date"] < b["date"]) {
                                 return -1;
                         }
-                        else if (a["date"] == b["date"]){
-                                if (a["type"] == "close"){
+                        else if (a["date"] == b["date"]) {
+                                if (a["type"] == "close") {
                                         return -1;
                                 }
-                                else if (b["type"] == "close"){
+                                else if (b["type"] == "close") {
                                         return 1;
                                 }
-                                else{
+                                else {
                                         return 0;
                                 }
                         }
-                        else{
+                        else {
                                 return 1;
                         }
                 });
 
                 //console.log(endpoints);
-                
+
                 var open_works = {};
                 var closed_works = {};
-                endpoints.forEach(function(pt){
+                endpoints.forEach(function (pt) {
                         //console.log(JSON.stringify(open_works));
-                        if (pt["type"] === "open"){
+                        if (pt["type"] === "open") {
                                 var row_assm = Object.values(open_works);
                                 if (row_assm.length === 0) {
                                         open_works[pt["title"]] = 0;
                                 }
-                                else{
+                                else {
                                         //console.log(row_assm);
-                                        for (i = 0; true; i++){
-                                                if (!row_assm.includes(i)){
+                                        for (i = 0; true; i++) {
+                                                if (!row_assm.includes(i)) {
                                                         open_works[pt["title"]] = i;
                                                         break;
                                                 }
                                         }
                                 }
                         }
-                        else{
+                        else {
                                 closed_works[pt["title"]] = open_works[pt["title"]];
                                 open_works[pt["title"]] = -1;
                         }
                 });
-                console.log(closed_works);
 
                 //rejoin row number to existing data
                 var render_data = [];
-                data.forEach(function(row){
+                data.forEach(function (row) {
                         row["row-number"] = closed_works[row["ru-title"]];
                         render_data.push(row);
                 });
 
                 //write rendering function
-                var nest_render = d3.nest()
-                        .key(function(d){return d["row-number"];})
-                        .key(function(d){return d["ru-title"];})
+                var row_title_nest = d3.nest()
+                        .key(function (d) { return (d["row-number"] % 2); })
+                        .key(function (d, i) { return (d["ru-title"]); })
                         .entries(render_data);
-                
-                console.log(nest_render);
+
+                console.log(row_title_nest);
+                var row_col_nest = {};
+                row_title_nest.forEach(function (d) {
+                        var key = d.key;
+                        var time_blocks = { "0": [], "1": [] };
+                        d.values.forEach(function (d2, i2) {
+                                time_blocks[(i2 % 2)] = time_blocks[(i2 % 2)].concat(d2.values);
+                        });
+
+                        row_col_nest[key] = time_blocks;
+                });
+
+                //this group will need to be shifted somewhere
+
+                var periods = svg.append("g");
+
+                var r0_c0_periods = row_col_nest["0"]["0"];
+
+                var pd_r0_c0 = periods.append("g");
+                pd_r0_c0.selectAll("rect.pd-even-even")
+                        .data(r0_c0_periods)
+                        .enter()
+                        .append("rect")
+                        .attr("class", "pd-even-even");
+
+                pd_r0_c0.selectAll("rect.pd-even-even")
+                        .data(r0_c0_periods)
+                        .transition().duration(duration)
+                        .ease(d3.easeLinear) // <-B
+                        .attr("x", function (d) {
+                                return x(d.start) - margin.left;
+                        })
+                        .attr("width", function (d) {
+                                return x(d.end) - x(d.start);
+                        })
+                        .attr("y", function (d) {
+                                return y_event(d["row-number"]);
+                        })
+                        .attr("height", 7);
+
+                var r0_c1_periods = row_col_nest["0"]["1"];
+
+                var pd_r0_c1 = periods.append("g");
+                pd_r0_c1.selectAll("rect.pd-even-odd")
+                        .data(r0_c1_periods)
+                        .enter()
+                        .append("rect")
+                        .attr("class", "pd-even-odd");
+
+                pd_r0_c1.selectAll("rect.pd-even-odd")
+                        .data(r0_c1_periods)
+                        .transition().duration(duration)
+                        .ease(d3.easeLinear) // <-B
+                        .attr("x", function (d) {
+                                return x(d.start) - margin.left;
+                        })
+                        .attr("width", function (d) {
+                                return x(d.end) - x(d.start);
+                        })
+                        .attr("y", function (d) {
+                                return y_event(d["row-number"]);
+                        })
+                        .attr("height", 7);
+
+                var r1_c0_periods = row_col_nest["1"]["1"];
+
+                var pd_r1_c0 = periods.append("g");
+                pd_r1_c0.selectAll("rect.pd-odd-even")
+                        .data(r1_c0_periods)
+                        .enter()
+                        .append("rect")
+                        .attr("class", "pd-odd-even");
+
+                pd_r1_c0.selectAll("rect.pd-odd-even")
+                        .data(r1_c0_periods)
+                        .transition().duration(duration)
+                        .ease(d3.easeLinear) // <-B
+                        .attr("x", function (d) {
+                                return x(d.start) - margin.left;
+                        })
+                        .attr("width", function (d) {
+                                return x(d.end) - x(d.start);
+                        })
+                        .attr("y", function (d) {
+                                return y_event(d["row-number"]);
+                        })
+                        .attr("height", 7);
+
+                var r1_c1_periods = row_col_nest["1"]["0"];
+
+                var pd_r1_c1 = periods.append("g");
+                pd_r1_c1.selectAll("rect.pd-odd-odd")
+                        .data(r1_c1_periods)
+                        .enter()
+                        .append("rect")
+                        .attr("class", "pd-odd-odd")
+                        .attr("id", function(d){return d["ru-title"] + d["start"];});
+
+                pd_r1_c1.selectAll("rect.pd-odd-odd")
+                        .data(r1_c1_periods)
+                        .transition().duration(duration)
+                        .ease(d3.easeLinear) // <-B
+                        .attr("x", function (d) {
+                                return x(d.start) - margin.left;
+                        })
+                        .attr("width", function (d) {
+                                return x(d.end) - x(d.start);
+                        })
+                        .attr("y", function (d) {
+                                return y_event(d["row-number"]);
+                        })
+                        .attr("height", 7);
         });
-
-        var div = d3.select("body").append("div")
-                .attr("class", "tooltip")
-                .style("opacity", 0);
-
 
         var dataByMonth = [];
 
@@ -233,7 +338,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 })
                 .on("mouseover", function () { //<-A
                         var position = d3.mouse(svg.node());
-                        console.log(x.invert(position[0]));
+                        //console.log(x.invert(position[0]));
                 });
 
         focus.append("g")
@@ -528,7 +633,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         });
 
 
-                
+
                 /* svg.selectAll("ellipse")
                         .data(events)
                         .enter().append("ellipse")
@@ -546,9 +651,9 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                         .duration(500)
                                         .style("opacity", 0);
                         });
-
-
-
+        
+        
+        
                 svg.selectAll("ellipse")
                         .data(events)
                         .transition().duration(duration)
