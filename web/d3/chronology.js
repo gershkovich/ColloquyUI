@@ -36,6 +36,9 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom);
 
+        //function will be populated after csv loaded
+        var render;
+
         // var svg = d3.select(divId)
         //     .append("svg")
         //     .attr("preserveAspectRatio", "xMinYMin meet")
@@ -82,7 +85,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
         ];
 
         var period_nest = {};
-        var pd_groups = {"0": {}, "1": {}};
+        var pd_groups = { "0": {}, "1": {} };
 
         d3.dsv("@", "data/work-dates.csv", function (data) {
                 return {
@@ -182,7 +185,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         .entries(render_data);
 
                 console.log(row_title_nest);
-                
+
                 row_title_nest.forEach(function (d) {
                         var key = d.key;
                         var time_blocks = { "0": [], "1": [] };
@@ -195,87 +198,58 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
                 //this group will need to be shifted somewhere
 
-                var periods = svg.append("g");            
+                var periods = svg.append("g");
 
                 pd_groups["0"]["0"] = periods.append("g");
                 pd_groups["0"]["1"] = periods.append("g");
                 pd_groups["1"]["0"] = periods.append("g");
                 pd_groups["1"]["1"] = periods.append("g");
 
+                render = function() {
+                        var i;
+                        for (i = 0; i < 4; i++) {
+                                console.log("" + Math.floor(i / 2));
+                                var local_periods = period_nest["" + i % 2]["" + Math.floor(i / 2)];
+                                var selection_group = pd_groups["" + i % 2]["" + Math.floor(i / 2)];
+                                var row_striping = (i % 2 == 0) ? "even" : "odd";
+                                var col_striping = (Math.floor(i / 2) == 0) ? "even" : "odd";
+                                var class_name = "pd-" + row_striping + "-" + col_striping;
+                                selection_group.selectAll("rect." + class_name)
+                                        .data(local_periods)
+                                        .enter()
+                                        .append("rect")
+                                        .attr("class", class_name);
+        
+                                selection_group.selectAll("rect." + class_name)
+                                        .data(local_periods)
+                                        .transition().duration(duration)
+                                        .ease(d3.easeLinear) // <-B
+                                        .attr("x", function (d) {
+                                                return x(d.start) + margin.left;
+                                        })
+                                        .attr("width", function (d) {
+                                                return x(d.end) - x(d.start);
+                                        })
+                                        .attr("y", function (d) {
+                                                return y_event(d["row-number"]);
+                                        })
+                                        .attr("height", 7);
+
+                                selection_group.selectAll("rect." + class_name)
+                                        .data(local_periods)
+                                        .append("svg:title")
+                                        .text(function(d){return d["en-title"] + "  " + d["detail"];});
+
+                                selection_group.selectAll("rect." + class_name)
+                                        .data(local_periods)
+                                        .on("mouseover", function(d){
+                                                console.log(d);
+                                   
+                                        });
+                                        
+                        }
+                };
                 render();
-
-
-                /* var r0_c1_periods = period_nest["0"]["1"];
-
-                
-                pd_groups["0"]["1"].selectAll("rect.pd-even-odd")
-                        .data(r0_c1_periods)
-                        .enter()
-                        .append("rect")
-                        .attr("class", "pd-even-odd");
-
-                pd_groups["0"]["1"].selectAll("rect.pd-even-odd")
-                        .data(r0_c1_periods)
-                        .transition().duration(duration)
-                        .ease(d3.easeLinear) // <-B
-                        .attr("x", function (d) {
-                                return x(d.start) - margin.left;
-                        })
-                        .attr("width", function (d) {
-                                return x(d.end) - x(d.start);
-                        })
-                        .attr("y", function (d) {
-                                return y_event(d["row-number"]);
-                        })
-                        .attr("height", 7);
-
-                var r1_c0_periods = period_nest["1"]["1"];
-
-                pd_groups["1"]["0"].selectAll("rect.pd-odd-even")
-                        .data(r1_c0_periods)
-                        .enter()
-                        .append("rect")
-                        .attr("class", "pd-odd-even");
-
-                pd_groups["1"]["0"].selectAll("rect.pd-odd-even")
-                        .data(r1_c0_periods)
-                        .transition().duration(duration)
-                        .ease(d3.easeLinear) // <-B
-                        .attr("x", function (d) {
-                                return x(d.start) - margin.left;
-                        })
-                        .attr("width", function (d) {
-                                return x(d.end) - x(d.start);
-                        })
-                        .attr("y", function (d) {
-                                return y_event(d["row-number"]);
-                        })
-                        .attr("height", 7);
-
-                var r1_c1_periods = period_nest["1"]["0"];
-
-                
-                pd_groups["1"]["1"].selectAll("rect.pd-odd-odd")
-                        .data(r1_c1_periods)
-                        .enter()
-                        .append("rect")
-                        .attr("class", "pd-odd-odd")
-                        .attr("id", function(d){return d["ru-title"] + d["start"];});
-
-                pd_groups["1"]["1"].selectAll("rect.pd-odd-odd")
-                        .data(r1_c1_periods)
-                        .transition().duration(duration)
-                        .ease(d3.easeLinear) // <-B
-                        .attr("x", function (d) {
-                                return x(d.start) - margin.left;
-                        })
-                        .attr("width", function (d) {
-                                return x(d.end) - x(d.start);
-                        })
-                        .attr("y", function (d) {
-                                return y_event(d["row-number"]);
-                        })
-                        .attr("height", 7); */
         });
 
         var dataByMonth = [];
@@ -393,7 +367,9 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
                 x.domain(selection.map(x2.invert, x2));
 
-                //render();
+                if (render){
+                        render();
+                }
 
                 //depending on distance between  x2.invert, x2 change data aggregation
 
@@ -591,69 +567,35 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
         renderAxes(svg);
 
-        // console.log("here");
+        // console.log("here")
 
-        function render() {
-                var i;
-                for (i = 0; i < 4; i++){
-                        console.log("" + Math.floor(i/2));
-                        var local_periods = period_nest[""+ i%2]["" + Math.floor(i/2)];
-                        var selection_group = pd_groups["" + i%2]["" + Math.floor(i/2)];
-                        var row_striping = (i % 2 == 0) ? "even" : "odd";
-                        var col_striping = (Math.floor(i / 2) == 0) ? "even" : "odd";
-                        var class_name = "pd-"+row_striping+"-"+col_striping;
-                        selection_group.selectAll("rect." + class_name)
-                                .data(local_periods)
-                                .enter()
-                                .append("rect")
-                                .attr("class", class_name);
-
-                        selection_group.selectAll("rect." + class_name)
-                                .data(local_periods)
-                                .transition().duration(duration)
-                                .ease(d3.easeLinear) // <-B
-                                .attr("x", function (d) {
-                                        return x(d.start) - margin.left;
-                                })
-                                .attr("width", function (d) {
-                                        return x(d.end) - x(d.start);
-                                })
-                                .attr("y", function (d) {
-                                        return y_event(d["row-number"]);
-                                })
-                                .attr("height", 7);
-
-                }
-
-                /* svg.selectAll("ellipse")
-                        .data(events)
-                        .enter().append("ellipse")
-                        .attr("class", "circle_event")
-                        .on("mouseover", function (d) {
-                                div.transition()
-                                        .duration(200)
-                                        .style("opacity", .9);
-                                div.html(d.name)
-                                        .style("left", (d3.event.pageX) + "px")
-                                        .style("top", (d3.event.pageY - 30) + "px");
-                        })
-                        .on("mouseout", function (d) {
-                                div.transition()
-                                        .duration(500)
-                                        .style("opacity", 0);
-                        });
-        
-        
-        
-                svg.selectAll("ellipse")
-                        .data(events)
-                        .transition().duration(duration)
-                        .ease(d3.easeLinear).attr("cx", function (d) { return x(parseDate(d.x)) + margin.left; })
-                        .attr("cy", function (d) { return y_event(d.y); })
-                        .attr("rx", 5)           // set the x radius
-                        .attr("ry", 4); */
-
-        }
+        /* svg.selectAll("ellipse")
+                .data(events)
+                .enter().append("ellipse")
+                .attr("class", "circle_event")
+                .on("mouseover", function (d) {
+                        div.transition()
+                                .duration(200)
+                                .style("opacity", .9);
+                        div.html(d.name)
+                                .style("left", (d3.event.pageX) + "px")
+                                .style("top", (d3.event.pageY - 30) + "px");
+                })
+                .on("mouseout", function (d) {
+                        div.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                });
+ 
+ 
+ 
+        svg.selectAll("ellipse")
+                .data(events)
+                .transition().duration(duration)
+                .ease(d3.easeLinear).attr("cx", function (d) { return x(parseDate(d.x)) + margin.left; })
+                .attr("cy", function (d) { return y_event(d.y); })
+                .attr("rx", 5)           // set the x radius
+                .attr("ry", 4); */
 
         function renderAxes(svg) {
 
