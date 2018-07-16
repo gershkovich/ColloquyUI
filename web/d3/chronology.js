@@ -81,6 +81,9 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 { x: "1870-2-24", y: 0 }
         ];
 
+        var period_nest = {};
+        var pd_groups = {"0": {}, "1": {}};
+
         d3.dsv("@", "data/work-dates.csv", function (data) {
                 return {
                         "ru-title": data.WorkTitle,
@@ -179,7 +182,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         .entries(render_data);
 
                 console.log(row_title_nest);
-                var row_col_nest = {};
+                
                 row_title_nest.forEach(function (d) {
                         var key = d.key;
                         var time_blocks = { "0": [], "1": [] };
@@ -187,47 +190,31 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                 time_blocks[(i2 % 2)] = time_blocks[(i2 % 2)].concat(d2.values);
                         });
 
-                        row_col_nest[key] = time_blocks;
+                        period_nest[key] = time_blocks;
                 });
 
                 //this group will need to be shifted somewhere
 
-                var periods = svg.append("g");
+                var periods = svg.append("g");            
 
-                var r0_c0_periods = row_col_nest["0"]["0"];
+                pd_groups["0"]["0"] = periods.append("g");
+                pd_groups["0"]["1"] = periods.append("g");
+                pd_groups["1"]["0"] = periods.append("g");
+                pd_groups["1"]["1"] = periods.append("g");
 
-                var pd_r0_c0 = periods.append("g");
-                pd_r0_c0.selectAll("rect.pd-even-even")
-                        .data(r0_c0_periods)
-                        .enter()
-                        .append("rect")
-                        .attr("class", "pd-even-even");
+                render();
 
-                pd_r0_c0.selectAll("rect.pd-even-even")
-                        .data(r0_c0_periods)
-                        .transition().duration(duration)
-                        .ease(d3.easeLinear) // <-B
-                        .attr("x", function (d) {
-                                return x(d.start) - margin.left;
-                        })
-                        .attr("width", function (d) {
-                                return x(d.end) - x(d.start);
-                        })
-                        .attr("y", function (d) {
-                                return y_event(d["row-number"]);
-                        })
-                        .attr("height", 7);
 
-                var r0_c1_periods = row_col_nest["0"]["1"];
+                /* var r0_c1_periods = period_nest["0"]["1"];
 
-                var pd_r0_c1 = periods.append("g");
-                pd_r0_c1.selectAll("rect.pd-even-odd")
+                
+                pd_groups["0"]["1"].selectAll("rect.pd-even-odd")
                         .data(r0_c1_periods)
                         .enter()
                         .append("rect")
                         .attr("class", "pd-even-odd");
 
-                pd_r0_c1.selectAll("rect.pd-even-odd")
+                pd_groups["0"]["1"].selectAll("rect.pd-even-odd")
                         .data(r0_c1_periods)
                         .transition().duration(duration)
                         .ease(d3.easeLinear) // <-B
@@ -242,16 +229,15 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         })
                         .attr("height", 7);
 
-                var r1_c0_periods = row_col_nest["1"]["1"];
+                var r1_c0_periods = period_nest["1"]["1"];
 
-                var pd_r1_c0 = periods.append("g");
-                pd_r1_c0.selectAll("rect.pd-odd-even")
+                pd_groups["1"]["0"].selectAll("rect.pd-odd-even")
                         .data(r1_c0_periods)
                         .enter()
                         .append("rect")
                         .attr("class", "pd-odd-even");
 
-                pd_r1_c0.selectAll("rect.pd-odd-even")
+                pd_groups["1"]["0"].selectAll("rect.pd-odd-even")
                         .data(r1_c0_periods)
                         .transition().duration(duration)
                         .ease(d3.easeLinear) // <-B
@@ -266,17 +252,17 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         })
                         .attr("height", 7);
 
-                var r1_c1_periods = row_col_nest["1"]["0"];
+                var r1_c1_periods = period_nest["1"]["0"];
 
-                var pd_r1_c1 = periods.append("g");
-                pd_r1_c1.selectAll("rect.pd-odd-odd")
+                
+                pd_groups["1"]["1"].selectAll("rect.pd-odd-odd")
                         .data(r1_c1_periods)
                         .enter()
                         .append("rect")
                         .attr("class", "pd-odd-odd")
                         .attr("id", function(d){return d["ru-title"] + d["start"];});
 
-                pd_r1_c1.selectAll("rect.pd-odd-odd")
+                pd_groups["1"]["1"].selectAll("rect.pd-odd-odd")
                         .data(r1_c1_periods)
                         .transition().duration(duration)
                         .ease(d3.easeLinear) // <-B
@@ -289,7 +275,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         .attr("y", function (d) {
                                 return y_event(d["row-number"]);
                         })
-                        .attr("height", 7);
+                        .attr("height", 7); */
         });
 
         var dataByMonth = [];
@@ -407,7 +393,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
                 x.domain(selection.map(x2.invert, x2));
 
-                render(1);
+                //render();
 
                 //depending on distance between  x2.invert, x2 change data aggregation
 
@@ -607,32 +593,37 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
         // console.log("here");
 
-        render(1);
+        function render() {
+                var i;
+                for (i = 0; i < 4; i++){
+                        console.log("" + Math.floor(i/2));
+                        var local_periods = period_nest[""+ i%2]["" + Math.floor(i/2)];
+                        var selection_group = pd_groups["" + i%2]["" + Math.floor(i/2)];
+                        var row_striping = (i % 2 == 0) ? "even" : "odd";
+                        var col_striping = (Math.floor(i / 2) == 0) ? "even" : "odd";
+                        var class_name = "pd-"+row_striping+"-"+col_striping;
+                        selection_group.selectAll("rect." + class_name)
+                                .data(local_periods)
+                                .enter()
+                                .append("rect")
+                                .attr("class", class_name);
 
+                        selection_group.selectAll("rect." + class_name)
+                                .data(local_periods)
+                                .transition().duration(duration)
+                                .ease(d3.easeLinear) // <-B
+                                .attr("x", function (d) {
+                                        return x(d.start) - margin.left;
+                                })
+                                .attr("width", function (d) {
+                                        return x(d.end) - x(d.start);
+                                })
+                                .attr("y", function (d) {
+                                        return y_event(d["row-number"]);
+                                })
+                                .attr("height", 7);
 
-
-        function render(tension) {
-
-                var line = d3.line()
-                        .curve(d3.curveCardinal.tension(tension)) // <-A
-                        .x(function (d) { return x(parseDate(d.x)) + margin.left; })
-                        .y(function (d) { return y_event(d.y); });
-
-                svg.selectAll("path.line_box")
-                        .data([tension])
-                        .enter()
-                        .append("path")
-                        .attr("class", "line_box");
-
-                svg.selectAll("path.line_box")
-                        .data([tension])
-                        .transition().duration(duration)
-                        .ease(d3.easeLinear) // <-B
-                        .attr("d", function (d) {
-                                return line(data_event); // <-C
-                        });
-
-
+                }
 
                 /* svg.selectAll("ellipse")
                         .data(events)
