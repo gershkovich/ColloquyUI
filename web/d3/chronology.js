@@ -77,20 +77,13 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
         var duration = 500;
 
-        var data_event = [
-                { x: "1870-2-24", y: 1 },
-                { x: "1877-2-24", y: 1 },
-                { x: "1877-2-24", y: 0 },
-                { x: "1870-2-24", y: 0 }
-        ];
-
-        var period_nest = {};
-        var pd_groups = { "0": {}, "1": {} };
+        var period_nest = {"0": [], "1": []};
+        var pd_groups = {};
 
         d3.dsv("@", "data/work-dates.csv", function (data) {
                 return {
-                        "ru-title": data.WorkTitle,
-                        "en-title": data.EnglishTitle,
+                        "ru_title": data.WorkTitle,
+                        "en_title": data.EnglishTitle,
                         "activity": data.Activity,
                         "breaks": (data.Breaks === "multiple"),
                         "detail": data.Detail,
@@ -100,26 +93,43 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         "publication": +data.Publication
                 };
         }).then(function (data) {
+                //create render padding for all work periods less than a month
+                let ONE_MONTH = new Date(2012, 01, 30) - new Date(2012, 01, 01);
+                var padded_data = [];
+                data.forEach(function(d){
+                        let range = d.end - d.start;
+                        if (d.end !== null && d.start !== null && range < ONE_MONTH){
+                                let padding = ONE_MONTH - range;
+                                d["pad_start"] = new Date(d.start.valueOf() - padding/2);
+                                d["pad_end"] = new Date(d.end.valueOf() + padding/2);
+                        }
+                        else{
+                                d["pad_start"] = d["start"];
+                                d["pad_end"] = d["end"];
+                        }
+                        padded_data.push(d);
+                });
+
                 var data_extent = d3.nest()
-                        .key(function (d) { return d["ru-title"] })
+                        .key(function (d) { return d["ru_title"] })
                         .rollup(function (v) {
                                 return {
-                                        "max-extent": d3.max(v, function (d) { return d["end"]; }),
-                                        "min-extent": d3.min(v, function (d) { return d["start"]; })
+                                        "max_extent": d3.max(v, function (d) { return d["pad_end"]; }),
+                                        "min_extent": d3.min(v, function (d) { return d["pad_start"]; })
                                 };
                         })
-                        .entries(data);
+                        .entries(padded_data);
 
                 var endpoints = [];
                 data_extent.forEach(function (title) {
                         endpoints.push({
                                 "title": title["key"],
-                                "date": title["value"]["max-extent"],
+                                "date": title["value"]["max_extent"],
                                 "type": "close"
                         });
                         endpoints.push({
                                 "title": title["key"],
-                                "date": title["value"]["min-extent"],
+                                "date": title["value"]["min_extent"],
                                 "type": "open"
                         });
                 });
@@ -128,19 +138,19 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         if (a["date"] < b["date"]) {
                                 return -1;
                         }
-                        else if (a["date"] == b["date"]) {
+                        else if (a["date"] > b["date"]) {
+                                return 1;
+                        }
+                        else {
                                 if (a["type"] == "close") {
-                                        return -1;
+                                        return 1;
                                 }
                                 else if (b["type"] == "close") {
-                                        return 1;
+                                        return -1;
                                 }
                                 else {
                                         return 0;
                                 }
-                        }
-                        else {
-                                return 1;
                         }
                 });
 
@@ -174,46 +184,39 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 //rejoin row number to existing data
                 var render_data = [];
                 data.forEach(function (row) {
-                        row["row-number"] = closed_works[row["ru-title"]];
+                        row["row_number"] = closed_works[row["ru_title"]];
                         render_data.push(row);
                 });
 
                 //write rendering function
                 var row_title_nest = d3.nest()
-                        .key(function (d) { return (d["row-number"] % 2); })
-                        .key(function (d, i) { return (d["ru-title"]); })
+                        .key(function (d) { return d["row_number"]; })
+                        .key(function (d) { return d["ru_title"]; })
                         .entries(render_data);
-
+                
                 console.log(row_title_nest);
 
                 row_title_nest.forEach(function (d) {
-                        var key = d.key;
-                        var time_blocks = { "0": [], "1": [] };
                         d.values.forEach(function (d2, i2) {
-                                time_blocks[(i2 % 2)] = time_blocks[(i2 % 2)].concat(d2.values);
+                                var lookup = "" + (i2 % 2);
+                                period_nest[lookup] = period_nest[lookup].concat(d2.values);
                         });
-
-                        period_nest[key] = time_blocks;
                 });
 
-                //this group will need to be shifted somewhere
-
+                
                 var periods = svg.append("g");
-
-                pd_groups["0"]["0"] = periods.append("g");
-                pd_groups["0"]["1"] = periods.append("g");
-                pd_groups["1"]["0"] = periods.append("g");
-                pd_groups["1"]["1"] = periods.append("g");
+                pd_groups["0"] = periods.append("g")
+                                        .attr("class", "even-titles");
+                pd_groups["1"] = periods.append("g")
+                                        .attr("class", "odd-titles");
 
                 render = function() {
                         var i;
-                        for (i = 0; i < 4; i++) {
-                                console.log("" + Math.floor(i / 2));
-                                var local_periods = period_nest["" + i % 2]["" + Math.floor(i / 2)];
-                                var selection_group = pd_groups["" + i % 2]["" + Math.floor(i / 2)];
-                                var row_striping = (i % 2 == 0) ? "even" : "odd";
-                                var col_striping = (Math.floor(i / 2) == 0) ? "even" : "odd";
-                                var class_name = "pd-" + row_striping + "-" + col_striping;
+                        for (i = 0; i < 2; i++) {
+                                var local_periods = period_nest["" + i % 2];
+                                var selection_group = pd_groups["" + i % 2];
+                                var col_striping = (i % 2 == 0) ? "even" : "odd";
+                                var class_name = "pd-" + col_striping;
                                 selection_group.selectAll("rect." + class_name)
                                         .data(local_periods)
                                         .enter()
@@ -225,20 +228,20 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                         .transition().duration(duration)
                                         .ease(d3.easeLinear) // <-B
                                         .attr("x", function (d) {
-                                                return x(d.start) + margin.left;
+                                                return x(d.pad_start) + margin.left;
                                         })
                                         .attr("width", function (d) {
-                                                return x(d.end) - x(d.start);
+                                                return x(d.pad_end) - x(d.pad_start);
                                         })
                                         .attr("y", function (d) {
-                                                return y_event(d["row-number"]);
+                                                return y_event(d["row_number"]);
                                         })
                                         .attr("height", 7);
 
                                 selection_group.selectAll("rect." + class_name)
                                         .data(local_periods)
                                         .append("svg:title")
-                                        .text(function(d){return d["en-title"] + "  " + d["detail"];});
+                                        .text(function(d){return d["en_title"] + "  " + d["detail"];});
 
                                 selection_group.selectAll("rect." + class_name)
                                         .data(local_periods)
@@ -551,7 +554,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         let j;
                         for (j = 0; j < title["work"].length; j++){
                                 let period = title["work"][j];
-                                let title_work = {"ru-title": title["title"]["ru"]};
+                                let title_work = {"ru_title": title["title"]["ru"]};
                                 let rect = [
                                         { x: period["start"], y: period["display_row"] + 1},
                                         { x: period["end"], y: period["display_row"] + 1 },
