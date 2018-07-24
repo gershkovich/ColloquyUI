@@ -183,8 +183,15 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
                 //rejoin row number to existing data
                 var render_data = [];
+                console.log(data_extent)
                 data.forEach(function (row) {
                         row["row_number"] = closed_works[row["ru_title"]];
+                        data_extent.forEach(function (ext){
+                                if (ext["key"] === row["ru_title"]){
+                                        row["max_extent"] = ext["value"]["max_extent"];
+                                        row["min_extent"] = ext["value"]["min_extent"];
+                                }
+                        });
                         render_data.push(row);
                 });
 
@@ -217,6 +224,31 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                 var selection_group = pd_groups["" + i % 2];
                                 var col_striping = (i % 2 == 0) ? "even" : "odd";
                                 var class_name = "pd-" + col_striping;
+                                selection_group.selectAll("rect.continuation")
+                                        .data(local_periods)
+                                        .enter()
+                                        .append("rect")
+                                        .attr("class", "continuation");
+
+                                selection_group.selectAll("rect.continuation")
+                                        .data(local_periods)
+                                        .append("svg:title")
+                                        .text(function(d){return d["en_title"]});
+
+                                selection_group.selectAll("rect.continuation")
+                                        .data(local_periods)
+                                        .transition().duration(duration)
+                                        .ease(d3.easeLinear)
+                                        .attr("x", function (d) {
+                                                return x(d.min_extent) + margin.left;
+                                        })
+                                        .attr("width", function (d) {
+                                                return x(d.max_extent) - x(d.min_extent);
+                                        })
+                                        .attr("y", function (d) {
+                                                return y_event(d["row_number"]);
+                                        })
+                                        .attr("height", 7);
                                 selection_group.selectAll("rect." + class_name)
                                         .data(local_periods)
                                         .enter()
@@ -242,14 +274,6 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                         .data(local_periods)
                                         .append("svg:title")
                                         .text(function(d){return d["en_title"] + "  " + d["detail"];});
-
-                                selection_group.selectAll("rect." + class_name)
-                                        .data(local_periods)
-                                        .on("mouseover", function(d){
-                                                console.log(d);
-                                   
-                                        });
-                                        
                         }
                 };
                 render();
