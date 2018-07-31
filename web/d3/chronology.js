@@ -9,7 +9,9 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
         var parseDate = d3.timeParse("%Y-%m-%d");
 
-        var parseUsDate = d3.timeParse("%m/%d/%Y");
+        var usFormatStr = "%m/%d/%Y";
+        var parseUsDate = d3.timeParse(usFormatStr);
+        var formatUsDate = d3.timeFormat(usFormatStr)
 
         var monthFormatter = d3.timeFormat('%Y-%b');
 
@@ -70,6 +72,24 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 };
         });
 
+        var tooltip = d3.tip()
+                .attr('class', 'd3-tip s')
+                .offset([-10, 0])
+                .html(function (d) {
+                        console.log(d.start.valueOf());
+                        console.log(d.end.valueOf())
+                        return `
+                                <div class="title">${d.ru_title} (${d.pub_start})</div>
+                                <div class="date">${(d.end - d.start == 0) ? formatUsDate(d.start) :  `${formatUsDate(d.start)} - ${formatUsDate(d.end)}`}</div>
+                                ${ d.detail ?
+                                        `<div class="details">
+                                        ${d.detail}
+                                </div>` : (d.activity ? `<div class="details">
+                                        ${d.activity}
+                                </div>`: '')}`
+                })
+                .direction('s')
+                .offset([10, 0]);
 
         var y_event = d3.scaleLinear()
                 .domain([0, 7])
@@ -77,33 +97,34 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
         var duration = 500;
 
-        var period_nest = {"0": [], "1": []};
-        var pd_groups = {};
+        var render_data = [];
+        var periods = svg.append("g");;
 
         d3.dsv("@", "data/work-dates.csv", function (data) {
                 return {
-                        "ru_title": data.WorkTitle,
-                        "en_title": data.EnglishTitle,
-                        "activity": data.Activity,
+                        "ru_title": data["Work Title"],
+                        "en_title": data["English Title"],
+                        "activity": data["Activity"],
                         "breaks": (data.Breaks === "multiple"),
-                        "detail": data.Detail,
-                        "start": parseUsDate(data.StartDate),
-                        "end": parseUsDate(data.EndDate),
-                        "precision": data.Precision,
-                        "publication": +data.Publication
+                        "detail": data["Detail"],
+                        "start": parseUsDate(data["Start Date"]),
+                        "end": parseUsDate(data["End Date"]),
+                        "precision": data["Precision"],
+                        "pub_start": +data["Publication Start Date"],
+                        "pub_end": +data["Publication End Date"]
                 };
         }).then(function (data) {
                 //create render padding for all work periods less than a month
                 let ONE_MONTH = new Date(2012, 01, 30) - new Date(2012, 01, 01);
                 var padded_data = [];
-                data.forEach(function(d){
+                data.forEach(function (d) {
                         let range = d.end - d.start;
-                        if (d.end !== null && d.start !== null && range < ONE_MONTH){
+                        if (d.end !== null && d.start !== null && range < ONE_MONTH) {
                                 let padding = ONE_MONTH - range;
-                                d["pad_start"] = new Date(d.start.valueOf() - padding/2);
-                                d["pad_end"] = new Date(d.end.valueOf() + padding/2);
+                                d["pad_start"] = new Date(d.start.valueOf() - padding / 2);
+                                d["pad_end"] = new Date(d.end.valueOf() + padding / 2);
                         }
-                        else{
+                        else {
                                 d["pad_start"] = d["start"];
                                 d["pad_end"] = d["end"];
                         }
@@ -182,99 +203,63 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 });
 
                 //rejoin row number to existing data
-                var render_data = [];
-                console.log(data_extent)
                 data.forEach(function (row) {
                         row["row_number"] = closed_works[row["ru_title"]];
-                        data_extent.forEach(function (ext){
-                                if (ext["key"] === row["ru_title"]){
+                        data_extent.forEach(function (ext) {
+                                if (ext["key"] === row["ru_title"]) {
                                         row["max_extent"] = ext["value"]["max_extent"];
                                         row["min_extent"] = ext["value"]["min_extent"];
                                 }
                         });
                         render_data.push(row);
                 });
+                render = function () {
+                        console.log(render_data);
+                        periods.call(tooltip);
 
-                //write rendering function
-                var row_title_nest = d3.nest()
-                        .key(function (d) { return d["row_number"]; })
-                        .key(function (d) { return d["ru_title"]; })
-                        .entries(render_data);
-                
-                console.log(row_title_nest);
+                        periods.selectAll("rect.continuation")
+                                .data(render_data)
+                                .enter()
+                                .append("rect")
+                                .attr("class", "continuation");
 
-                row_title_nest.forEach(function (d) {
-                        d.values.forEach(function (d2, i2) {
-                                var lookup = "" + (i2 % 2);
-                                period_nest[lookup] = period_nest[lookup].concat(d2.values);
-                        });
-                });
+                        periods.selectAll("rect.continuation")
+                                .data(render_data)
+                                .transition().duration(duration)
+                                .ease(d3.easeLinear)
+                                .attr("x", function (d) {
+                                        return x(d.min_extent) + margin.left;
+                                })
+                                .attr("width", function (d) {
+                                        return x(d.max_extent) - x(d.min_extent);
+                                })
+                                .attr("y", function (d) {
+                                        return y_event(d["row_number"]);
+                                })
+                                .attr("height", 7);
 
-                
-                var periods = svg.append("g");
-                pd_groups["0"] = periods.append("g")
-                                        .attr("class", "even-titles");
-                pd_groups["1"] = periods.append("g")
-                                        .attr("class", "odd-titles");
+                        periods.selectAll("rect.work-period")
+                                .data(render_data)
+                                .enter()
+                                .append("rect")
+                                .attr("class", "work-period")
+                                .on('mouseover', tooltip.show)
+                                .on('mouseout', tooltip.hide);
 
-                render = function() {
-                        var i;
-                        for (i = 0; i < 2; i++) {
-                                var local_periods = period_nest["" + i % 2];
-                                var selection_group = pd_groups["" + i % 2];
-                                var col_striping = (i % 2 == 0) ? "even" : "odd";
-                                var class_name = "pd-" + col_striping;
-                                selection_group.selectAll("rect.continuation")
-                                        .data(local_periods)
-                                        .enter()
-                                        .append("rect")
-                                        .attr("class", "continuation");
-
-                                selection_group.selectAll("rect.continuation")
-                                        .data(local_periods)
-                                        .append("svg:title")
-                                        .text(function(d){return d["en_title"]});
-
-                                selection_group.selectAll("rect.continuation")
-                                        .data(local_periods)
-                                        .transition().duration(duration)
-                                        .ease(d3.easeLinear)
-                                        .attr("x", function (d) {
-                                                return x(d.min_extent) + margin.left;
-                                        })
-                                        .attr("width", function (d) {
-                                                return x(d.max_extent) - x(d.min_extent);
-                                        })
-                                        .attr("y", function (d) {
-                                                return y_event(d["row_number"]);
-                                        })
-                                        .attr("height", 7);
-                                selection_group.selectAll("rect." + class_name)
-                                        .data(local_periods)
-                                        .enter()
-                                        .append("rect")
-                                        .attr("class", class_name);
-        
-                                selection_group.selectAll("rect." + class_name)
-                                        .data(local_periods)
-                                        .transition().duration(duration)
-                                        .ease(d3.easeLinear) // <-B
-                                        .attr("x", function (d) {
-                                                return x(d.pad_start) + margin.left;
-                                        })
-                                        .attr("width", function (d) {
-                                                return x(d.pad_end) - x(d.pad_start);
-                                        })
-                                        .attr("y", function (d) {
-                                                return y_event(d["row_number"]);
-                                        })
-                                        .attr("height", 7);
-
-                                selection_group.selectAll("rect." + class_name)
-                                        .data(local_periods)
-                                        .append("svg:title")
-                                        .text(function(d){return d["en_title"] + "  " + d["detail"];});
-                        }
+                        periods.selectAll("rect.work-period")
+                                .data(render_data)
+                                .transition().duration(duration)
+                                .ease(d3.easeLinear) // <-B
+                                .attr("x", function (d) {
+                                        return x(d.pad_start) + margin.left;
+                                })
+                                .attr("width", function (d) {
+                                        return x(d.pad_end) - x(d.pad_start);
+                                })
+                                .attr("y", function (d) {
+                                        return y_event(d["row_number"]);
+                                })
+                                .attr("height", 7);
                 };
                 render();
         });
@@ -394,7 +379,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
                 x.domain(selection.map(x2.invert, x2));
 
-                if (render){
+                if (render) {
                         render();
                 }
 
