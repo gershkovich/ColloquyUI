@@ -1,40 +1,68 @@
-WorkTitle@EnglishTitle@Activity@Breaks@Detail@StartDate@EndDate@Precision@Publication
-Детство@Childhood@work@@@01/18/1851@07/03/1852@accurate@1852
-История вчерашнего дня@A History of Yesterday@work@@@03/01/1851@03/01/1851@approximate@1928
-Отрочества@Boyhood @work@@@11/29/1852@03/14/1854@accurate@1854
-Юность@Youth @work@@@03/12/1855@09/24/1856@accurate@1857
-Набег@The Raid@work@@@06/15/1852@12/24/1852@accurate@1853
-Записки маркёра@A Billiard-Marker's Notes@work@@@09/13/1853@02/01/1854@approximate@1855
-Рубка леса@The Wood-Felling@work@@@07/01/1854@09/01/1854@approximate@1855
-Рубка леса@The Wood-Felling@work@@@06/01/1855@07/18/1855@accurate@1855
-Севастополь в декабре месяце@Sevastopol in December 1854@work@@@03/15/1855@04/25/1855@accurate@1855
-Севастополь в мае@Sevastopol in May 1855@work@@@07/18/1855@07/26/1855@accurate@1855
-Севастополь в августе 1855 года@Sevastopol in August 1855@work@@@09/19/1855@12/27/1855@accurate@1856
-Метель@The Snowstorm@conception @@@01/24/1854@01/24/1854@accurate@1856
-Метель@The Snowstorm@work@@@01/15/1856@02/12/1856@accurate@1856
-Два гусара@Two Hussars@work@@@03/12/1856@04/14/1856@accurate@1856
-Из кавказских воспоминаний. Разжалованный@@conception@@@12/15/1853@12/15/1854@approximate@1856
-Из кавказских воспоминаний. Разжалованный@@work@@@11/01/1856@11/30/1856@accurate@1856
-Утро помещика@A Landlord's Morning@conception@@@06/15/1852@08/15/1852@approximate@1856
-Утро помещика@A Landlord's Morning@work@multiple@@08/15/1852@11/29/1856@approximate@1856
-Люцерн@Lucerne@work@@written in Switzerland @07/07/1857@07/11/1857@accurate@1857
-Альберт@Albert @conception@@@01/07/1857@01/07/1858@accurate@1858
-Альберт@Albert @work @multiple@@01/07/1857@03/17/1858@accurate@1858
-Три смерти@Three Deaths@work@@@01/15/1858@01/24/1858@accurate@1859
-Семейное счастие@Family Happiness@conception@@@08/16/1857@08/16/1857@approximate@1859
-Семейное счастие@Family Happiness@work@@@10/30/1858@04/09/1858@approximate@1859
-Казаки@The Cossacks@conception@@first concieved in verse@05/10/1852@10/21/1853@approximate@1864
-Казаки@The Cossacks@work (1st period)@multiple@@08/28/1853@01/01/1854@approximate@1864
-Казаки@The Cossacks@work (2nd  period)@multiple@@05/15/1857@12/31/1858@approximate@1864
-Казаки@The Cossacks@work (3rd period)@multiple @@12/01/1863@01/01/1864@approximate@1864
-Поликушка@Polikúshka@conception@@@03/15/1861@03/15/1862@approximate@1863
-Поликушка@Polikúshka@work@multiple@@05/06/1861@10/15/1862@approximate@1863
-Декабристы@The Decembrists@@@@@@@
-Тихон и Маланья@Tikhon and Malania@work@multiple@Unfinished@11/15/1860@12/15/1862@approximate@1911
-Идиллия: Оно заработки хорошо, да и грех бывает от того@@work@multiple@Unfinished@05/25/1860@10/28/1860@approximate@1911
-Война и мир @War and Peace @"work on what Tolstoy referred to as the novel of ""1812"" "@@@02/15/1863@02/15/1864@approximate@
-Война и мир @War and Peace @work@@Part I completed, send to Russkii Vestnik@02/15/1864@01/03/1865@accurate@
-Война и мир @War and Peace @work@@correcting proofs of part I@01/03/1865@02/28/1865@approximate@
-Война и мир @War and Peace @work@@Part II@03/01/1865@11/01/1865@accurate@
-Война и мир @War and Peace @work@@Part III@11/01/1865@01/01/1866@accurate@
-Война и мир @War and Peace @work@@Part IV@01/15/1866@02/15/1866@approximate@
+Work Title@English Title@Activity@Breaks@Detail@Start Date@End Date@Precision@Publication Start Date@Publication End Date
+Детство@Childhood@work@@@1/18/1851@7/3/1852@accurate@1852@1852
+История вчерашнего дня@A History of Yesterday@work@@@3/15/1851@3/15/1851@accurate@1928@1928
+Отрочества@Boyhood @work@@@11/29/1852@3/14/1854@accurate@1854@1854
+Юность@Youth @work@@@3/12/1855@9/24/1856@accurate@1857@1857
+Набег@The Raid@work@@@6/15/1852@12/24/1852@accurate@1853@1853
+Записки маркёра@A Billiard-Marker's Notes@work@@@9/13/1853@2/15/1854@accurate@1855@1855
+Рубка леса@The Wood-Felling@work@@@7/1/1854@9/1/1854@approximate@1855@1855
+Рубка леса@The Wood-Felling@work@@@6/1/1855@7/18/1855@accurate@1855@1855
+Севастополь в декабре месяце@Sevastopol in December 1854@work@@@3/15/1855@4/25/1855@accurate@1855@1855
+Севастополь в мае@Sevastopol in May 1855@work@@@7/18/1855@7/26/1855@accurate@1855@1855
+Севастополь в августе 1855 года@Sevastopol in August 1855@work@@@9/19/1855@12/27/1855@accurate@1856@1856
+Метель@The Snowstorm@conception @@@1/24/1854@1/24/1854@accurate@1856@1856
+Метель@The Snowstorm@work@@@1/15/1856@2/12/1856@accurate@1856@1856
+Два гусара@Two Hussars@work@@@3/12/1856@4/14/1856@accurate@1856@1856
+Из кавказских воспоминаний. Разжалованный@Iz kavkazskikh vospominaniy. Razzhalovannyy @conception@@@12/15/1853@12/15/1854@approximate@1856@1856
+Из кавказских воспоминаний. Разжалованный@Iz kavkazskikh vospominaniy. Razzhalovannyy @work@@@11/1/1856@11/30/1856@accurate@1856@1856
+Утро помещика@A Landlord's Morning@conception@@@6/15/1852@8/15/1852@approximate@1856@1856
+Утро помещика@A Landlord's Morning@work@multiple@@8/15/1852@11/29/1856@approximate@1856@1856
+Люцерн@Lucerne@work@@Written in Switzerland @7/7/1857@7/11/1857@accurate@1857@1857
+Альберт@Albert @conception@@@1/7/1857@1/7/1857@accurate@1858@1858
+Альберт@Albert @work @multiple@@1/7/1857@3/17/1857@accurate@1858@1858
+Три смерти@Three Deaths@work@@@1/15/1858@1/24/1858@accurate@1859@1859
+Семейное счастие@Family Happiness@conception@@@8/16/1857@8/16/1857@approximate@1859@1859
+Семейное счастие@Family Happiness@work@@@10/30/1858@4/9/1858@approximate@1859@1859
+Казаки@The Cossacks@conception@@First conceived in verse@5/10/1852@10/21/1853@approximate@1864@1864
+Казаки@The Cossacks@work@multiple@First period of work@8/28/1853@1/1/1854@approximate@1864@1864
+Казаки@The Cossacks@work@multiple@Second period of work@5/15/1857@12/31/1858@approximate@1864@1864
+Казаки@The Cossacks@work@multiple @Third period of work@12/1/1863@1/1/1864@approximate@1864@1864
+Поликушка@Polikúshka@conception@@@3/15/1861@3/15/1861@approximate@1863@1863
+Поликушка@Polikúshka@work@multiple@@5/6/1861@10/15/1862@approximate@1863@1863
+Тихон и Маланья@Tikhon and Malania@work@multiple@Unfinished@11/15/1860@12/15/1862@approximate@1911@1911
+Идиллия: Оно заработки хорошо, да и грех бывает от того@Idilliya: Ono zarabotki khorosho, da i grekh byvaet ot togo@work@multiple@Unfinished@5/25/1860@10/28/1860@approximate@1911@1911
+Война и мир @War and Peace @conception, work @@Initially conceived as a novel about the year 1812@10/15/1863@2/15/1864@approximate@1865@1869
+Война и мир @War and Peace @publication @@Decision to publish novel in Russkii Vestnik@12/1/1864@12/1/1865@accurate@1865@1866
+Война и мир @War and Peace @work, publication @@Part I completed, sent to Russkii Vestnik@2/15/1864@1/3/1865@accurate@1865@1866
+Война и мир @War and Peace @work, publication @@First two volumes of the novel published serially in Russkii Vestnik under the title The Year 1805@2/6/1865@5/20/1866@accurate@1865@1866
+Война и мир @War and Peace @work, publication @@Finished first complete draft of the novel @9/15/1866@12/15/1866@approximate@1868@1869
+Война и мир @War and Peace @work, publication @@Declared intention to publish the whole novel as a separate edition @1/15/1867@1/15/1867@approximate@1868@1869
+Война и мир @War and Peace @work, publication @@Calls novel War and Peace for the first time@3/19/1867@3/25/1867@accurate@1868@1869
+Война и мир @War and Peace @publication@@Finalizes plans to publish War and Peace with F.F. Ris' press with P.I. Bartenev serving as editor@6/21/1867@6/21/1867@accurate@1868@1869
+Война и мир @War and Peace @revision @@Revises, corrects proofs for volumes I,II,III of first edition @9/15/1867@9/30/1867@accurate@1868@1869
+Война и мир @War and Peace @revision, work @@Revises volume IV, composes and revises volume V@1/1/1868@3/15/1868@approximate@1868@1869
+Война и мир @War and Peace @stops work@@Has a difficult time writing @6/1/1868@7/30/1868@approximate@1868@1869
+Война и мир @War and Peace @work@@Both parts of volume VI completed, as is part of the epilogue @1/15/1869@1/15/1869@approximate@1868@1869
+Война и мир @War and Peace @work@@Intensive work on the epilogue @6/1/1869@9/15/1869@approximate@1868@1869
+Война и мир @War and Peace @publication @@Moskovskii Vedomosti announces the sale of 1st edition (fourth volume) and 2nd edition of War and Peace @12/12/1869@12/12/1870@accurate@1868@1869
+Война и мир @War and Peace @publication @@Works on third edition of War and Peace while also composing Anna Karenina@5/1/1873@6/30/1873@accurate@1873@1873
+Анна Каренина @Anna Karenina @conception@@Conception @2/24/1870@2/24/1870@accurate@1878@1878
+Анна Каренина @Anna Karenina @work @@Work on first full draft @3/19/1873@5/17/1873@approximate@1878@1878
+Анна Каренина @Anna Karenina @work@@Work on first full draft @9/23/1873@10/16/1873@approximate@1878@1878
+Анна Каренина @Anna Karenina @work@@Work on first full draft @12/13/1873@2/11/1874@approximate@1878@1878
+Анна Каренина @Anna Karenina @work @@Revises beginning of Anna Karenina for Russkii Vestnik  (parts I, II, 10 chapters of part III) @12/12/1874@12/21/1874@accurate@1875@1877
+Анна Каренина @Anna Karenina @work @@Revises parts I and II for  Russkii Vestnik @3/22/1875@5/15/1875@approximate@1875@1877
+Анна Каренина @Anna Karenina @work @@Revises parts III,IV,V for Russkii Vestnik @12/12/1875@8/15/1876@approximate@1875@1877
+Анна Каренина @Anna Karenina @work @@Revises parts V, VI for Russkii Vestnik @11/10/1876@1/15/1877@approximate@1875@1877
+Анна Каренина @Anna Karenina @work @@Revises part VII and epilogue (which became part VIII) for Russkii Vestnik @3/15/1877@4/22/1877@approximate@1875@1877
+Анна Каренина @Anna Karenina @work @@Work on part VIII for separate edition@5/15/1877@6/15/1877@approximate@1877@1877
+Анна Каренина @Anna Karenina @work@@Prepares first separate edition of Anna Karenina@6/15/1877@8/15/1877@approximate@1878@1878
+Анна Каренина @Anna Karenina @stops work@@Want to give up Anna Karenina@10/16/1873@10/16/1873@approximate@1875@1877
+Анна Каренина @Anna Karenina @publication@@Submits first part of Anna Karenina to M.N Katkov's press for publication as a separate edition@3/1/1874@3/1/1874@approximate@1875@1877
+Анна Каренина @Anna Karenina @stops publication@@Stops first attempt to publish Anna Karenina@6/20/1874@6/20/1874@accurate@1875@1877
+Анна Каренина @Anna Karenina @publication@@Promises to publish Anna Karenina serially in Russkii Vestnik@9/15/1874@9/15/1874@accurate@1875@1877
+Анна Каренина @Anna Karenina @publication@@Payment for the novel settled with Russkii Vestnik@11/1/1874@11/1/1874@accurate@1875@1877
+Анна Каренина @Anna Karenina @publication@@Commits to publishing serially with Russkii Vestnik@12/12/1874@12/12/1874@accurate@1875@1877
+Анна Каренина @Anna Karenina @publication@@Anna Karenina published in Russkii Vestnik @1/15/1875@4/15/1877@accurate@1875@1877
+Анна Каренина @Anna Karenina @publication@@Part VIII of Anna Karenina published as separate edition@6/15/1877@6/15/1877@accurate@1877@1877
+Анна Каренина @Anna Karenina @publication@@Anna Karenina first published as separate edition@1/15/1878@1/15/1878@accurate@1878@1878
