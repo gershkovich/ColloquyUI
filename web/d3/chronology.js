@@ -38,6 +38,8 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom);
 
+        var bookUl = d3.select("#book-list");
+
         //function will be populated after csv loaded
         var render;
 
@@ -76,11 +78,9 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 .attr('class', 'd3-tip s')
                 .offset([-10, 0])
                 .html(function (d) {
-                        console.log(d.start.valueOf());
-                        console.log(d.end.valueOf())
                         return `
                                 <div class="title">${d.ru_title} (${d.pub_start})</div>
-                                <div class="date">${(d.end - d.start == 0) ? formatUsDate(d.start) :  `${formatUsDate(d.start)} - ${formatUsDate(d.end)}`}</div>
+                                <div class="date">${(d.end - d.start == 0) ? formatUsDate(d.start) : `${formatUsDate(d.start)} - ${formatUsDate(d.end)}`}</div>
                                 ${ d.detail ?
                                         `<div class="details">
                                         ${d.detail}
@@ -98,6 +98,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
         var duration = 500;
 
         var render_data = [];
+        var book_titles = []
         var periods = svg.append("g");;
 
         d3.dsv("@", "data/work-dates.csv", function (data) {
@@ -131,15 +132,19 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         padded_data.push(d);
                 });
 
+                //calculate the max extent of book usage 
                 var data_extent = d3.nest()
                         .key(function (d) { return d["ru_title"] })
                         .rollup(function (v) {
                                 return {
                                         "max_extent": d3.max(v, function (d) { return d["pad_end"]; }),
-                                        "min_extent": d3.min(v, function (d) { return d["pad_start"]; })
+                                        "min_extent": d3.min(v, function (d) { return d["pad_start"]; }),
+                                        "en_title": d3.max(v, function (d) { return d["en_title"]; })
                                 };
                         })
                         .entries(padded_data);
+
+                book_titles = data_extent
 
                 var endpoints = [];
                 data_extent.forEach(function (title) {
@@ -155,6 +160,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         });
                 });
 
+                //sorts endpoints of intervals, breaking ties by considering openings to be before closings
                 endpoints.sort((a, b) => {
                         if (a["date"] < b["date"]) {
                                 return -1;
@@ -214,7 +220,6 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         render_data.push(row);
                 });
                 render = function () {
-                        console.log(render_data);
                         periods.call(tooltip);
 
                         periods.selectAll("rect.continuation")
@@ -260,6 +265,25 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                         return y_event(d["row_number"]);
                                 })
                                 .attr("height", 7);
+
+                        var local_books = book_titles.filter(function (d) {
+                                console.log(d["key"]);
+                                console.log(x(d["value"]["max_extent"]));
+                                console.log(x(d["value"]["min_extent"]));
+                                return x(d["value"]["min_extent"]) < width && x(d["value"]["max_extent"]) > 0;
+                        });
+
+                        console.log(local_books);
+
+                        bookUl.selectAll("li").remove();
+
+                        bookUl.selectAll("li")
+                                .data(local_books)
+                                .enter()
+                                .append("li")
+                                .text(function (d) {
+                                        return d["value"]["en_title"];
+                                });
                 };
                 render();
         });
@@ -371,8 +395,6 @@ function buildChronologyChart(divId, dataIn, documentType) {
         // });
 
         //create brush function redraw scatterplot with selection
-
-
         function brushed() {
 
                 var selection = d3.event.selection;
@@ -452,12 +474,6 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
                 focus.selectAll(".y_label").text(label);
 
-                // focus.selectAll(".axis#axis--y").remove();
-                //
-                // focus.append("g")
-                //     .attr("class", "axis axis--y")
-                //     .call(yAxis);
-
                 focus.selectAll(".axis")
                         .call(yAxis);
 
@@ -480,22 +496,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                 var position = d3.mouse(svg.node());
                                 console.log(x.invert(position[0]));
                         });
-
-                // focus.append("text")
-                //     .attr('class', 'y_label')
-                //     .attr("transform", "rotate(-90)")
-                //     .attr("y", 0 - margin.left)
-                //     .attr("x", 0 - (height / 2))
-                //     .attr("dy", "1em")
-                //     .style("text-anchor", "middle")
-                //     .text("Letters Updated");
-
-
-
         }
-
-        //  tstUplink(formatDate(x.domain()[0]) , formatDate(x.domain()[1]));
-
         function type(d) {
                 d.date = parseDate(d.date);
                 d.letters = +d.letters;
@@ -555,89 +556,12 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 });
         }
 
-        /* function getRenderingData(work_periods){
-                work_rect = []
-                let i;
-                for (i = 0; i < work_periods.length; i++){
-                        let title = work_periods[i];
-                        let j;
-                        for (j = 0; j < title["work"].length; j++){
-                                let period = title["work"][j];
-                                let title_work = {"ru_title": title["title"]["ru"]};
-                                let rect = [
-                                        { x: period["start"], y: period["display_row"] + 1},
-                                        { x: period["end"], y: period["display_row"] + 1 },
-                                        { x: period["end"], y: period["display_row"] },
-                                        { x: period["start"], y: period["display_row"] }
-                                ];
-                                title_work["rect"] = rect;
-                                work_rect.push(title_work);
-                        }
-                }
-                return work_rect;
-        } */
-
         renderAxes(svg);
-
-        // console.log("here")
-
-        /* svg.selectAll("ellipse")
-                .data(events)
-                .enter().append("ellipse")
-                .attr("class", "circle_event")
-                .on("mouseover", function (d) {
-                        div.transition()
-                                .duration(200)
-                                .style("opacity", .9);
-                        div.html(d.name)
-                                .style("left", (d3.event.pageX) + "px")
-                                .style("top", (d3.event.pageY - 30) + "px");
-                })
-                .on("mouseout", function (d) {
-                        div.transition()
-                                .duration(500)
-                                .style("opacity", 0);
-                });
- 
- 
- 
-        svg.selectAll("ellipse")
-                .data(events)
-                .transition().duration(duration)
-                .ease(d3.easeLinear).attr("cx", function (d) { return x(parseDate(d.x)) + margin.left; })
-                .attr("cy", function (d) { return y_event(d.y); })
-                .attr("rx", 5)           // set the x radius
-                .attr("ry", 4); */
 
         function renderAxes(svg) {
 
 
                 var yAxis_event = d3.axisLeft()
                         .scale(d3.scaleLinear().range([10, 0])).ticks(1);
-
-
-                // svg.append("g")
-                //     .attr("class", "y_axis_event")
-                //     .attr("transform", function(){
-                //         return "translate(" + margin.left + "," + 10 + ")";
-                //     })
-                //     .call(yAxis_event);
         }
-
-        function xStart() {
-                return margin.left;
-        }
-
-
-        function yEnd() {
-                return margin.left;
-        }
-
-
-        function quadrantHeight() {
-                return height;
-        }
-
 }
-
-
