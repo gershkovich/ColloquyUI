@@ -267,22 +267,22 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                 .attr("height", 7);
 
                         var local_books = book_titles.filter(function (d) {
-                                console.log(d["key"]);
-                                console.log(x(d["value"]["max_extent"]));
-                                console.log(x(d["value"]["min_extent"]));
                                 return x(d["value"]["min_extent"]) < width && x(d["value"]["max_extent"]) > 0;
                         });
 
-                        console.log(local_books);
-
                         bookUl.selectAll("li").remove();
-
                         bookUl.selectAll("li")
                                 .data(local_books)
                                 .enter()
                                 .append("li")
                                 .text(function (d) {
                                         return d["value"]["en_title"];
+                                })
+                                .on('mouseover', function (d) {
+                                        book_mouseover(d);
+                                })
+                                .on('click', function (d){
+                                        book_click(d);      
                                 });
                 };
                 render();
@@ -296,11 +296,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
         var dataByWeek = [];
 
         getAggregationPerWeek(dataByWeek);
-
-        //now rewrite data
-
-        // document.write(dataFromString.date);
-
+        //set scale of dates
         x.domain(d3.extent(dataByMonth, function (d) {
                 return d.date;
         }));
@@ -311,12 +307,8 @@ function buildChronologyChart(divId, dataIn, documentType) {
         y2.domain(y.domain());
 
         // append scatter plot to main chart area
-
         var bars = focus.append("g");
-
         bars.attr("clip-path", "url(#clip)");
-
-
         bars.selectAll("bar")
                 .data(dataByMonth)
                 .enter().append("rect")
@@ -387,7 +379,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 .attr("transform", "translate(0," + height2 + ")")
                 .call(xAxis2);
 
-        context.append("g")
+        var brush_g = context.append("g")
                 .attr("class", "brush")
                 .call(brush)
                 .call(brush.move, x.range());
@@ -411,10 +403,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
                 //todo call function to load letters by range and selected text
 
-
                 //   tstUplink(formatDate(x.domain()[0]) , formatDate(x.domain()[1]));
-
-
                 // console.log("month diff: " + monthsDiff);
 
                 if (monthsDiff <= 40 && agg !== "days") {
@@ -463,9 +452,6 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         });
 
                 focus.select(".axis--x").call(xAxis);
-
-
-
         }
 
         function update(updateData, label, fillStyle) {
@@ -494,7 +480,6 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         })
                         .on("mouseover", function () { //<-A
                                 var position = d3.mouse(svg.node());
-                                console.log(x.invert(position[0]));
                         });
         }
         function type(d) {
@@ -556,12 +541,26 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 });
         }
 
-        renderAxes(svg);
+        function book_mouseover(book) {
+                svg.selectAll("rect.continuation")
+                        .data(render_data)
+                        .transition().duration(duration)
+                        .ease(d3.easeLinear)
+                        .attr("class", function (d) {
+                                if (d["ru_title"] === book["key"]) {
+                                        return "continuation highlight";
+                                }
+                                else {
+                                        return "continuation";
+                                }
+                        });
 
-        function renderAxes(svg) {
+                return false;
+        }
 
-
-                var yAxis_event = d3.axisLeft()
-                        .scale(d3.scaleLinear().range([10, 0])).ticks(1);
+        function book_click(book){
+                var min = book.value.min_extent;
+                var max = book.value.max_extent;
+                brush.move(brush_g, [min, max]);
         }
 }
