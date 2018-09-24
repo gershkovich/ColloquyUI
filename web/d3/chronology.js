@@ -2,15 +2,23 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
 
         var margin = { top: 20, right: 20, bottom: 80, left: 50 },
-                margin2 = { top: 150, right: 20, bottom: 20, left: 50 },
+                margin2 = { top: 200, right: 20, bottom: 20, left: 50 },
                 width = 1160 - margin.left - margin.right,
-                height = 200 - margin.top - margin.bottom,
-                height2 = 200 - margin2.top - margin2.bottom;
+                height = 250 - margin.top - margin.bottom,
+                height2 = 250 - margin2.top - margin2.bottom;
 
         var parseDate = d3.timeParse("%Y-%m-%d");
 
         var usFormatStr = "%m/%d/%Y";
-        var parseUsDate = d3.timeParse(usFormatStr);
+        var parseUsDate = function(ds){
+		if (ds.length < 5){
+			return d3.timeParse("%Y")(ds);
+		}
+		else{ 
+			return d3.timeParse(usFormatStr)(ds);
+		}
+	};
+
         var formatUsDate = d3.timeFormat(usFormatStr)
 
         var monthFormatter = d3.timeFormat('%Y-%b');
@@ -68,7 +76,6 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 return {
                         date: d.date = parseDate(d.date),
                         letters: d.letters = +d.letters
-
                 };
         });
 
@@ -79,7 +86,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         console.log(d.start.valueOf());
                         console.log(d.end.valueOf())
                         return `
-                                <div class="title">${d.ru_title} (${d.pub_start})</div>
+                                <div class="title">${d.ru_title}</div>
                                 <div class="date">${(d.end - d.start == 0) ? formatUsDate(d.start) :  `${formatUsDate(d.start)} - ${formatUsDate(d.end)}`}</div>
                                 ${ d.detail ?
                                         `<div class="details">
@@ -93,27 +100,28 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
         var y_event = d3.scaleLinear()
                 .domain([0, 7])
-                .range([height - margin.bottom, margin.bottom]);
+                .range([margin.top, 80]);
 
         var duration = 500;
 
         var render_data = [];
-        var periods = svg.append("g");;
+        var periods = svg.append("g");
 
         d3.dsv("@", "data/work-dates.csv", function (data) {
                 return {
                         "ru_title": data["Work Title"],
                         "en_title": data["English Title"],
                         "activity": data["Activity"],
-                        "breaks": (data.Breaks === "multiple"),
                         "detail": data["Detail"],
                         "start": parseUsDate(data["Start Date"]),
                         "end": parseUsDate(data["End Date"]),
-                        "precision": data["Precision"],
-                        "pub_start": +data["Publication Start Date"],
-                        "pub_end": +data["Publication End Date"]
+                        "precision": data["Precision"]
                 };
         }).then(function (data) {
+                data = data.filter(function(d){
+                        return d["end"] < new Date(1910, 11, 20) && d["start"] < new Date(1910, 11, 20);
+                });
+                
                 //create render padding for all work periods less than a month
                 let ONE_MONTH = new Date(2012, 01, 30) - new Date(2012, 01, 01);
                 var padded_data = [];

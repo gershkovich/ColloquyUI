@@ -89,13 +89,14 @@
         var divId = "#div_for_svg";
 
         var client = new XMLHttpRequest();
+        
+        client.responseType = "text";
 
         client.open('GET', 'data/tolstoy_letters.csv');
 
         client.onloadend = function () {
 
             var text = client.responseText;
-
             buildChronologyChart(divId, text, "Letters");
 
         };
