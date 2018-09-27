@@ -288,9 +288,6 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                 })
                                 .on('mouseover', function (d) {
                                         book_mouseover(d);
-                                })
-                                .on('click', function (d){
-                                        book_click(d);      
                                 });
                 };
                 render();
@@ -564,11 +561,5 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         });
 
                 return false;
-        }
-
-        function book_click(book){
-                var min = book.value.min_extent;
-                var max = book.value.max_extent;
-                brush.move(brush_g, [min, max]);
         }
 }
