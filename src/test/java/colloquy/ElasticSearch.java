@@ -6,28 +6,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryparser.flexible.precedence.PrecedenceQueryParser;
 import org.apache.lucene.search.Query;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.text.Text;
-import org.elasticsearch.common.transport.TransportAddress;
-import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
-import org.elasticsearch.search.aggregations.bucket.histogram.InternalDateHistogram;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.metrics.sum.SumAggregationBuilder;
-import org.elasticsearch.search.aggregations.metrics.tophits.TopHits;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.junit.Before;
 import org.junit.Test;
 import us.colloquy.model.IndexSearchResult;
@@ -35,9 +14,8 @@ import us.colloquy.model.Letter;
 import us.colloquy.util.ElasticConnector;
 import us.colloquy.util.PropertiesLoader;
 
-import java.net.InetAddress;
-import java.util.*;
-import  org.joda.time.DateTime;
+import java.util.Calendar;
+import java.util.Properties;
 
 /**
  * Created by Peter Gershkovich on 12/24/17.
@@ -85,8 +63,6 @@ public class ElasticSearch
 
         ec.queryStringSearch(luceneQuery.toString(), properties, result, 0, indices);
 
-        System.out.println("Number of results: " + result.getNumberOfResults());
-
         for (Letter letter : result.getLetters())
         {
             if (StringUtils.isNotEmpty(letter.getContent()))
@@ -98,8 +74,27 @@ public class ElasticSearch
             }
         }
 
+        System.out.println("Number of results: " + result.getNumberOfResults());
+
+
+        //1583 results
+
     }
 
+
+    @Test
+    public void testHistogram()
+    {
+        String[] indices = new String[2];
+
+        indices[0] = "tolstoy_letters";
+        indices[1] = "tolstoy_diaries";
+
+        ElasticConnector ec = new ElasticConnector();
+
+        System.out.println(ec.getLetterHistogram(properties, indices));
+
+    }
 
     @Test
     public void testQuerySearchFiltered() throws Exception
@@ -199,6 +194,20 @@ public class ElasticSearch
         }
     }
 
+
+    @Test
+    public void testAllEventSearch() throws Exception
+    {
+        IndexSearchResult result = new IndexSearchResult();
+
+        ElasticConnector ec = new ElasticConnector();
+
+        ec.queryAllEvents( properties, result);
+
+        System.out.println("Number of results: " + result.getNumberOfResults());
+
+    }
+
     private void mapExemplar(SearchHit hit, String content)
     {
 
@@ -232,113 +241,6 @@ public class ElasticSearch
 //        exemplar.setGeneName(( String )fildsMap.getOrDefault("geneName", ""));
     }
 
-
-    @Test
-    public void testCustomSearch() throws Exception
-    {
-        //this search is assembled by system parameters
-
-        Settings settings = Settings.builder()
-                .put("cluster.name", properties.getProperty("elastic_cluster_name")).build();
-
-
-        try (TransportClient elasticClient = new PreBuiltTransportClient(settings).
-                addTransportAddress(new TransportAddress(InetAddress.getByName(properties.getProperty("elastic_ip_address")), 9300)))
-        {
-
-            SearchRequestBuilder rb = elasticClient.prepareSearch("exemplar_index")
-                    .setTypes("downstream")
-                    .setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-
-            BoolQueryBuilder queryBuilder;
-
-            queryBuilder = QueryBuilders.boolQuery()
-                    //						.mustNot(QueryBuilders.matchQuery("additionalNote", "Terminated"))
-                    .must(QueryBuilders.matchQuery("additionalNote", "EGFR"))
-                    .should(QueryBuilders.boolQuery()
-                            .should(QueryBuilders.matchQuery("geneSymbol", "EGFR"))
-                            .should(QueryBuilders.matchQuery("protein", "prot"))
-                            .should(QueryBuilders.matchQuery("dx", "dx")));
-
-            rb.setQuery(queryBuilder);             // Query
-
-
-            SearchResponse response = rb.setSize(100)
-                    .setScroll(TimeValue.timeValueMinutes(2))
-                    .execute()
-                    .actionGet();
-
-            SearchHits hits = response.getHits();
-
-//            List<Exemplar> exemplarList = new ArrayList<>();
-//
-//
-//            for ( SearchHit hit : hits )
-//            {
-//                Exemplar exemplar = new Exemplar();
-//
-//                mapExemplar(hit, exemplar);
-//
-//                exemplarList.add(exemplar);
-//            }
-//
-//            for ( Exemplar ex : exemplarList)
-//            {
-//                System.out.println(ex.toString());
-//            }
-
-
-        } catch (Throwable throwable)
-        {
-            throwable.printStackTrace();
-        }
-
-
-    }
-
-    @Test
-    public void testAggregation()
-
-    {
-
-        Settings settings = Settings.builder()
-                .put("cluster.name", properties.getProperty("elastic_cluster_name")).build();
-
-
-        try (TransportClient elasticClient = new PreBuiltTransportClient(settings).
-                addTransportAddress(new TransportAddress(InetAddress.getByName(properties.getProperty("elastic_ip_address")), 9300)))
-        {
-
-            SearchResponse sr = elasticClient.prepareSearch("tolstoy_letters")
-                    .addAggregation(
-                            AggregationBuilders.dateHistogram("day").field("date")
-                                            .dateHistogramInterval(DateHistogramInterval.DAY)
-                    )
-                    .execute().actionGet();
-
-
-            InternalDateHistogram agg = sr.getAggregations().get("day");
-
-
-            String stop = "";
-
-// For each entry
-            for (InternalDateHistogram.Bucket entry : agg.getBuckets()) {
-                DateTime key = (DateTime)entry.getKey();                    // bucket key
-
-                long docCount = entry.getDocCount();            // Doc count
-
-                System.out.println(key + " - " + docCount);
-            }
-
-
-
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-    }
 
     @Test
     public void getLettersHistogram()

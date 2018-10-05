@@ -42,7 +42,7 @@ public class DataUplink
 
 
     @JsMethod
-    public void myData(String start, String end)
+    public void getData(String start, String end)
     {
 
         if (delayTimer != null)
@@ -93,6 +93,8 @@ public class DataUplink
 
                 loaderImage.getStyle().setVisibility(Style.Visibility.HIDDEN);
             }
+
+            buildScatterPlot("#div_for_svg", result.getSelectedStats(), false);
         }
 
         public void onFailure(Throwable throwable)
@@ -102,6 +104,11 @@ public class DataUplink
 
         native void consoleLog(String message) /*-{
             console.log("me:" + message);
+        }-*/;
+
+        // call chronology.js to create Chronology Chart
+        private native void buildScatterPlot(String div, String datString, boolean replace)/*-{
+            $wnd.buildScatterPlotChart(div, datString, replace);
         }-*/;
     }
 

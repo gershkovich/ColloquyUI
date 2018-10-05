@@ -1,30 +1,31 @@
 package us.colloquy.util;
 
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.apache.http.HttpHost;
+import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.text.Text;
-import org.elasticsearch.common.transport.TransportAddress;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
-import org.elasticsearch.search.aggregations.bucket.histogram.InternalDateHistogram;
+import org.elasticsearch.search.aggregations.bucket.histogram.Histogram;
+import org.elasticsearch.search.aggregations.bucket.histogram.ParsedDateHistogram;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import us.colloquy.model.Diary;
 import us.colloquy.model.IndexSearchResult;
 import us.colloquy.model.Letter;
 
-import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -36,14 +37,14 @@ public class ElasticConnector
 
     public void queryStringSearch(String searchString, Properties properties, IndexSearchResult result, int fromInt, String[] indices)
     {
-        Settings settings = Settings.builder()
-                .put("cluster.name", properties.getProperty("elastic_cluster_name")).build();
 
 
         boolean useHighlighting = false;
 
-        try (TransportClient elasticClient = new PreBuiltTransportClient(settings).
-                addTransportAddress(new TransportAddress(InetAddress.getByName(properties.getProperty("elastic_ip_address")), 9300)))
+        try (RestHighLevelClient elasticClient = new RestHighLevelClient(
+                RestClient.builder(
+                        new HttpHost("localhost", 9200, "http"),
+                        new HttpHost("localhost", 9201, "http"))))
         {
 
             String filtered = searchString.replaceAll("\\sИ\\s", " AND ")
@@ -54,23 +55,35 @@ public class ElasticConnector
             HighlightBuilder hb = new HighlightBuilder();
             hb.field("content").field("notes").field("entry").forceSource(true).numOfFragments(0).preTags("<span class=\"" + highlightedText + "\">").postTags("</span>");
 
-            SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(elasticClient, filtered, indices);
+
+            SearchRequest searchRequest = new SearchRequest(indices);
+
+            SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
             if (StringUtils.isNotEmpty(searchString) && searchString.length() > 2)
             {
                 useHighlighting = true;
-                searchRequestBuilder = searchRequestBuilder.highlighter(hb); //add HighlightBuilder
+
+                searchSourceBuilder.highlighter(hb); //add HighlightBuilder
             }
 
-            SearchResponse response =
-                    searchRequestBuilder.setSize(100).setFrom(fromInt).execute().actionGet();
+            searchSourceBuilder.query(QueryBuilders.queryStringQuery(searchString));
 
-            SearchHits hits = response.getHits();
+            searchRequest.source(searchSourceBuilder);
+
+            searchSourceBuilder.size(100);
+//            searchSourceBuilder.sort("date", SortOrder.DESC);
+            searchSourceBuilder.from(fromInt);
+
+            SearchResponse searchResponse = elasticClient.search(searchRequest);
+
+            SearchHits hits = searchResponse.getHits();
 
             result.setNumberOfResults(hits.getTotalHits());
 
             for (SearchHit hit : hits)
             {
+
                 Letter letter = new Letter();
 
                 if (useHighlighting)
@@ -87,7 +100,7 @@ public class ElasticConnector
                     if (highlightFields.containsKey("notes"))
                     {
                         //more than one fragment since can contain many notes
-                        System.out.println(highlightFields.get("notes").getFragments().length);
+                        //  System.out.println(highlightFields.get("notes").getFragments().length);
 
                         for (Text fr : highlightFields.get("notes").getFragments())
                         {
@@ -98,7 +111,7 @@ public class ElasticConnector
                     if (highlightFields.containsKey("entry"))
                     {
                         //more than one fragment since can contain many notes
-                        System.out.println(highlightFields.get("entry").getFragments().length);
+                        //   System.out.println(highlightFields.get("entry").getFragments().length);
 
                         for (Text fr : highlightFields.get("entry").getFragments())
                         {
@@ -132,7 +145,6 @@ public class ElasticConnector
         }
     }
 
-
     public String getLetterHistogram(Properties properties, String[] indices)
     {
 
@@ -142,24 +154,37 @@ public class ElasticConnector
         sb.append(",");
         sb.append("letters");
 
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-        Settings settings = Settings.builder()
-                .put("cluster.name", properties.getProperty("elastic_cluster_name")).build();
-
-
-        try (TransportClient elasticClient = new PreBuiltTransportClient(settings).
-                addTransportAddress(new TransportAddress(InetAddress.getByName(properties.getProperty("elastic_ip_address")), 9300)))
+        try (RestHighLevelClient elasticClient = new RestHighLevelClient(
+                RestClient.builder(
+                        new HttpHost(properties.getProperty("elastic_ip_address"), 9200, "http"),
+                        new HttpHost(properties.getProperty("elastic_ip_address"), 9201, "http"))))
         {
 
-            SearchResponse sr = prepareIndex(elasticClient, indices);
+            SearchRequest searchRequest = new SearchRequest(indices);
 
-            InternalDateHistogram agg = sr.getAggregations().get("day");
+            SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+
+            searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+
+            DateHistogramAggregationBuilder dhb = AggregationBuilders.dateHistogram("day").field("date")
+                    .dateHistogramInterval(DateHistogramInterval.DAY);
+
+            searchSourceBuilder.aggregation(dhb);
+
+            searchRequest.source(searchSourceBuilder);
+
+            SearchResponse searchResponse = elasticClient.search(searchRequest);
+
+            Aggregations aggregations = searchResponse.getAggregations();
+
+            ParsedDateHistogram agg = aggregations.get("day");
 
             String stop = "";
 
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-// For each entry
-            for (InternalDateHistogram.Bucket entry : agg.getBuckets())
+            // For each entry
+            for (Histogram.Bucket entry : agg.getBuckets())
             {
                 DateTime day = (DateTime) entry.getKey();                    // bucket key
 
@@ -221,15 +246,18 @@ public class ElasticConnector
     public void queryStringSearchFiltered(String searchString, Properties properties,
                                           IndexSearchResult result, int fromInt, long start, long end, String[] indices)
     {
-        Settings settings = Settings.builder()
-                .put("cluster.name", properties.getProperty("elastic_cluster_name")).build();
-
-
         boolean useHighlighting = false;
 
-        try (TransportClient elasticClient = new PreBuiltTransportClient(settings).
-                addTransportAddress(new TransportAddress(InetAddress.getByName(properties.getProperty("elastic_ip_address")), 9300)))
+        try (RestHighLevelClient client = new RestHighLevelClient(
+                RestClient.builder(
+                        new HttpHost("localhost", 9200, "http"),
+                        new HttpHost("localhost", 9201, "http"))))
         {
+
+            SearchRequest searchRequest = new SearchRequest(indices);
+
+            SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+
 
             String filtered = searchString.replaceAll("\\sИ\\s", " AND ")
                     .replaceAll("\\sИЛИ\\s", " OR ");
@@ -239,25 +267,31 @@ public class ElasticConnector
             HighlightBuilder hb = new HighlightBuilder();
             hb.field("content").field("notes").field("toWhom").field("place").field("entry").forceSource(true).numOfFragments(0).preTags("<span class=\"" + highlightedText + "\">").postTags("</span>");
 
-            SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(elasticClient, filtered, indices);
+
+            searchSourceBuilder.query(QueryBuilders.queryStringQuery(filtered));
+
+            searchRequest.source(searchSourceBuilder);
+
+            searchSourceBuilder.size(100);
+            // searchSourceBuilder.sort("accessionDate", SortOrder.DESC);
+            searchSourceBuilder.from(fromInt);
+
 
             if (start != 0 || end != 0)
             {
-                searchRequestBuilder = searchRequestBuilder
-                        .setPostFilter(QueryBuilders.rangeQuery("date")
-                                .from(start).to(end));
+                searchSourceBuilder.postFilter(QueryBuilders.rangeQuery("date")
+                        .from(start).to(end));
             }
 
             if (StringUtils.isNotEmpty(searchString) && searchString.length() > 2)
             {
                 useHighlighting = true;
-                searchRequestBuilder = searchRequestBuilder.highlighter(hb); //add HighlightBuilder
+                searchSourceBuilder.highlighter(hb); //add HighlightBuilder
             }
 
-            SearchResponse response =
-                    searchRequestBuilder.setSize(100).setFrom(fromInt).execute().actionGet();
+            SearchResponse searchResponse = client.search(searchRequest);
 
-            SearchHits hits = response.getHits();
+            SearchHits hits = searchResponse.getHits();
 
             result.setNumberOfResults(hits.getTotalHits());
 
@@ -361,6 +395,11 @@ public class ElasticConnector
                     letter.setSource(((String) fieldsMap.getOrDefault("source", "")));
                 }
 
+                if (fieldsMap.containsKey("id"))
+                {
+                    letter.setId(((String) fieldsMap.getOrDefault("id", "")));
+                }
+
 
                 if (fieldsMap.containsKey("toWhom"))
                 {
@@ -377,26 +416,57 @@ public class ElasticConnector
         }
     }
 
-    private SearchRequestBuilder getSearchRequestBuilder(TransportClient elasticClient, String filtered, String[] indices)
+
+    public void queryAllEvents(Properties properties, IndexSearchResult result)
     {
-        if (indices.length == 1 && StringUtils.isNotEmpty(indices[0]))
-        {
-            return elasticClient.prepareSearch(indices[0])
-                    .setQuery(QueryBuilders.queryStringQuery(filtered));
 
-        } else if (indices.length == 2 && StringUtils.isNotEmpty(indices[0]) && StringUtils.isNotEmpty(indices[1]))
-        {
-            return elasticClient.prepareSearch(indices[0], indices[1])
-                    .setQuery(QueryBuilders.queryStringQuery(filtered));
 
-        } else
+        try (RestHighLevelClient elasticClient = new RestHighLevelClient(
+                RestClient.builder(
+                        new HttpHost("localhost", 9200, "http"),
+                        new HttpHost("localhost", 9201, "http"))))
         {
 
-            return elasticClient.prepareSearch()
-                    .setQuery(QueryBuilders.queryStringQuery(filtered));
+            SearchRequest searchRequest = new SearchRequest("tolstoy_composition");
+
+            SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+
+            searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+
+            searchRequest.source(searchSourceBuilder);
+
+            searchSourceBuilder.size(1000);
+
+            SearchResponse searchResponse = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
+
+            SearchHits hits = searchResponse.getHits();
+
+            result.setNumberOfResults(hits.getTotalHits());
+
+            for (SearchHit hit : hits)
+            {
+                Map<String, Object> fieldsMap = hit.getSourceAsMap();
+
+               for (String key:  fieldsMap.keySet())
+               {
+                   System.out.println(fieldsMap.get(key));
+
+                   List<Map<String, Object>> activities = (List) fieldsMap.get("activityList");
+
+                   for (Map <String, Object> map: activities)
+                   {
+                       for (String k: map.keySet())
+                       {
+                           System.out.println(map.get(k));
+                       }
+                   }
+               }
+            }
+
+        } catch (Throwable throwable)
+        {
+            throwable.printStackTrace();
         }
-
-
     }
 
 }

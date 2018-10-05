@@ -58,6 +58,16 @@ public class SearchAdditionalLettersAsynchCallback implements AsyncCallback<Serv
 
         feedback.setText( messages.numberOfLetterFound(result.getTotalNumberOfLetters() + "", totalNumberOfLoadedLetters.getValue()));
 
+        buildScatterPlot("#div_for_svg", result.getSelectedStats(), false);
 
     }
+
+    native void consoleLog(String message) /*-{
+        console.log("me:" + message);
+    }-*/;
+
+    // call chronology.js to create Chronology Chart
+    private native void buildScatterPlot(String div, String datString, boolean replace)/*-{
+        $wnd.buildScatterPlotChart(div, datString, replace);
+    }-*/;
 }

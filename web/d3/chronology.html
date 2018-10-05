@@ -35,7 +35,7 @@
         }
 
     </STYLE>
-    
+
 </head>
 <body>
 
@@ -48,18 +48,57 @@
 
     var client = new XMLHttpRequest();
 
-    client.open('GET', 'data/tolstoy_letters.csv');
+    client.open('GET', 'data/letter_test.csv');
 
     client.onloadend = function () {
 
         var text = client.responseText;
 
-        buildChronologyChart(divId, text, "Letters");
+       // console.log(text);
+
+        buildChronologyChart(divId, text, 24, "Docuuments");
+
+
 
     };
 
     client.send();
 
+    d3.csv("data/tolstoy_letters.csv").then(function(data) {
+        //console.log(data);
+       // buildChronologyChart(divId, data, "Docuuments");
+    });
+
+
+
+
+    function myFunction() {
+
+        var sPlot = new XMLHttpRequest();
+
+        sPlot.open('GET', 'data/selected-letters.csv');
+
+        sPlot.onloadend = function () {
+
+            var text = sPlot.responseText;
+
+            buildScatterPlotChart(divId, text, true);
+
+        };
+
+        sPlot.send();
+    }
+
+
 
 </script>
+
+<p id="Make plot"></p>
+
+<button onclick="myFunction()">Make Scatter Plot</button>
+
+
+
+
+
 </body>

@@ -48,6 +48,10 @@ public class LoadVisualisationChart implements AsyncCallback<ServerResponse>
             }
         }
 
-        vp.createVisualization(result.getCsvLetterData(), documentType);
+        vp.createVisualization(result.getCsvLetterData(), result.getWorkEvents(), documentType);
     }
+
+    native void consoleLog(String message) /*-{
+        console.log("me:" + message);
+    }-*/;
 }

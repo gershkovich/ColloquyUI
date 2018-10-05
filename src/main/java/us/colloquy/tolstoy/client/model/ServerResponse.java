@@ -12,6 +12,8 @@ public class ServerResponse implements Serializable
     private List<LetterDisplay> letters = new ArrayList<>();
     private String feedback;
     private long totalNumberOfLetters;
+    private String selectedStats;
+    private String workEvents;
 
     private String csvLetterData;
 
@@ -53,5 +55,25 @@ public class ServerResponse implements Serializable
     public void setCsvLetterData(String csvLetterData)
     {
         this.csvLetterData = csvLetterData;
+    }
+
+    public String getSelectedStats()
+    {
+        return selectedStats;
+    }
+
+    public void setSelectedStats(String selectedStats)
+    {
+        this.selectedStats = selectedStats;
+    }
+
+    public String getWorkEvents()
+    {
+        return workEvents;
+    }
+
+    public void setWorkEvents(String workEvents)
+    {
+        this.workEvents = workEvents;
     }
 }

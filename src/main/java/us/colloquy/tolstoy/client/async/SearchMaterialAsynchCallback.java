@@ -55,5 +55,16 @@ public class SearchMaterialAsynchCallback  implements AsyncCallback<ServerRespon
 
         vp.getFeedback().setText(messages.numberOfLetterFound(result.getTotalNumberOfLetters() + "", vp.getNumberOfLoadedLetters().getValue()));
 
+        buildScatterPlot("#div_for_svg", result.getSelectedStats(), true);
+
     }
+
+    native void consoleLog(String message) /*-{
+        console.log("me:" + message);
+    }-*/;
+
+    // call chronology.js to create Chronology Chart
+    private native void buildScatterPlot(String div, String datString, boolean replace)/*-{
+        $wnd.buildScatterPlotChart(div, datString, replace);
+    }-*/;
 }

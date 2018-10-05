@@ -3,6 +3,24 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
+
+    <!--<security-constraint>-->
+        <!--<display-name>Tolstoy</display-name>-->
+        <!--<web-resource-collection>-->
+            <!--<web-resource-name>Protected Area</web-resource-name>-->
+            <!--&lt;!&ndash; Define the context-relative URL(s) to be protected &ndash;&gt;-->
+            <!--<url-pattern>/*</url-pattern>-->
+            <!--&lt;!&ndash; If you list http methods, only those methods are protected &ndash;&gt;-->
+        <!--</web-resource-collection>-->
+        <!--&lt;!&ndash;<auth-constraint>&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash; Anyone with one of the listed roles may access this area &ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;<role-name>*</role-name>&ndash;&gt;-->
+        <!--&lt;!&ndash;</auth-constraint>&ndash;&gt;-->
+        <!--<user-data-constraint>-->
+            <!--<transport-guarantee>CONFIDENTIAL</transport-guarantee>-->
+        <!--</user-data-constraint>-->
+    <!--</security-constraint>-->
+    
     <servlet>
         <servlet-name>main.java.us.colloquy.tolstoy.Tolstoy TolstoyService</servlet-name>
         <servlet-class>us.colloquy.tolstoy.server.TolstoyServiceImpl</servlet-class>

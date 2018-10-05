@@ -16,15 +16,11 @@ import com.google.gwt.user.client.ui.*;
 import us.colloquy.tolstoy.client.TolstoyConstants;
 import us.colloquy.tolstoy.client.TolstoyMessages;
 import us.colloquy.tolstoy.client.TolstoyService;
-import us.colloquy.tolstoy.client.async.LoadVisualisationChart;
 import us.colloquy.tolstoy.client.async.SearchAdditionalLettersAsynchCallback;
-import us.colloquy.tolstoy.client.async.SearchMaterialAsynchCallback;
 import us.colloquy.tolstoy.client.model.SearchFacets;
 import us.colloquy.tolstoy.client.model.ServerResponse;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by Peter Gershkovich on 12/24/17.
@@ -64,9 +60,15 @@ public class VisualisationPanel extends Composite
 
         searchFacets.getIndexesList().addAll(searchFacetsIn.getIndexesList());
 
-        final ScrollPanel letters = new ScrollPanel();
+        final ScrollPanel lettersScroll = new ScrollPanel();
+
+        final ScrollPanel chartScroll = new ScrollPanel();
 
         lettersContainer.getElement().setId("letter_content_1");
+
+        HorizontalPanel chart = new HorizontalPanel();
+
+        DivElement div = Document.get().createDivElement();
 
         SplitLayoutPanel slp = new SplitLayoutPanel(3)
         {
@@ -95,6 +97,9 @@ public class VisualisationPanel extends Composite
                     int right = 0;
                     int top = 0;
                     int bottom = 0;
+                    //Widget top:" +
+                    int panelTop = this.getElement().getAbsoluteTop();
+
 
                     while (iter.hasNext())
                     {
@@ -105,15 +110,25 @@ public class VisualisationPanel extends Composite
 
                             left = w.getElement().getAbsoluteRight();
                             bottom = w.getElement().getAbsoluteBottom();
+
                         } else if (w.getClass().getName().contains("VSplitter"))
                         {
 
                             right = w.getElement().getAbsoluteRight();
                             top = w.getElement().getAbsoluteBottom();
                         }
+                        
+
                     }
+//                    consoleLog("Widget top:" + this.getElement().getAbsoluteTop() + "; Right:" + right + "; Top:" + top + "; Bottom:" + bottom);
+//                    consoleLog("Left:" + left + "; Right:" + right + "; Top:" + top + "; Bottom:" + bottom);
+
                     //set ScrollPanel position
-                    letters.setSize(right - left + "px", bottom - top + "px");
+                    lettersScroll.setSize(right - left + "px", bottom - top + "px");
+
+                    chartScroll.setSize(right - left + "px",  top - panelTop + "px");
+                    chartScroll.setVerticalScrollPosition(chartScroll.getMaximumVerticalScrollPosition());
+
                 }
             }
         };
@@ -166,16 +181,17 @@ public class VisualisationPanel extends Composite
         facetVerticalPanel.add(diariesHorizontalPanel);
 
         slp.addWest(facetVerticalPanel, Window.getClientWidth() / 7.8);
-        slp.addNorth(chronologyPanel, Window.getClientHeight() / 3.8);
-
+        slp.addNorth(chronologyPanel, 410);
 
         slp.addStyleName("splitLayoutPanel");
 
-        letters.setSize(Window.getClientWidth() / 6 * 5 + "px", (Window.getClientHeight() / 4 * 3 - 90) + "px");
+        lettersScroll.setSize(Window.getClientWidth() / 6 * 5 + "px", (Window.getClientHeight() / 4 * 3 - 90) + "px");
+        chartScroll.setSize( Window.getClientWidth() / 6 * 5 + "px",  "400px");
 
-        letters.add(lettersContainer);
+      consoleLog(Window.getClientHeight() + " height");
+        lettersScroll.add(lettersContainer);
 
-        slp.add(letters);
+        slp.add(lettersScroll);
 
         //add here all widgets to resize
         Window.addResizeHandler(new ResizeHandler()
@@ -200,14 +216,14 @@ public class VisualisationPanel extends Composite
             }
         });
 
-        letters.addScrollHandler(new ScrollHandler()
+        lettersScroll.addScrollHandler(new ScrollHandler()
         {
             @Override
             public void onScroll(ScrollEvent event)
             {
                 //on scroll down to the bottom add more records
-                int max = letters.getMaximumVerticalScrollPosition();
-                int pos = letters.getVerticalScrollPosition();
+                int max = lettersScroll.getMaximumVerticalScrollPosition();
+                int pos = lettersScroll.getVerticalScrollPosition();
 
                 int total = 0;
                 int loaded = -1;
@@ -244,17 +260,19 @@ public class VisualisationPanel extends Composite
             }
         });
 
-
-        DivElement div = Document.get().createDivElement();
+        
         div.setId("div_for_svg");
         div.setClassName("svg-container");
 
         //  chronologyPanel.add(feedback);
-        HorizontalPanel chart = new HorizontalPanel();
-        chronologyPanel.add(chart);
+
+        chronologyPanel.setStyleName("chronology_panel");
+
 
         chart.getElement().appendChild(div);
-
+        
+      chartScroll.add(chart);
+        chronologyPanel.add(chartScroll);
 
         initWidget(slp);
 
@@ -296,12 +314,13 @@ public class VisualisationPanel extends Composite
     }
 
 
-    public void createVisualization(String csvLettersData, String documentType)
+    public void createVisualization(String csvLettersData, String allEvents, String documentType)
     {
         Document.get().getElementById("div_for_svg").removeAllChildren();
 
+       // consoleLog("here");
 
-        buildChronology("#div_for_svg", csvLettersData, documentType);
+        buildChronology("#div_for_svg", csvLettersData, allEvents, documentType);
     }
 
 
@@ -334,8 +353,8 @@ public class VisualisationPanel extends Composite
 
 
     // call chronology.js to create Chronology Chart
-    private native void buildChronology(String div, String datString, String documentType)/*-{
-        $wnd.buildChronologyChart(div, datString, documentType);
+    private native void buildChronology(String div, String datString, String allEvents, String documentType)/*-{
+        $wnd.buildChronologyChart(div, datString, allEvents, documentType);
     }-*/;
 
     native void consoleLog(String message) /*-{
@@ -374,7 +393,8 @@ public class VisualisationPanel extends Composite
                 }
             }
 
-            createVisualization(result.getCsvLetterData(), documentType);
+
+            createVisualization(result.getCsvLetterData(), result.getWorkEvents(), documentType);
         }
     }
 
