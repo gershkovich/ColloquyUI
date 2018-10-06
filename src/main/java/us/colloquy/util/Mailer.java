@@ -13,10 +13,10 @@ import java.util.Properties;
  */
 public class Mailer
 {
-    public static void sendFeedback(String email, String messageBody)
+    public static void sendFeedback(String email, String messageBody, Properties properties)
     {
-        final String username = "";
-        final String password = "";
+        final String username = properties.getProperty("user");
+        final String password = properties.getProperty("cred");
 
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
@@ -36,15 +36,9 @@ public class Mailer
         {
 
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(""));
-            InternetAddress [] address = new InternetAddress[1] ;
+            message.setFrom(new InternetAddress(email));
 
-            InternetAddress add = new InternetAddress("peter.gershkovich@yale.edu");
-            address[0] = add;
-
-            message.addFrom(address);
-            message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse(""));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(username, false));
 
             message.setSubject(StringUtils.abbreviate(messageBody, 30));
 

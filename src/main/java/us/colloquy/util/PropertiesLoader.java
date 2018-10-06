@@ -23,16 +23,19 @@ public class PropertiesLoader
 
         try
         {
-            propertiesFileInputStream = PropertiesLoader.class.getClassLoader().getResourceAsStream("properties" + File.separator + propertiesFile);
+            propertiesFileInputStream = PropertiesLoader.class.getClassLoader().getResourceAsStream("properties" + File.separator + "properties.xml");
 
             if ( propertiesFileInputStream != null )
             {
 
                 properties.loadFromXML(propertiesFileInputStream);
 
+
                 properties.list(System.out);
 
                 propertiesFileInputStream.close();
+
+
             }
             else
             {
@@ -53,13 +56,13 @@ public class PropertiesLoader
                 try
                 {
                     propertiesFileInputStream.close();
-
                 } catch ( IOException e )
                 {
                     // Do nothing.
                 }
             }
         }
+
     }
 
 

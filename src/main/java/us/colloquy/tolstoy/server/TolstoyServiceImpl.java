@@ -30,28 +30,24 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
 {
 
     private static final String SCATTER_PLOT_HEADER = "date,words,info\n";
+
     final Properties properties = new Properties();
 
     final Logger logger = Logger.getLogger(TolstoyServiceImpl.class.getPackage().getName());
 
 
-    @Before
-    public void setUp()
-    {
-
-        PropertiesLoader.loadProperties(properties, "properties.xml");
-
-    }
 
     // Implementation of sample interface method
     public String submitComments(String email, String msg)
     {
+        PropertiesLoader.loadProperties(properties, "properties.xml");
+
         try
         {
 
             if (EmailValidator.getInstance().isValid(email))
             {
-                Mailer.sendFeedback(email, msg);
+                Mailer.sendFeedback(email, msg, properties);
                 return "success";
             } else
             {

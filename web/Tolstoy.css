@@ -150,9 +150,9 @@ html, body {
 
 .flowMain {
 
-    background: #F5F1EA;
+    background: #ecf1e8;
     font-family: "Helvetica Neue";
-    max-width: 60em;
+    max-width: 65em;
     margin: auto;
     padding: 0 1em;
     color: #09352e;
@@ -267,13 +267,14 @@ html, body {
 .textPara {
 
     padding-top: 1.2em;
-    font-family: Helvetica Neue sans-serif;
+    font-family: 'Open Sans', sans-serif;
     color: #09352e;
-    width: 85%;
+    width: 92%;
     min-width: 10em;
     margin-left: 2em;
     text-align: justify;
     text-justify: inter-word;
+    font-size: 1.2em;
 }
 
 .langSel a {
@@ -325,10 +326,10 @@ html, body {
 
     font-family: 'Open Sans', sans-serif;
     font-size: 0.9em;
-    text-decoration: underline;
+    text-decoration: none;
     cursor: pointer;
-    text-decoration-color: #FF675D;
-    color: #FF675D;
+    /*text-decoration-color: #FF675D;*/
+    color: #009389;
 }
 
 .divider {
@@ -380,7 +381,7 @@ html, body {
 .hand {
     position: absolute;
     left: 1em;
-    top: 3em;
+    top: 0;
 
 }
 
@@ -804,5 +805,30 @@ gwt-PopupPanelGlass {
 }
 
 .chronology_panel {
+
+}
+
+.index_panel_style {
+
+    background: whitesmoke url(images/bckg_intro.jpg) no-repeat center center fixed;
+
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+}
+
+.intro_image  {
+
+
+    width: 92%;
+    padding-left: 2.5em;
+
+}
+
+.email_panel {
+
+    padding-top: 5em;
 
 }

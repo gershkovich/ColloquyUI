@@ -226,7 +226,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 //        RootPanel.get("slot1").add(button);
 //        RootPanel.get("slot2").add(label);
 
-        flowPanelMain.setHeight((Window.getClientHeight() - 110) + "px");
+       // flowPanelMain.setHeight((Window.getClientHeight()) + "px");
 
         scrollPanel.setHeight((Window.getClientHeight() - 80) + "px");
 
@@ -237,7 +237,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
                 public void run() {
 
                     mainContentScroll.setHeight((Window.getClientHeight() - 110) + "px");
-                    flowPanelMain.setHeight((Window.getClientHeight() - 110) + "px");
+                   // flowPanelMain.setHeight((Window.getClientHeight()) + "px");
                     scrollPanel.setHeight((Window.getClientHeight() - 80) + "px");
 
                 }
@@ -524,6 +524,8 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         String value = event.getValue();
         
         consoleLog("event" + value);
+
+        dockLayoutPanel.setWidgetHidden(contentPanel, true);  //hide first
 
         if ("show".equalsIgnoreCase(value))
         {
@@ -867,18 +869,24 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         mainPanel.clear();
         mainPanel.setWidget(mainContentScroll);
+
+        mainContentScroll.clear();
+
+        mainContentScroll.setStyleName("index_panel_style");
         
         flowPanelMain.clear();
+
+        mainContentScroll.setWidget(flowPanelMain);
 
         flowPanelMain.setStyleName("flowMain");
 
         Image img = new Image("images/searchEx1.png");
 
-        img.setWidth("90%");
+        img.setStyleName("intro_image");
 
         Image img2 = new Image("images/searchEx2.png");
 
-        img2.setWidth("90%");
+        img2.setStyleName("intro_image");
 
         HTML par7 = new HTML(constants.par7());
 
@@ -904,6 +912,12 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 //        flowPanelMain.add(dateSearchAnchor);
         flowPanelMain.add(new HTML("&nbsp;"));
         flowPanelMain.add(img);
+
+        HTML par11 = new HTML(constants.par11());
+
+        par11.addStyleName("textPara");
+
+        flowPanelMain.add(par11);
         flowPanelMain.add(img2);
 //        flowPanelMain.add(par9);
 //        flowPanelMain.add(lesMiserablesAnchor);
@@ -917,8 +931,15 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
     private void setTechnical()
     {
         mainPanel.clear();
-        flowPanel.clear();
+        mainPanel.setWidget(mainContentScroll);
 
+        mainContentScroll.setStyleName("index_panel_style");
+
+        mainContentScroll.clear();
+
+        mainContentScroll.setWidget(flowPanelMain);
+
+        flowPanelMain.clear();
 
         HTML par1 = new HTML(constants.par1());
         par1.addStyleName("textPara");
@@ -937,18 +958,6 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         HTML par5 = new HTML(constants.par5());
 
-//        Image img = new Image("kibana-ex1.png");
-//
-//        img.setWidth("90%");
-
-        Image img = new Image("images/searchEx1.png");
-
-        img.setWidth("90%");
-
-        Image img2 = new Image("images/searchEx2.png");
-
-        img2.setWidth("90%");
-
         par5.addStyleName("textPara");
 
         HTML par6 = new HTML(constants.par6());
@@ -960,33 +969,35 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         par7.addStyleName("textPara");
 
         //  VerticalPanel panel = new VerticalPanel();
-        flowPanel.addStyleName("flow");
+
 
         // flowPanel.add(titleBar);
 
 
-        flowPanel.add(par1);
-        flowPanel.add(par2);
-        flowPanel.add(par3);
-        flowPanel.add(par4);
-        flowPanel.add(par5);
+        flowPanelMain.add(par1);
+        flowPanelMain.add(par2);
+        flowPanelMain.add(par3);
+        flowPanelMain.add(par4);
+        flowPanelMain.add(par5);
 //        flowPanel.add(dateSearchAnchor);
-        flowPanel.add(new HTML("&nbsp;"));
-        flowPanel.add(img);
-        flowPanel.add(img2);
-        flowPanel.add(par6);
-        flowPanel.add(new HTML("&nbsp;"));
-        flowPanel.add(par7);
+        flowPanelMain.add(new HTML("&nbsp;"));
+
+        flowPanelMain.add(par6);
+        flowPanelMain.add(new HTML("&nbsp;"));
+        flowPanelMain.add(par7);
 
     }
 
 
     private void setComment()
     {
+        mainPanel.clear();
 
         flowPanelMain.clear();
 
         flowPanelMain.setStyleName("flowComments");
+
+        mainPanel.setWidget(flowPanelMain);
 
         VerticalPanel verticalPanel = new VerticalPanel();
 
@@ -1090,6 +1101,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         verticalPanel.add(hand);
 
         HorizontalPanel emailPanel = new HorizontalPanel();
+        emailPanel.setStyleName("email_panel");
 
         emailPanel.add(emailAddress);
         HorizontalPanel commentPanel = new HorizontalPanel();

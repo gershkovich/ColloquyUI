@@ -20,5 +20,8 @@
     <entry key="elastic_ip_address">127.0.0.1</entry>
     <entry key="elastic_cluster_name">colloquy</entry>
 
+    <entry key="user">colloquy.us@gmail.com</entry>
+    <entry key="cred">Oze4oSavushk1</entry>
+
 
 </properties>
