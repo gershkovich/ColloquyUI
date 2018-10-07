@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html><body>
+<se><w><ana lex="вера" />Вера</w> <w><ana lex="михайловна" />Михайловна</w>,
+<w><ana lex="давать" />Дайте</w> <w><ana lex="этот" />этому</w> <w><ana lex="крестьянин" />крестьянину</w> <w><ana lex="список" />список</w> <w><ana lex="лошадь" />лошадей</w>, <w><ana lex="к" />к</w>[<w><ana lex="оторых" qual="bastard" />оторых</w>] <w><ana lex="хотеть" />хотят</w> <w><ana lex="отдавать" />отдавать</w> <w><ana lex="на" />на</w> <w><ana lex="корм" />корма</w> <w><ana lex="в" />в</w> <w><ana lex="куркино" />Куркино</w>. </se><se><w><ana lex="доктор" />Доктор</w>[1] <w><ana lex="все" />всё</w> <w><ana lex="очень" />очень</w> <w><ana lex="плохой" />плох</w>. </se><se><w><ana lex="вчера" />Вчера</w> <w><ana lex="б" />б</w>[<w><ana lex="ыло" qual="bastard" />ыло</w>] <w><ana lex="немного" />немного</w> <w><ana lex="хорошо" />лучше</w>.
+<w><ana lex="мы" />Мы</w> <w><ana lex="все" />все</w> <w><ana lex="подбадриваться" />подбодрились</w>, <w><ana lex="как" />как</w> <w><ana lex="вы" />вы</w>?
+</se>
+</body></html>

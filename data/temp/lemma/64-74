@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html><body>
+<se><w><ana lex="иван" />Иван</w> <w><ana lex="иванович" />Иванович</w>!
+<w><ana lex="передавать" />Передайте</w> <w><ana lex="господин" />господину</w> <w><ana lex="ратомский" qual="bastard" />Ратомскому</w> <w><ana lex="один" />один</w> <w><ana lex="или" />или</w> <w><ana lex="два" />два</w> <w><ana lex="роман" />романа</w> <w><ana lex="сытинский" qual="bastard" />Сытинских</w>, <w><ana lex="подлежать" />подлежащих</w> <w><ana lex="переделка" />переделке</w>.
+<w><ana lex="л" />Л</w>. <w><ana lex="толстой" />Толстой</w>.
+<w><ana lex="у" />У</w> <w><ana lex="серпуховский" />Серпуховских</w> <w><ana lex="ворота" />ворот</w>, <w><ana lex="коровий" />Коровий</w> <w><ana lex="вал" />вал</w>, <w><ana lex="д" />д</w>. <w><ana lex="сытин" qual="bastard" />Сытина</w>.
+</se>
+</body></html>

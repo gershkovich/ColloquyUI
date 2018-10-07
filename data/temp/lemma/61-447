@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html><body>
+<se><w><ana lex="петр" />Петр</w> <w><ana lex="евстратов" />Евстратов</w>!
+<w><ana lex="с" />С</w> <w><ana lex="получение" />получением</w> <w><ana lex="сей" />сего</w> <w><ana lex="как" />как</w> <w><ana lex="можно" />можно</w> <w><ana lex="скоро" />скорее</w> <w><ana lex="собирать" />собери</w> <w><ana lex="деньги" />денег</w> <w><ana lex="и" />и</w> <w><ana lex="приходить" />пришли</w> <w><ana lex="в" />в</w> <w><ana lex="ясный" />Ясную</w>. </se><se><w><ana lex="кроме" />Кроме</w> <w><ana lex="то" />того</w>, <w><ana lex="исправлять" />исправив</w> <w><ana lex="пролетка" />пролетку</w>, <w><ana lex="приходить" />пришли</w> <w><ana lex="она" />ее</w> <w><ana lex="ник" />Ник</w>[<w><ana lex="олай" qual="bastard" />олаю</w>] <w><ana lex="ник" />Ник</w>[<w><ana lex="олаевич" qual="bastard" />олаевичу</w>], <w><ana lex="седло" />седло</w> <w><ana lex="и" />и</w> <w><ana lex="двухствольный" />двухствольное</w> <w><ana lex="ружье" />ружье</w> <w><ana lex="с" />с</w> <w><ana lex="алексей" />Алексеем</w>.
+<w>Гр</w>. <w><ana lex="л" />Л</w>. <w><ana lex="толстой" />Толстой</w>.
+29 <w><ana lex="май" />мая</w>.
+<w><ana lex="на" />На</w> <w><ana lex="четвертый" />четвертой</w> <w><ana lex="страница" />странице</w>:
+<w><ana lex="петр" />Петру</w> <w><ana lex="евстратить" qual="bastard" />Евстрать</w>[<w><ana lex="евич" qual="bastard" />евичу</w>] <w><ana lex="воробьев" />Воробьеву</w>.
+</se>
+</body></html>

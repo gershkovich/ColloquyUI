@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html><body>
+<se><w><ana lex="пожалуйста" />Пожалуйста</w>, <w><ana lex="купить" />купите</w> <w><ana lex="и" />и</w> <w><ana lex="присылать" />пришлите</w> <w><ana lex="мы" />нам</w> <w><ana lex="клекотка" qual="bastard" />Клекотки</w> <w><ana lex="еще" />еще</w> <w><ana lex="вагон" />вагон</w> <w><ana lex="горох" />гороха</w>. </se><se><w><ana lex="если" />Если</w> <w><ana lex="можно" />можно</w>, <w><ana lex="скоро" />поскорее</w>. </se><se><w><ana lex="прощать" />Простите</w>.
+<w><ana lex="л" />Л</w>. <w><ana lex="толстой" />Толстой</w>.
+</se>
+</body></html>
