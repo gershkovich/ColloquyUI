@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html><body>
+<se><w><ana lex="написать" />Напишите</w>, <w><ana lex="пожалуйста" />пожалуйста</w>, <w><ana lex="почем" />почем</w> <w><ana lex="в" />в</w> <w><ana lex="харьков" />Харькове</w> <w><ana lex="на" />на</w> <w><ana lex="ст" />ст</w>[<w><ana lex="анция" qual="bastard" />анции</w>] <w><ana lex="железна" qual="bastard" />железн</w>[<w><ana lex="ой" />ой</w>] <w><ana lex="дорога" />дороги</w> <w><ana lex="какой" />какое</w> <w><ana lex="бы" />бы</w> <w><ana lex="то" />то</w> <w><ana lex="ни" />ни</w> <w><ana lex="быть" />было</w> <w><ana lex="пшено" />пшено</w> 1-<w><ana lex="й" />й</w> <w><ana lex="сорт" />сорт</w>.
+<w><ana lex="лев" />Лев</w> <w><ana lex="толстой" />Толстой</w>.
+<w><ana lex="письмо" />Письмо</w> <w><ana lex="ваш" />ваше</w> <w><ana lex="получать" />получил</w>.[1]
+<w><ana lex="на" />На</w> <w><ana lex="оборот" />обороте</w>: <w><ana lex="харьков" />Харьков</w>. </se><se><w><ana lex="управление" />Управление</w> <w><ana lex="железна" qual="bastard" />железн</w>[<w><ana lex="ой" />ой</w>] <w><ana lex="дора" />дор</w>[<w><ana lex="оги" qual="bastard" />оги</w>]. </se><se><w><ana lex="василий" />Василию</w> <w><ana lex="иванович" />Ивановичу</w> <w><ana lex="алексеев" />Алексееву</w>.
+</se>
+</body></html>
