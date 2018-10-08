@@ -2,23 +2,15 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
 
         var margin = { top: 20, right: 20, bottom: 80, left: 50 },
-                margin2 = { top: 200, right: 20, bottom: 20, left: 50 },
+                margin2 = { top: 150, right: 20, bottom: 20, left: 50 },
                 width = 1160 - margin.left - margin.right,
-                height = 250 - margin.top - margin.bottom,
-                height2 = 250 - margin2.top - margin2.bottom;
+                height = 200 - margin.top - margin.bottom,
+                height2 = 200 - margin2.top - margin2.bottom;
 
         var parseDate = d3.timeParse("%Y-%m-%d");
 
         var usFormatStr = "%m/%d/%Y";
-        var parseUsDate = function(ds){
-		if (ds.length < 5){
-			return d3.timeParse("%Y")(ds);
-		}
-		else{ 
-			return d3.timeParse(usFormatStr)(ds);
-		}
-	};
-
+        var parseUsDate = d3.timeParse(usFormatStr);
         var formatUsDate = d3.timeFormat(usFormatStr)
 
         var monthFormatter = d3.timeFormat('%Y-%b');
@@ -78,6 +70,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 return {
                         date: d.date = parseDate(d.date),
                         letters: d.letters = +d.letters
+
                 };
         });
 
@@ -86,7 +79,7 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 .offset([-10, 0])
                 .html(function (d) {
                         return `
-                                <div class="title">${d.ru_title}</div>
+                                <div class="title">${d.ru_title} (${d.pub_start})</div>
                                 <div class="date">${(d.end - d.start == 0) ? formatUsDate(d.start) :  `${formatUsDate(d.start)} - ${formatUsDate(d.end)}`}</div>
                                 ${ d.detail ?
                                         `<div class="details">
@@ -100,12 +93,11 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
         var y_event = d3.scaleLinear()
                 .domain([0, 7])
-                .range([margin.top, 80]);
+                .range([height - margin.bottom, margin.bottom]);
 
         var duration = 500;
 
         var render_data = [];
-        var book_titles = []
         var periods = svg.append("g");;
 
         d3.dsv("@", "data/work-dates.csv", function (data) {
@@ -113,16 +105,15 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         "ru_title": data["Work Title"],
                         "en_title": data["English Title"],
                         "activity": data["Activity"],
+                        "breaks": (data.Breaks === "multiple"),
                         "detail": data["Detail"],
                         "start": parseUsDate(data["Start Date"]),
                         "end": parseUsDate(data["End Date"]),
-                        "precision": data["Precision"]
+                        "precision": data["Precision"],
+                        "pub_start": +data["Publication Start Date"],
+                        "pub_end": +data["Publication End Date"]
                 };
         }).then(function (data) {
-                data = data.filter(function(d){
-                        return d["end"] < new Date(1910, 11, 20) && d["start"] < new Date(1910, 11, 20);
-                });
-                
                 //create render padding for all work periods less than a month
                 let ONE_MONTH = new Date(2012, 01, 30) - new Date(2012, 01, 01);
                 var padded_data = [];
