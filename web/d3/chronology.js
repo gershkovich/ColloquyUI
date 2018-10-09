@@ -289,6 +289,9 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                 .on('mouseover', function (d) {
                                         book_mouseover(d);
                                 });
+                                /* .on("click", function(d){
+                                        book_onclick(d);
+                                }); */
                 };
                 render();
         });
@@ -561,5 +564,15 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         });
 
                 return false;
+        }
+
+        function book_onclick(book){
+                var HALF_YEAR = new Date(1, 1, 2012) - new Date(6, 1, 2011);
+                var sel_start = book.start.valueOf() - HALF_YEAR;
+                var sel_end = book.end.valueOf() + HALF_YEAR;
+                brush.move(brush_g, [sel_start, sel_end])
+                     .transition()
+                     .duration(duration);
+                
         }
 }
