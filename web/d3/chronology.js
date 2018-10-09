@@ -288,6 +288,9 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                 })
                                 .on('mouseover', function (d) {
                                         book_mouseover(d);
+                                })
+                                .on('click', function(d){
+                                        book_click(d);
                                 });
                 };
                 render();
@@ -559,7 +562,9 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                         return "continuation";
                                 }
                         });
+        }
 
-                return false;
+        function book_click(book) {
+                
         }
 }
