@@ -12,6 +12,7 @@
 
     <entry key="email_server"></entry>
 
+    
     <!--Prod configuration-->
     <!--<entry key="elastic_ip_address">colloquy.us</entry>-->
     <!--<entry key="elastic_cluster_name">colloquy</entry>-->
