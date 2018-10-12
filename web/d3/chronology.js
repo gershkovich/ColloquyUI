@@ -586,8 +586,9 @@ function buildChronologyChart(divId, dataIn, documentType) {
         function book_click(book) {
                 console.log(book);
                 var HALF_YEAR = new Date(2012, 6, 1) - new Date(2012, 1, 1);
-                var sel_start = x(book["value"]["min_extent"].valueOf() - HALF_YEAR);
-                var sel_end = x(book["value"]["max_extent"].valueOf() + HALF_YEAR);
+                var sel_start = x2(book["value"]["min_extent"].valueOf() - HALF_YEAR);
+                var sel_end = x2(book["value"]["max_extent"].valueOf() + HALF_YEAR);
+                console.log(sel_start)
                 brush.move(brush_g, [sel_start, sel_end])
                      .transition()
                      .duration(duration);
