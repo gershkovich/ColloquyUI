@@ -292,12 +292,13 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                 .on('mouseover', function (d) {
                                         book_mouseover(d);
                                 })
+                                .on('mouseout', function (d) {
+                                        book_mouseout(d);
+                                })
                                 .on('click', function(d){
                                         book_click(d);
                                 });
-                                /* .on("click", function(d){
-                                        book_onclick(d);
-                                }); */
+                                
                 };
                 render();
         });
@@ -553,6 +554,13 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         dataByWeek.push(obj);
 
                 });
+        }
+
+        function book_mouseout(book){
+                svg.selectAll('rect.continuation')
+                    .attr('class', 'continuation');
+                svg.selectAll('rect.work-period')
+                    .attr('class', 'work-period');
         }
 
         function book_mouseover(book) {
