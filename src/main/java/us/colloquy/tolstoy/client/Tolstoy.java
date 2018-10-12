@@ -226,7 +226,6 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 //        RootPanel.get("slot1").add(button);
 //        RootPanel.get("slot2").add(label);
 
-       // flowPanelMain.setHeight((Window.getClientHeight()) + "px");
 
         scrollPanel.setHeight((Window.getClientHeight() - 80) + "px");
 
@@ -237,7 +236,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
                 public void run() {
 
                     mainContentScroll.setHeight((Window.getClientHeight() - 110) + "px");
-                   // flowPanelMain.setHeight((Window.getClientHeight()) + "px");
+
                     scrollPanel.setHeight((Window.getClientHeight() - 80) + "px");
 
                 }
@@ -523,7 +522,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         String value = event.getValue();
         
-        consoleLog("event" + value);
+        consoleLog("event: " + value);
 
         dockLayoutPanel.setWidgetHidden(contentPanel, true);  //hide first
 
@@ -601,17 +600,16 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         } else if ("introduction".equalsIgnoreCase(value))
         {
             //set content
-            setIndex();
             manageMenuStyles(value);
-
+            setIndex();
 
 
         }  else if ("search".equalsIgnoreCase(value))
         {
             clearStyles();
-
             //menuLink.setTargetHistoryToken("search");
             mainPanel.clear();
+            mainPanel.removeStyleName("comment_panel_style");
           //  visualizationPanel.setSize("100%","100%");
            // visualizationPanel.add(new Label("search"));
 
@@ -684,10 +682,10 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
                 public void onClick(ClickEvent event)
                 {
 
-
                     //todo call server to get examples.
                     SearchExamplesPopUp popupPanel = new SearchExamplesPopUp(searchElastic, vp, loadingProgressImage
                     );
+
 
                     popupPanel.buildLoadingMessage();
 
@@ -762,10 +760,14 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
     private void manageMenuStyles(String value)
     {
 
+        consoleLog("Manage Menu: " + value);
+
+
         for (Hyperlink menu: menuItems)
         {
+            consoleLog("History token for each item: " + menu.getTargetHistoryToken());
 
-            if (value.equalsIgnoreCase(menu.getText()))
+            if (value.equalsIgnoreCase(menu.getTargetHistoryToken()))
             {
 
                 menu.addStyleName("navigationSel");
@@ -869,6 +871,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         mainPanel.clear();
         mainPanel.setWidget(mainContentScroll);
+        mainPanel.removeStyleName("comment_panel_style");
 
         mainContentScroll.clear();
 
@@ -926,11 +929,15 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         flowPanelMain.add(new HTML("<hr>"));
         flowPanelMain.add(parRef1);
 
+        flowPanelMain.setHeight("100%");
+
     }
 
     private void setTechnical()
     {
         mainPanel.clear();
+        mainPanel.removeStyleName("comment_panel_style");
+
         mainPanel.setWidget(mainContentScroll);
 
         mainContentScroll.setStyleName("index_panel_style");
@@ -993,26 +1000,39 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
     {
         mainPanel.clear();
 
+        VerticalPanel commentBasePanel = new VerticalPanel(); //so we can align everything correctly
+
+        commentBasePanel.setStyleName("content_base");
+        commentBasePanel.addStyleName("comment_panel_style");
+
         flowPanelMain.clear();
 
-        flowPanelMain.setStyleName("flowComments");
+        flowPanelMain.setStyleName("flowComments");  //50em max
 
-        mainPanel.setWidget(flowPanelMain);
+        mainPanel.setWidget(commentBasePanel);
 
-        VerticalPanel verticalPanel = new VerticalPanel();
+        commentBasePanel.add(flowPanelMain);
+
+        commentBasePanel.setCellHorizontalAlignment(flowPanelMain, HasHorizontalAlignment.ALIGN_CENTER);
 
         final HTML label = new HTML();
 
-        verticalPanel.add(label);
+        Image hand = new Image("hand.png");
+
+        hand.setStyleName("hand");
+
+        flowPanelMain.add(hand);
+
+        flowPanelMain.add(label);
 
         label.setStyleName("feedback");
 
         label.setHTML("&nbsp;");
 
-        Image hand = new Image("hand.png");
-        hand.setStyleName("hand");
+        flowPanelMain.setHeight(Window.getClientHeight() + "px");
 
         final TextBox emailAddress = new TextBox();
+
         emailAddress.setText(constants.emailLabel());
 
         emailAddress.addFocusHandler(new FocusHandler()
@@ -1046,7 +1066,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
                 }
 
             }
-        }) ;
+        });
 
         emailAddress.setWidth("30em");
         emailAddress.addStyleName("commentTextDefault");
@@ -1054,7 +1074,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         final TextArea textArea = new TextArea();
         textArea.setWidth("30em");
-        textArea.setVisibleLines(15);
+        textArea.setVisibleLines(10);
         textArea.setText(constants.commentsLabel());
         textArea.addStyleName("commentText");
 
@@ -1098,23 +1118,21 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         submitButton.addStyleName("buttonRed");
 
-        verticalPanel.add(hand);
+
 
         HorizontalPanel emailPanel = new HorizontalPanel();
-        emailPanel.setStyleName("email_panel");
 
         emailPanel.add(emailAddress);
         HorizontalPanel commentPanel = new HorizontalPanel();
 
         commentPanel.add(textArea);
 
-        verticalPanel.add(emailPanel);
-        verticalPanel.add(commentPanel);
-        verticalPanel.add(submitButton);
-        verticalPanel.setCellHorizontalAlignment(emailPanel, HasHorizontalAlignment.ALIGN_LEFT);
-        verticalPanel.setCellHorizontalAlignment(commentPanel, HasHorizontalAlignment.ALIGN_LEFT);
-        verticalPanel.setCellHorizontalAlignment(submitButton, HasHorizontalAlignment.ALIGN_LEFT);
+        flowPanelMain.add(emailPanel);
+        flowPanelMain.add(commentPanel);
+        flowPanelMain.add(submitButton);
+        flowPanelMain.add(new HTML("&nbsp;"));
 
+      //  flowPanelMain.setHeight(Window.getClientHeight() + "px");
 
         submitButton.addClickHandler(new ClickHandler()
         {
@@ -1132,9 +1150,6 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
                 }
             }
         });
-
-        flowPanelMain.add(verticalPanel);
-
     }
 
 

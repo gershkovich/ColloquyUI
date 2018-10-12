@@ -63,11 +63,11 @@ public class SearchExamplesPopUp
 
         dialogBox.setGlassEnabled(true);
 
-        dialogBox.setAnimationEnabled(true);
+        dialogBox.setAnimationEnabled(false);
 
-        //SafeHtml safeValue = SafeHtmlUtils.fromString("<b>Select Operating Room Locations</b>");
+        
 
-        dialogBox.setHTML("<span class=\"header_label\"><b>Select Operating Room Locations</b></span>");
+        dialogBox.setHTML("<span class=\"header_label\"><b>Search Examples</b></span>");
 
         dialogBox.setWidget(mainPanel);
     }
@@ -107,7 +107,7 @@ public class SearchExamplesPopUp
 
         dialogBox.setModal(false);
 
-        dialogBox.setAnimationEnabled(true);
+        dialogBox.setAnimationEnabled(false);
 
 
         VerticalPanel innerMainPanel = new VerticalPanel();

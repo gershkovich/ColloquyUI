@@ -133,7 +133,7 @@ public class VisualisationPanel extends Composite
             }
         };
 
-        HorizontalPanel chronologyPanel = new HorizontalPanel();
+        VerticalPanel chronologyPanel = new VerticalPanel();
 
         VerticalPanel facetVerticalPanel = new VerticalPanel();
 
@@ -141,9 +141,10 @@ public class VisualisationPanel extends Composite
 
         HorizontalPanel diariesHorizontalPanel = new HorizontalPanel();
 
-
         letterCheckbox.setStyleName("checkBoxSmallLabel");
+
         diariesCheckbox.setStyleName("checkBoxSmallLabel");
+
         letterCheckbox.setValue(true);
         diariesCheckbox.setValue(true);
 
@@ -264,7 +265,7 @@ public class VisualisationPanel extends Composite
         div.setId("div_for_svg");
         div.setClassName("svg-container");
 
-        //  chronologyPanel.add(feedback);
+        chronologyPanel.add(feedback);
 
         chronologyPanel.setStyleName("chronology_panel");
 
@@ -305,7 +306,7 @@ public class VisualisationPanel extends Composite
             loadingProgressImage.setVisible(true);
             //do search with text the content of text box;
             //this call will load the diagram first and then load records via DataUplink class
-            TolstoyService.App.getInstance().getDataForCharts( searchFacets, new UpdateVisualisationChart());
+            TolstoyService.App.getInstance().getDataForCharts( searchFacets, new UpdateVisualisationChart(numberOfLoadedLetters));
 
 //            //load more records
 //            TolstoyService.App.getInstance().getSelectedLettersWithOffset(0, searchTextBox.getText(), searchFacets,
@@ -357,6 +358,11 @@ public class VisualisationPanel extends Composite
         $wnd.buildChronologyChart(div, datString, allEvents, documentType);
     }-*/;
 
+    // call chronology.js to create Chronology Chart
+    private native void buildScatterPlot(String div, String datString, boolean replace)/*-{
+        $wnd.buildScatterPlotChart(div, datString, replace);
+    }-*/;
+
     native void consoleLog(String message) /*-{
         console.log("me:" + message);
     }-*/;
@@ -364,9 +370,11 @@ public class VisualisationPanel extends Composite
     class UpdateVisualisationChart implements AsyncCallback<ServerResponse>
     {
         private TolstoyMessages messages = GWT.create(TolstoyMessages.class);
+        Hidden totalNumberOfLoadedLetters;
 
-        public UpdateVisualisationChart()
+        public UpdateVisualisationChart(Hidden totalNumberOfLoadedLettersIn)
         {
+            totalNumberOfLoadedLetters=totalNumberOfLoadedLettersIn;
 
         }
 
@@ -393,8 +401,11 @@ public class VisualisationPanel extends Composite
                 }
             }
 
+            feedback.setText( messages.numberOfLetterFound(result.getTotalNumberOfLetters() + "", totalNumberOfLoadedLetters.getValue()));
 
             createVisualization(result.getCsvLetterData(), result.getWorkEvents(), documentType);
+
+            buildScatterPlot("#div_for_svg", result.getSelectedStats(), true);
         }
     }
 

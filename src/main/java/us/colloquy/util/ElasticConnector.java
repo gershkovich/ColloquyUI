@@ -8,7 +8,6 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -22,6 +21,8 @@ import org.elasticsearch.search.aggregations.bucket.histogram.ParsedDateHistogra
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
 import us.colloquy.model.IndexSearchResult;
 import us.colloquy.model.Letter;
@@ -68,14 +69,15 @@ public class ElasticConnector
             }
 
             searchSourceBuilder.query(QueryBuilders.queryStringQuery(searchString));
+            searchSourceBuilder.sort(new FieldSortBuilder("date").order(SortOrder.ASC));
 
             searchRequest.source(searchSourceBuilder);
 
             searchSourceBuilder.size(100);
-//            searchSourceBuilder.sort("date", SortOrder.DESC);
+
             searchSourceBuilder.from(fromInt);
 
-            SearchResponse searchResponse = elasticClient.search(searchRequest);
+            SearchResponse searchResponse = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
 
             SearchHits hits = searchResponse.getHits();
 
@@ -110,13 +112,7 @@ public class ElasticConnector
 
                     if (highlightFields.containsKey("entry"))
                     {
-                        //more than one fragment since can contain many notes
-                        //   System.out.println(highlightFields.get("entry").getFragments().length);
-
-                        for (Text fr : highlightFields.get("entry").getFragments())
-                        {
-                            letter.setContent(highlightFields.get("entry").getFragments()[0].string());
-                        }
+                        letter.setContent(highlightFields.get("entry").getFragments()[0].string());
                     }
 
                 } else
@@ -175,13 +171,11 @@ public class ElasticConnector
 
             searchRequest.source(searchSourceBuilder);
 
-            SearchResponse searchResponse = elasticClient.search(searchRequest);
+            SearchResponse searchResponse = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
 
             Aggregations aggregations = searchResponse.getAggregations();
 
             ParsedDateHistogram agg = aggregations.get("day");
-
-            String stop = "";
 
             // For each entry
             for (Histogram.Bucket entry : agg.getBuckets())
@@ -270,10 +264,13 @@ public class ElasticConnector
 
             searchSourceBuilder.query(QueryBuilders.queryStringQuery(filtered));
 
+            searchSourceBuilder.sort(new FieldSortBuilder("date").order(SortOrder.ASC));
+            // searchSourceBuilder.sort("date", SortOrder.ASC);
+
             searchRequest.source(searchSourceBuilder);
 
             searchSourceBuilder.size(100);
-            // searchSourceBuilder.sort("accessionDate", SortOrder.DESC);
+
             searchSourceBuilder.from(fromInt);
 
 
@@ -289,7 +286,7 @@ public class ElasticConnector
                 searchSourceBuilder.highlighter(hb); //add HighlightBuilder
             }
 
-            SearchResponse searchResponse = client.search(searchRequest);
+            SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
 
             SearchHits hits = searchResponse.getHits();
 
@@ -447,20 +444,20 @@ public class ElasticConnector
             {
                 Map<String, Object> fieldsMap = hit.getSourceAsMap();
 
-               for (String key:  fieldsMap.keySet())
-               {
-                   System.out.println(fieldsMap.get(key));
+                for (String key : fieldsMap.keySet())
+                {
+                    System.out.println(fieldsMap.get(key));
 
-                   List<Map<String, Object>> activities = (List) fieldsMap.get("activityList");
+                    List<Map<String, Object>> activities = (List) fieldsMap.get("activityList");
 
-                   for (Map <String, Object> map: activities)
-                   {
-                       for (String k: map.keySet())
-                       {
-                           System.out.println(map.get(k));
-                       }
-                   }
-               }
+                    for (Map<String, Object> map : activities)
+                    {
+                        for (String k : map.keySet())
+                        {
+                            System.out.println(map.get(k));
+                        }
+                    }
+                }
             }
 
         } catch (Throwable throwable)

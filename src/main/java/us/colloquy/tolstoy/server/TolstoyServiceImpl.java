@@ -29,12 +29,11 @@ import java.util.Properties;
 public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyService
 {
 
-    private static final String SCATTER_PLOT_HEADER = "date,words,info\n";
+    private static final String SCATTER_PLOT_HEADER = "date,words,id,info\n";
 
     final Properties properties = new Properties();
 
     final Logger logger = Logger.getLogger(TolstoyServiceImpl.class.getPackage().getName());
-
 
 
     // Implementation of sample interface method
@@ -104,19 +103,25 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        StringBuilder scatterPlotDataBuilder = new StringBuilder();
-
-        scatterPlotDataBuilder.append(SCATTER_PLOT_HEADER);
-
-        for (Letter letter : result.getLetters())
+        if (StringUtils.isNotEmpty(searchString))
         {
-            createServerResponse(letter, sdf, scatterPlotDataBuilder, sr);
+            StringBuilder scatterPlotDataBuilder = new StringBuilder();
 
+            scatterPlotDataBuilder.append(SCATTER_PLOT_HEADER);
+
+            for (Letter letter : result.getLetters())
+            {
+                createServerResponse(letter, sdf, scatterPlotDataBuilder, sr);
+
+            }
+
+
+            sr.setSelectedStats(scatterPlotDataBuilder.toString());
         }
 
-        sr.setSelectedStats(scatterPlotDataBuilder.toString());
-
         sr.setTotalNumberOfLetters(result.getNumberOfResults());
+
+        System.out.println("search filtered" + result.getNumberOfResults());
 
         return sr;
     }
@@ -153,17 +158,17 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
             String[] words = ld.getContent().split("\\s+");
             numOfWords = words.length;
 
-            briefDescription =  StringUtils.abbreviate(ld.getToWhoom() + ": " + ld.getContent(), 80).replaceAll("([,\n])"," ");
+            briefDescription = StringUtils.abbreviate(ld.getToWhoom() + ": " + ld.getContent(), 80).replaceAll("([,\n])", " ");
         }
 
         //let's make info line here
 
-        setScatterPlotData(sdf.format(ld.getDate()), numOfWords, briefDescription, letter.getId(), scatterPlotDataBuilder );
+        setScatterPlotData(sdf.format(ld.getDate()), numOfWords, letter.getId(), briefDescription,  scatterPlotDataBuilder);
 
     }
 
     @Override
-    public ServerResponse getSelectedLettersWithOffset(int totalLettersLoadedOnClient, String searchCriteria,  SearchFacets searchFacets)
+    public ServerResponse getSelectedLettersWithOffset(int totalLettersLoadedOnClient, String searchCriteria, SearchFacets searchFacets)
     {
         PropertiesLoader.loadProperties(properties, "properties.xml");
 
@@ -184,8 +189,7 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
         IndexSearchResult result = new IndexSearchResult();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        StringBuilder scatterPlotDataBuilder = new StringBuilder();
-        scatterPlotDataBuilder.append(SCATTER_PLOT_HEADER);
+
 
         ElasticConnector ec = new ElasticConnector();
 
@@ -199,24 +203,32 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
         ec.queryStringSearchFiltered(searchStringModified, properties, result, totalLettersLoadedOnClient,
                 dateRange.getStart(), dateRange.getEnd(), searchFacets.getIndexesList().toArray(new String[0]));
 
-        for (Letter letter : result.getLetters())
+        if (StringUtils.isNotEmpty(searchCriteria))
         {
-            createServerResponse(letter, sdf, scatterPlotDataBuilder, sr);
+            StringBuilder scatterPlotDataBuilder = new StringBuilder();
+            scatterPlotDataBuilder.append(SCATTER_PLOT_HEADER);
 
+            for (Letter letter : result.getLetters())
+            {
+                createServerResponse(letter, sdf, scatterPlotDataBuilder, sr);
+
+            }
+
+            sr.setSelectedStats(scatterPlotDataBuilder.toString());
         }
 
-        sr.setSelectedStats(scatterPlotDataBuilder.toString());
         sr.setTotalNumberOfLetters(result.getNumberOfResults());
+
+        System.out.println("search filtered offset " + result.getNumberOfResults());
 
         return sr;
     }
 
-    private void setScatterPlotData(String formattedDate, int numOfWords,  String briefDesc, String id,
-                                    StringBuilder scatterPlotDataBuilder )
+    private void setScatterPlotData(String formattedDate, int numOfWords, String briefDesc, String id,
+                                    StringBuilder scatterPlotDataBuilder)
     {
 
         scatterPlotDataBuilder.append(formattedDate);
-
         scatterPlotDataBuilder.append(",");
         scatterPlotDataBuilder.append(numOfWords);
         scatterPlotDataBuilder.append(",");
@@ -224,7 +236,6 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
         scatterPlotDataBuilder.append(",");
         scatterPlotDataBuilder.append(id);
         scatterPlotDataBuilder.append("\n");
-
 
     }
 
@@ -241,7 +252,7 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
 
         ElasticConnector ec = new ElasticConnector();
 
-        sr.setCsvLetterData(ec.getLetterHistogram(properties,  searchFacets.getIndexesList().toArray(new String[0])));
+        sr.setCsvLetterData(ec.getLetterHistogram(properties, searchFacets.getIndexesList().toArray(new String[0])));
 
         sr.setWorkEvents(events);
 
@@ -249,7 +260,7 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
     }
 
     @Override
-    public ServerResponse getLettersSubset(String range, String searchString,  SearchFacets searchFacets)
+    public ServerResponse getLettersSubset(String range, String searchString, SearchFacets searchFacets)
     {
         DateRange dateRange = new DateRange();
 
@@ -302,7 +313,7 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
             searchStringModified = searchString;
         }
 
-        ec.queryStringSearchFiltered(searchStringModified, properties, result, 0, start, end,  searchFacets.getIndexesList().toArray(new String[0]));
+        ec.queryStringSearchFiltered(searchStringModified, properties, result, 0, start, end, searchFacets.getIndexesList().toArray(new String[0]));
 
 
         StringBuilder scatterPlotDataBuilder = new StringBuilder();
@@ -315,10 +326,13 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
 
         }
 
-        sr.setSelectedStats(scatterPlotDataBuilder.toString());
+        if (StringUtils.isNotEmpty(searchString))
+        {
+            sr.setSelectedStats(scatterPlotDataBuilder.toString());
+        }
 
         sr.setTotalNumberOfLetters(result.getNumberOfResults());
-        
+
         return sr;
     }
 

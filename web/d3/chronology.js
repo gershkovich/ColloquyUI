@@ -8,6 +8,7 @@ var margin = {top: 20, right: 20, bottom: 80, left: 50},
 
 var x = d3.scaleUtc().range([0, width]),
     x2 = d3.scaleUtc().range([0, width]),
+    x3 = d3.scaleUtc().range([0, width]),
     y = d3.scaleLinear().range([height, height / 1.5]),
     y2 = d3.scaleLinear().range([height2, 0]),
     z = d3.scaleLinear().range([height, height - 50]);
@@ -96,6 +97,9 @@ function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) 
     })]);
     x2.domain(x.domain());
     y2.domain(y.domain());
+    x3.domain(x.domain());
+
+
 
     z.domain([1, Math.log10(1000)]);
 
@@ -225,7 +229,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) 
 
         // us.colloquy.tolstoy.client.uplink.DataUplink.getData(formatDate(x.domain()[0]) , formatDate(x.domain()[1]));
 
-        tstUplink(formatDate(x.domain()[0]), formatDate(x.domain()[1]));
+        us.colloquy.tolstoy.client.uplink.DataUplink.getData(formatDate(x.domain()[0]), formatDate(x.domain()[1]));
 
         // console.log("month diff: " + monthsDiff);
 
@@ -304,58 +308,21 @@ function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) 
 
     }
 
-
-
-
-
     var myBrash = d3.selectAll(".brush");
 
-    // leftArrow .transition()        // apply a transition
-    //     .duration(3000)
-    //     .attr('x', 45)     // move arrow
-    //     .transition()        //
-    //     .duration(2000)      //
-    //     .attr('x', -11)     // move arrow
-    //     .transition()        // apply a transition
-    //     .duration(2000).transition()
-    //     .duration(600)
-    //     .remove();      // apply it over 2000 milliseconds
+    // var help  =    context.append("text")
+    //     .attr('class', 'ask')
+    //     .attr("y", -15)
+    //     .attr("x", width + 10)
+    //     .attr("dy", "1em")
+    //     .style("text-anchor", "middle")
+    //     .style("fill", "#7aa75e")
+    //     .html("&nbsp;?&nbsp;").on("click", function (d)
+    //     {
+    //         showFunctionaligy();
     //
-    // rightArrow .transition()        // apply a transition
-    //     .duration(3000)
-    //     .attr('x', width-48)     // move arrow
-    //     .transition()        //
-    //     .duration(2000)      //
-    //     .attr('x', width-1)     // move arrow
-    //     .transition()        // apply a transition
-    //     .duration(2000).transition()
-    //     .duration(600)
-    //     .remove();      // apply it over 2000 milliseconds
-    //
-    //
-    // myBrash.
-    // call(brush).
-    // transition()        // apply a transition
-    //     .duration(3000)
-    //     .call(brush.move, [x.range()[0]+50, x.range()[1]-50]).
-    //
-    // transition()        // apply a transition again
-    //     .duration(2000)
-    //     .call(brush.move, x.range());
-
-    var help  =    context.append("text")
-        .attr('class', 'ask')
-        .attr("y", -15)
-        .attr("x", width + 10)
-        .attr("dy", "1em")
-        .style("text-anchor", "middle")
-        .style("fill", "#7aa75e")
-        .html("&nbsp;?&nbsp;").on("click", function (d)
-        {
-            showFunctionaligy();
-
-        }).transition()       // apply a transition
-        .duration(60000).remove();
+    //     }).transition()       // apply a transition
+    //     .duration(60000).remove();
 
     function showFunctionaligy() {
         var rightArrow =    context.append("text")
@@ -412,6 +379,50 @@ function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) 
 
     }
 
+
+    function selectTimelineForWork(d) {
+
+
+        var coordinates = d3.mouse(this);
+        var mx = Math.round( coordinates[0]);
+       // var my = coordinates[1];
+
+        var selectedDate = x.invert(mx);
+
+        // console.log("range: " + x3(x.invert(mx)));
+
+        if (Array.isArray(d))
+        {
+
+            var minR;
+            var maxR;
+
+            for (let i = 0; i < d.length; i++) {
+
+                if (d[i] != null &&  selectedDate  <= d[i].x && i > 0)
+                {
+                    maxR = d[i].x; //found max
+                    break;
+
+                } else if (d[i] != null)
+                {
+                    minR = d[i].x; //found previous min
+                }
+            }
+
+            // console.log( "min - " + minR + " " + maxR);
+        }
+
+        //we found date and then need to find the range and position
+
+        myBrash.transition()       // apply a transition
+            .duration(2000)
+            .call(brush.move, [x3(d3.timeDay.offset(minR,-10)), x3(d3.timeDay.offset(maxR,+10))]);
+
+
+
+    }
+
     function update(updateData, label, fillStyle) {
         bars.selectAll("rect").remove();
         bars.selectAll("bar").remove();
@@ -455,7 +466,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) 
 
     //us.colloquy.tolstoy.client.uplink.DataUplink.getData(formatDate(x.domain()[0]), formatDate(x.domain()[1]));
 
-    tstUplink(formatDate(x.domain()[0]), formatDate(x.domain()[1]));
+    us.colloquy.tolstoy.client.uplink.DataUplink.getData(formatDate(x.domain()[0]), formatDate(x.domain()[1]));
 
     function type(d) {
         d.date = parseDate(d.date);
@@ -532,6 +543,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) 
         }
 
         var format = d3.timeFormat("%Y-%m-%d");
+
         var duration = 500;
 
         var z = d3.scaleOrdinal(d3.schemePaired);
@@ -554,7 +566,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) 
                 .attr("d", lineEventFunction)
                 .attr("stroke", color)
                 .attr("stroke-width", 6)
-                .attr("fill", "none");
+                .attr("fill", "none").on("click", selectTimelineForWork);
 
             var eventElipse = eventFocus.append("g");
 
@@ -587,8 +599,8 @@ function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) 
                 .attr("cy", function (d) {
                     return d.y;
                 })
-                .attr("rx", 4)           // set the x radius
-                .attr("ry", 3).attr("stroke", color).attr("fill", color);
+                .attr("rx", 4.2)           // set the x radius
+                .attr("ry", 4.1).attr("stroke", color).attr("fill", color);
 
         }
 
@@ -740,6 +752,7 @@ function buildScatterPlotChart(divId, dataIn, replace) {
             return {
                 date: d.date = parseDate(d.date),
                 words: d.words = +d.words,
+                id: d.id,
                 info: d.info
             };
         });
@@ -792,8 +805,9 @@ function buildScatterPlotChart(divId, dataIn, replace) {
                     .style("opacity", 0);
                 d3.select(this).style('fill', '#f2014f');
 
-                //  pathology.pathologyportal.gwt.client.uplink.DataUplink.lookupCase(d.info);
-                // console.log(d.info);
+                // console.log(JSON.stringify(d, null, 2));
+                us.colloquy.tolstoy.client.uplink.DataUplink.lookupDocument(d.id);
+
             });
     }
 }

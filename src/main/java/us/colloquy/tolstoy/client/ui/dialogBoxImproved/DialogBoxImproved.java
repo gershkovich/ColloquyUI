@@ -170,8 +170,9 @@ public class DialogBoxImproved extends DialogBox implements HasMaximizeHandlers<
 		this.title.setText( text );
 	}
 
+
 	@Override
-	protected void onPreviewNativeEvent( Event.NativePreviewEvent event )
+	protected void onPreviewNativeEvent( Event.NativePreviewEvent event )  //todo here on mouse up we can make it resizable
 	{
 		NativeEvent nativeEvent = event.getNativeEvent();
 

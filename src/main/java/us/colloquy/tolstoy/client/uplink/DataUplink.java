@@ -27,6 +27,7 @@ import us.colloquy.tolstoy.client.util.CommonFormatter;
 
 
 @JsType
+@SuppressWarnings("unusable-by-js")
 public class DataUplink
 {
     public int x;
@@ -42,7 +43,7 @@ public class DataUplink
 
 
     @JsMethod
-    public void getData(String start, String end)
+    public static void getData(String start, String end)
     {
 
         if (delayTimer != null)
@@ -66,6 +67,35 @@ public class DataUplink
         };
 
         delayTimer.schedule(1000);
+
+    }
+
+    @JsMethod
+    public static void lookupDocument(String documentId)
+    {
+        if ( delayTimer != null )
+        {
+            delayTimer.cancel();
+            delayTimer = null;
+        }
+
+        delayTimer = new Timer()
+        {
+            public void run()
+            {
+                performDocumentLookup( documentId );
+            }
+        };
+
+        delayTimer.schedule(1000);
+    }
+
+    private static void performDocumentLookup( String documentId )
+    {
+
+        consoleLog("looking for " + documentId);
+
+
 
     }
 
@@ -102,15 +132,15 @@ public class DataUplink
 
         }
 
-        native void consoleLog(String message) /*-{
-            console.log("me:" + message);
-        }-*/;
-
         // call chronology.js to create Chronology Chart
         private native void buildScatterPlot(String div, String datString, boolean replace)/*-{
             $wnd.buildScatterPlotChart(div, datString, replace);
         }-*/;
     }
+
+    native static void consoleLog(String message) /*-{
+        console.log("me:" + message);
+    }-*/;
 
 
 }
