@@ -152,7 +152,11 @@ function buildChronologyChart(divId, dataIn, documentType) {
                         })
                         .entries(padded_data);
 
-                book_titles = data_extent
+                book_titles = data_extent.sort(function (a, b){
+                        a_title = a["value"]["en_title"];
+                        b_title = b["value"]["en_title"];
+                        return a_title.localeCompare(b_title);
+                });
 
                 var endpoints = [];
                 data_extent.forEach(function (title) {
@@ -194,7 +198,6 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 var open_works = {};
                 var closed_works = {};
                 endpoints.forEach(function (pt) {
-                        //console.log(JSON.stringify(open_works));
                         if (pt["type"] === "open") {
                                 var row_assm = Object.values(open_works);
                                 if (row_assm.length === 0) {
@@ -565,6 +568,19 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                         return "continuation";
                                 }
                         });
+
+                svg.selectAll("rect.work-period")
+                        .data(render_data)
+                        .transition().duration(duration)
+                        .ease(d3.easeLinear)
+                        .attr("class", function (d) {
+                                if (d["ru_title"] === book["key"]) {
+                                        return "work-period highlight";
+                                }
+                                else {
+                                        return "work-period";
+                                }
+                        });
         }
 
         function book_click(book) {
@@ -575,15 +591,5 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 brush.move(brush_g, [sel_start, sel_end])
                      .transition()
                      .duration(duration);
-        }
-
-        function book_onclick(book){
-                var HALF_YEAR = new Date(1, 1, 2012) - new Date(6, 1, 2011);
-                var sel_start = book.start.valueOf() - HALF_YEAR;
-                var sel_end = book.end.valueOf() + HALF_YEAR;
-                brush.move(brush_g, [sel_start, sel_end])
-                     .transition()
-                     .duration(duration);
-                
         }
 }
