@@ -1,0 +1,14 @@
+import sys
+
+if len(sys.argv) < 3:
+    print("./strip-recip.py [infile] [outfile]")
+    exit()
+
+in_fp = open(sys.argv[1], 'r')
+out_fp = open(sys.argv[2], 'w+')
+
+in_buff = in_fp.read()
+print(in_buff)
+
+in_fp.close()
+out_fp.close()

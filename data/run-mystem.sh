@@ -2,10 +2,15 @@
 
 mkdir -p temp
 mkdir -p temp/lemma
-for ltr in letters/*
-do
-	ltrname=`basename $ltr`
-	echo $ltrname
-	mystem -d -c --format xml $ltr temp/lemma/$ltrname
-done;
+mkdir -p temp/recip
 
+doctor() {
+	ltrname=`basename $1`
+	echo $ltrname
+	python3 strip-recip.py "$1" temp/recip/$ltrname
+	mystem -d -c --format xml temp/recip/$ltrname temp/lemma/$ltrname
+
+}
+
+export -f doctor
+find letters/ -type f -name '*' | parallel doctor
