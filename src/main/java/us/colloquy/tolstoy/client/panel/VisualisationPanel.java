@@ -32,7 +32,7 @@ public class VisualisationPanel extends Composite
 
     private TolstoyMessages messages = GWT.create(TolstoyMessages.class);
     //status information
-    private Label feedback = new Label("Stats");
+    private Label feedback = new Label(constants.resultsLabel());
 
     private TextBox searchTextBox;
 
@@ -268,7 +268,6 @@ public class VisualisationPanel extends Composite
         chronologyPanel.add(feedback);
 
         chronologyPanel.setStyleName("chronology_panel");
-
 
         chart.getElement().appendChild(div);
         

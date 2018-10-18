@@ -124,4 +124,6 @@ public interface TolstoyConstants extends Constants {
     String documentTerm();
 
     String par11();
+
+    String resultsLabel();
 }

@@ -78,10 +78,8 @@ html, body {
 }
 
 .layoutStyle {
-    background: whitesmoke url(Tolstoy_004_bkg.png) no-repeat;
-
     background-size: cover;
-    background-position: right top;
+    background: transparent right top;
     width: 100%;
     height: 100%;
 
@@ -152,30 +150,30 @@ html, body {
 
     background: #ecf1e8;
     font-family: "Helvetica Neue";
-    max-width: 65em;
-    margin: auto;
+    max-width: 50em;
     color: #09352e;
-    opacity: 0.95;
-    filter: alpha(opacity=95);
-
+    opacity: 0.94;
+    filter: alpha(opacity=94);
 }
 
 .flowComments {
 
     background: #eef5dd;
     font-family: "Helvetica Neue";
-    max-width: 50em;
+    max-width: 40em;
     color: #09352e;
-    opacity: 0.95;
-    filter: alpha(opacity=95);
+    opacity: 0.70;
+    filter: alpha(opacity=70);
+
 }
 
 .titleBar {
 
     /*margin-left: 15em;*/
-    height: 6em;
+    height: 5em;
 
     width: 100%;
+    background: white;
 
 }
 
@@ -263,6 +261,15 @@ html, body {
     width: 15em;
     white-space: pre;
 
+
+
+}
+
+
+.subtitle:hover {
+
+    cursor: pointer;
+    /*text-decoration-line: underline;*/
 }
 
 .textPara {
@@ -276,6 +283,8 @@ html, body {
     text-align: justify;
     text-justify: inter-word;
     font-size: 1.2em;
+    right: 0;
+    
 }
 
 .langSel a {
@@ -352,6 +361,16 @@ html, body {
     vertical-align: middle;
     margin-right: 1em;
     cursor: pointer;
+    font-size: 1.3em;
+}
+
+.arrorNav a:hover {
+   text-decoration-line: underline ;
+    text-decoration-style: dotted;
+    
+    cursor: pointer;
+    text-decoration-color: #07ccff;
+    text-decoration-skip: edges;
 }
 
 .menuIcon {
@@ -381,7 +400,7 @@ html, body {
 
 .hand {
     position: relative;
-    left: -15px;
+    left: -150px;
     top: 0;
 
 }
@@ -812,25 +831,25 @@ gwt-PopupPanelGlass {
 
 .index_panel_style {
 
-    background: whitesmoke url(images/bckg_intro.jpg) no-repeat center center fixed;
+    background: #f5ad72 url(images/old_diary.png) no-repeat center center fixed;
 
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+
+
 
 }
 
 .comment_panel_style {
 
-    background: whitesmoke url(images/bckg_comment.png) no-repeat center center fixed;
+    background: whitesmoke url(images/bckg-comment.jpg) no-repeat center center fixed;
 
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-
-
 
 }
 
@@ -851,3 +870,61 @@ gwt-PopupPanelGlass {
 
 }
 
+.about_panel {
+
+    /*-webkit-transition: width 3s;*/
+    /*transition: width 3s;*/
+    background: whitesmoke url(Tolstoy_004_bkg.png) no-repeat center center fixed;
+
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+}
+
+.enter_circle {
+
+    stroke: lightblue;
+    fill: lightblue;
+    opacity: .75;
+}
+
+
+.enter_text {
+
+    fill: #ff4c5e;
+    stroke: #ff4c5e;
+    font-family: 'Open Sans', sans-serif;
+
+    font-size: 1.5em;
+    pointer-events:none;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
+
+.circleContainer {
+    width: 15em;
+    height: 15em;
+    cursor: pointer;
+}
+
+.disqus_comment {
+    
+    margin-left: 5em;
+    margin-right: 5em;
+    height: 20em;
+}
+
+.index_vertical {
+
+    text-align: center;
+
+}
+
+.index_panel_scroll {
+
+    width: 50%;
+    float: right;
+
+}

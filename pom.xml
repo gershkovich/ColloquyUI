@@ -13,8 +13,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <elastic.version>6.4.0</elastic.version>
-        <jackson.version>2.9.6</jackson.version>
+        <elastic.version>6.4.2</elastic.version>
+        <jackson.version>2.9.7</jackson.version>
         <jsoup.version>1.11.3</jsoup.version>
         
     </properties>
