@@ -14,6 +14,7 @@ public class ServerResponse implements Serializable
     private long totalNumberOfLetters;
     private String selectedStats;
     private String workEvents;
+    private String [] startAndEndDates = new String [2];
 
     private String csvLetterData;
 
@@ -75,5 +76,10 @@ public class ServerResponse implements Serializable
     public void setWorkEvents(String workEvents)
     {
         this.workEvents = workEvents;
+    }
+
+    public String[] getStartAndEndDates()
+    {
+        return startAndEndDates;
     }
 }

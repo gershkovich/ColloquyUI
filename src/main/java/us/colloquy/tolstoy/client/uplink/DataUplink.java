@@ -1,22 +1,16 @@
 package us.colloquy.tolstoy.client.uplink;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 import us.colloquy.tolstoy.client.Tolstoy;
 import us.colloquy.tolstoy.client.TolstoyService;
-import us.colloquy.tolstoy.client.model.LetterDisplay;
-import us.colloquy.tolstoy.client.model.SearchFacets;
 import us.colloquy.tolstoy.client.model.ServerResponse;
 import us.colloquy.tolstoy.client.panel.VisualisationPanel;
 import us.colloquy.tolstoy.client.util.CommonFormatter;
@@ -43,7 +37,7 @@ public class DataUplink
 
 
     @JsMethod
-    public static void getData(String start, String end)
+    public static void getDocumentsByRange(String start, String end)
     {
 
         if (delayTimer != null)
@@ -58,16 +52,13 @@ public class DataUplink
             public void run()
             {
 
-                String searchString = Tolstoy.searchElastic.getText();
-
-                //todo collect info into search facet
+                String searchString = Tolstoy.searchTextBox.getText();
 
                 TolstoyService.App.getInstance().getLettersSubset(start + ":" + end, searchString, VisualisationPanel.searchFacets, new MyAsyncCallback());
             }
         };
 
         delayTimer.schedule(1000);
-
     }
 
     @JsMethod
@@ -95,8 +86,6 @@ public class DataUplink
 
         consoleLog("looking for " + documentId);
 
-
-
     }
 
 
@@ -113,6 +102,10 @@ public class DataUplink
             VerticalPanel lettersContainer = VisualisationPanel.lettersContainer;
 
             lettersContainer.clear();
+
+            Label feedbackLabel =  (Label) VisualisationPanel.resultsFeedbackPanel.getWidget(0);
+
+            feedbackLabel.setText("I am here");
 
             //we'll populate the entire window with letters here
             CommonFormatter.formatLetterDisplay(result, lettersContainer);

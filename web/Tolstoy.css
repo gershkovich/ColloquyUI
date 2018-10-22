@@ -9,15 +9,16 @@ h1 {
 html, body {
     font-family: Verdana, sans-serif;
     overflow: visible;
+
+    scroll-behavior: smooth;
 }
 
 .title {
 
-    color: white;
     /*margin-left: 15em;*/
     /*background-color: #ccdfcb;*/
-    background-color: white;
-    height: 4em;
+    background-color: transparent;
+    height: 6em;
     width: 100%;
 
 }
@@ -32,17 +33,18 @@ html, body {
 
 .titleLabel {
 
-    font-size: 1.5em;
+    font-size: 2vw;
+
     margin-left: 2em;
-    font-family: 'Oranienbaum', serif;
+    font-family: 'Abel', sans-serif;
     font-weight: bolder;
     text-align: left;
 
     text-wrap: normal;
 
-    color: #006666;
+    color: white;
 
-    margin-top: 0.5em;
+    margin-top: 1em;
 }
 
 .titleSmallLabel {
@@ -74,14 +76,14 @@ html, body {
 
 .layoutStyleMenu {
 
-    background: white;
+    background: transparent;
 }
 
 .layoutStyle {
     background-size: cover;
-    background: transparent right top;
+    background: transparent left top;
     width: 100%;
-    height: 100%;
+    height: 100vh;
 
 }
 
@@ -143,17 +145,21 @@ html, body {
 .scrollPanel {
 
     background: #F5F1EA;
+    scroll-behavior: smooth;
 
 }
 
 .flowMain {
 
-    background: #ecf1e8;
+    background: #eef5dd;
     font-family: "Helvetica Neue";
-    max-width: 50em;
+    max-width: 75%;
     color: #09352e;
     opacity: 0.94;
     filter: alpha(opacity=94);
+     height: 90vh;
+        overflow: auto;   
+
 }
 
 .flowComments {
@@ -162,18 +168,18 @@ html, body {
     font-family: "Helvetica Neue";
     max-width: 40em;
     color: #09352e;
-    opacity: 0.70;
-    filter: alpha(opacity=70);
-
+    opacity: 0.95;
+    filter: alpha(opacity=90);
+     height: 90vh;
+        overflow: auto;
 }
 
 .titleBar {
 
     /*margin-left: 15em;*/
-    height: 5em;
 
     width: 100%;
-    background: white;
+    background-color: transparent;
 
 }
 
@@ -252,19 +258,25 @@ html, body {
 
 .subtitle {
     color: white;
-    font-family: 'Oranienbaum', serif;
-    font-size: 1.5em;
+    /*font-family: 'Oranienbaum', serif;*/
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    /*font-family: 'Oswald', sans-serif;*/
+    /*font-weight: 200; */
+    font-style: normal;
+    font-size: 5vw;
 
-    margin-left: 2em;
-    margin-top: 2em;
+    /*margin-left: 2em;*/
+    margin-top: 6em;
 
-    width: 15em;
+    overflow-wrap: break-spaces;
+    width: 100%;
     white-space: pre;
 
-
+    text-underline: thick;
+    text-underline-color: #f8a600;
+    /*text-underline-position: below;*/
 
 }
-
 
 .subtitle:hover {
 
@@ -284,7 +296,7 @@ html, body {
     text-justify: inter-word;
     font-size: 1.2em;
     right: 0;
-    
+
 }
 
 .langSel a {
@@ -320,7 +332,7 @@ html, body {
 
 .navigation a {
 
-    color: #ccdfcb;
+    color: white;
     font-family: 'Open Sans', sans-serif;
     font-size: 0.9em;
     text-decoration: none;
@@ -330,6 +342,10 @@ html, body {
 .navigationSel {
     padding-top: 1em;
     padding-left: 4em;
+    /*text-decoration-line: underline;*/
+    /*text-decoration-style: solid;*/
+    /*text-underline-position: below;*/
+
 }
 
 .navigationSel a {
@@ -339,7 +355,8 @@ html, body {
     text-decoration: none;
     cursor: pointer;
     /*text-decoration-color: #FF675D;*/
-    color: #009389;
+    color: #f8a600;
+
 }
 
 .divider {
@@ -365,9 +382,9 @@ html, body {
 }
 
 .arrorNav a:hover {
-   text-decoration-line: underline ;
+    text-decoration-line: underline;
     text-decoration-style: dotted;
-    
+
     cursor: pointer;
     text-decoration-color: #07ccff;
     text-decoration-skip: edges;
@@ -563,6 +580,25 @@ html, body {
     font-weight: 500;
     font-family: 'Open Sans', sans-serif;
     color: #1e584c;
+}
+
+
+/* The animation code */
+
+@keyframes workSelection {
+
+    from {background-color: #feab11;}
+
+    to {background-color: lightyellow}
+    
+}
+
+:target {
+
+    background-color: lightyellow;
+
+    animation-name: workSelection;
+        animation-duration: 5s;
 }
 
 /*.gwt-SplitLayoutPanel {  }*/
@@ -831,31 +867,31 @@ gwt-PopupPanelGlass {
 
 .index_panel_style {
 
-    background: #f5ad72 url(images/old_diary.png) no-repeat center center fixed;
+    /*background: #f5ad72 url(images/old_diary.png) no-repeat center center fixed;*/
 
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+    /*-webkit-background-size: cover;*/
+    /*-moz-background-size: cover;*/
+    /*-o-background-size: cover;*/
+    /*background-size: cover;*/
 
+    background: transparent;
 
-
+    height: 100%;
+       overflow: auto;    
 }
 
-.comment_panel_style {
+/*.comment_panel_style {*/
 
-    background: whitesmoke url(images/bckg-comment.jpg) no-repeat center center fixed;
+    /*background: whitesmoke url(images/bckg-comment.jpg) no-repeat center center fixed;*/
 
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+    /*-webkit-background-size: cover;*/
+    /*-moz-background-size: cover;*/
+    /*-o-background-size: cover;*/
+    /*background-size: cover;*/
 
-}
+/*}*/
 
-
-.intro_image  {
-
+.intro_image {
 
     width: 92%;
     padding-left: 2.5em;
@@ -864,17 +900,53 @@ gwt-PopupPanelGlass {
 
 .content_base {
 
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*left: 0;*/
+    width: 100%;
+    height: 100vh;
+       overflow: auto;
 }
 
-.about_panel {
+.initial_background {
 
     /*-webkit-transition: width 3s;*/
     /*transition: width 3s;*/
-    background: whitesmoke url(Tolstoy_004_bkg.png) no-repeat center center fixed;
+    background: url(Tolstoy_004_bkg.png) no-repeat center center fixed;
+
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+}
+
+.intro_background {
+
+    /*!*-webkit-transition: width 3s;*!*/
+    /*!*transition: width 3s;*!*/
+    /*background: #f5ad72 url(images/old_diary.png) no-repeat center center fixed;*/
+
+    /*-webkit-background-size: cover;*/
+    /*-moz-background-size: cover;*/
+    /*-o-background-size: cover;*/
+    /*background-size: cover;*/
+
+    background-image: linear-gradient(#007c77, #00908b, #dcf0e0);
+
+}
+
+.search_background {
+
+    background: whitesmoke;
+
+}
+
+.comment_background {
+
+    /*-webkit-transition: width 3s;*/
+    /*transition: width 3s;*/
+    background: #f5d0c4 url(images/bckg-comment.jpg) no-repeat center center fixed;
 
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -885,32 +957,36 @@ gwt-PopupPanelGlass {
 
 .enter_circle {
 
-    stroke: lightblue;
-    fill: lightblue;
+    stroke: #008e83;
+    fill: #007a6f;
     opacity: .75;
 }
 
-
 .enter_text {
 
-    fill: #ff4c5e;
-    stroke: #ff4c5e;
-    font-family: 'Open Sans', sans-serif;
+    fill: #f8a600;
+    /*stroke: #f8a600;*/
+    font-family: 'Abel', sans-serif;
 
-    font-size: 1.5em;
-    pointer-events:none;
+    font-size: 1.6em;
+    pointer-events: none;
     text-anchor: middle;
     dominant-baseline: central;
 }
 
 .circleContainer {
-    width: 15em;
-    height: 15em;
+    /*margin-top: 1em;*/
+    position: absolute;
+    right: 10vh;
+    bottom: 15vh;
+    width: 120px;
+    height: 120px;
     cursor: pointer;
 }
 
 .disqus_comment {
-    
+
+    margin-top: 10em;
     margin-left: 5em;
     margin-right: 5em;
     height: 20em;
@@ -927,4 +1003,30 @@ gwt-PopupPanelGlass {
     width: 50%;
     float: right;
 
+    scroll-behavior: smooth;
+
+}
+
+.scrollPanel_smooth {
+
+    scroll-behavior: smooth;
+}
+
+.comment_main {
+      height: 100%;
+      overflow: auto;
+}
+
+.feedback_panel {
+
+    width: 100%;
+    background-color: white;
+
+}
+
+.feedback_disabled {
+
+     font: 0.8em "Open Sans", sans-serif;
+        font-weight: lighter;
+        color: #007c77;
 }

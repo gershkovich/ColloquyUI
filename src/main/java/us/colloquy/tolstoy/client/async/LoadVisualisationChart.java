@@ -1,6 +1,7 @@
 package us.colloquy.tolstoy.client.async;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import us.colloquy.tolstoy.client.TolstoyConstants;
 import us.colloquy.tolstoy.client.TolstoyMessages;
@@ -17,6 +18,8 @@ public class LoadVisualisationChart implements AsyncCallback<ServerResponse>
     private static final TolstoyConstants constants = GWT.create(TolstoyConstants.class);
 
     private TolstoyMessages messages = GWT.create(TolstoyMessages.class);
+
+
 
     public LoadVisualisationChart(VisualisationPanel vpIn)
     {
@@ -48,7 +51,7 @@ public class LoadVisualisationChart implements AsyncCallback<ServerResponse>
             }
         }
 
-        vp.createVisualization(result.getCsvLetterData(), result.getWorkEvents(), documentType);
+        vp.createVisualization(result.getCsvLetterData(), result.getWorkEvents(), documentType, result.getStartAndEndDates());
     }
 
     native void consoleLog(String message) /*-{

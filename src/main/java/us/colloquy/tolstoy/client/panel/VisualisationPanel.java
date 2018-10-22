@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -34,7 +35,9 @@ public class VisualisationPanel extends Composite
     //status information
     private Label feedback = new Label(constants.resultsLabel());
 
-    private TextBox searchTextBox;
+    private TextBox searchTextBox ;
+
+    public static final HorizontalPanel resultsFeedbackPanel = new HorizontalPanel();
 
     private final Hidden numberOfLoadedLetters;
 
@@ -48,7 +51,7 @@ public class VisualisationPanel extends Composite
 
     private final CheckBox diariesCheckbox = new CheckBox(constants.diariesCheckboxLabel());
 
-    public VisualisationPanel(TextBox searchTextBoxIn, Hidden numberOfLoadedLettersIn, Image loadingProgressImageIn, SearchFacets searchFacetsIn)
+    public VisualisationPanel(TextBox searchTextBoxIn, Hidden numberOfLoadedLettersIn, Image loadingProgressImageIn, SearchFacets searchFacetsIn, String localeIn)
     {
         searchTextBox = searchTextBoxIn;
 
@@ -192,6 +195,8 @@ public class VisualisationPanel extends Composite
       consoleLog(Window.getClientHeight() + " height");
         lettersScroll.add(lettersContainer);
 
+        lettersScroll.setStyleName("scrollPanel_smooth");
+
         slp.add(lettersScroll);
 
         //add here all widgets to resize
@@ -253,7 +258,7 @@ public class VisualisationPanel extends Composite
                     SearchFacets searchFacets = new SearchFacets();
 
                     //collect info into search facet
-
+                     //todo move that to on click
                     //load more records
                     TolstoyService.App.getInstance().getSelectedLettersWithOffset(totalLettersLoadedOnClient, searchTextBox.getText(), searchFacets,
                             new SearchAdditionalLettersAsynchCallback(lettersContainer, feedback, numberOfLoadedLetters, loadingProgressImage));
@@ -265,7 +270,15 @@ public class VisualisationPanel extends Composite
         div.setId("div_for_svg");
         div.setClassName("svg-container");
 
-        chronologyPanel.add(feedback);
+
+
+        resultsFeedbackPanel.add(feedback);
+
+        feedback.setStyleName("feedback_disabled");
+
+        resultsFeedbackPanel.setStyleName("feedback_panel");
+
+        chronologyPanel.add(resultsFeedbackPanel);
 
         chronologyPanel.setStyleName("chronology_panel");
 
@@ -305,7 +318,7 @@ public class VisualisationPanel extends Composite
             loadingProgressImage.setVisible(true);
             //do search with text the content of text box;
             //this call will load the diagram first and then load records via DataUplink class
-            TolstoyService.App.getInstance().getDataForCharts( searchFacets, new UpdateVisualisationChart(numberOfLoadedLetters));
+            TolstoyService.App.getInstance().getDataForCharts( searchFacets, new UpdateVisualisationChart(searchTextBox, numberOfLoadedLetters));
 
 //            //load more records
 //            TolstoyService.App.getInstance().getSelectedLettersWithOffset(0, searchTextBox.getText(), searchFacets,
@@ -314,13 +327,11 @@ public class VisualisationPanel extends Composite
     }
 
 
-    public void createVisualization(String csvLettersData, String allEvents, String documentType)
+    public void createVisualization(String csvLettersData, String allEvents, String documentType, String [] startAndEndDates)
     {
         Document.get().getElementById("div_for_svg").removeAllChildren();
 
-       // consoleLog("here");
-
-        buildChronology("#div_for_svg", csvLettersData, allEvents, documentType);
+        buildChronology("#div_for_svg", csvLettersData, allEvents, documentType, startAndEndDates, LocaleInfo.getCurrentLocale().getLocaleName());
     }
 
 
@@ -353,8 +364,9 @@ public class VisualisationPanel extends Composite
 
 
     // call chronology.js to create Chronology Chart
-    private native void buildChronology(String div, String datString, String allEvents, String documentType)/*-{
-        $wnd.buildChronologyChart(div, datString, allEvents, documentType);
+    private native void buildChronology(String div, String datString, String allEvents, String documentType, String [] startAndEndDates, String location)/*-{
+
+        $wnd.buildChronologyChart(div, datString, allEvents, documentType, startAndEndDates, location);
     }-*/;
 
     // call chronology.js to create Chronology Chart
@@ -369,11 +381,15 @@ public class VisualisationPanel extends Composite
     class UpdateVisualisationChart implements AsyncCallback<ServerResponse>
     {
         private TolstoyMessages messages = GWT.create(TolstoyMessages.class);
-        Hidden totalNumberOfLoadedLetters;
 
-        public UpdateVisualisationChart(Hidden totalNumberOfLoadedLettersIn)
+        Hidden totalNumberOfLoadedLetters;
+        TextBox searchTextBox;
+
+        public UpdateVisualisationChart(TextBox searchTextBoxIn, Hidden totalNumberOfLoadedLettersIn)
         {
             totalNumberOfLoadedLetters=totalNumberOfLoadedLettersIn;
+
+            searchTextBox = searchTextBoxIn;
 
         }
 
@@ -394,6 +410,7 @@ public class VisualisationPanel extends Composite
                 if ("tolstoy_diaries".equalsIgnoreCase(searchFacets.getIndexesList().get(0)))
                 {
                     documentType = constants.diariesCheckboxLabel();//same
+
                 }   else
                 {
                     documentType = constants.lettersCheckboxLabel();//same
@@ -402,9 +419,20 @@ public class VisualisationPanel extends Composite
 
             feedback.setText( messages.numberOfLetterFound(result.getTotalNumberOfLetters() + "", totalNumberOfLoadedLetters.getValue()));
 
-            createVisualization(result.getCsvLetterData(), result.getWorkEvents(), documentType);
+            createVisualization(result.getCsvLetterData(), result.getWorkEvents(), documentType, result.getStartAndEndDates());
 
-            buildScatterPlot("#div_for_svg", result.getSelectedStats(), true);
+            //that just clears scatterplot because there is no result back
+           // buildScatterPlot("#div_for_svg", result.getSelectedStats(), true);
+
+            //in theory now we need another search based on the status of
+            if (searchTextBox.getText().length() > 0 )
+            {
+                consoleLog("has text");
+
+                //now we need to run a search based on dates and ranges to apply facets
+                
+
+            }
         }
     }
 

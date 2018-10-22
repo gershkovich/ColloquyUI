@@ -20,10 +20,7 @@ import us.colloquy.util.PropertiesLoader;
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 
 public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyService
@@ -100,7 +97,6 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
         ec.queryStringSearchFiltered(searchStringModified, properties, result, 0,
                 dateRange.getStart(), dateRange.getEnd(), searchFacets.getIndexesList().toArray(new String[0]));
 
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         if (StringUtils.isNotEmpty(searchString))
@@ -115,13 +111,18 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
 
             }
 
-
             sr.setSelectedStats(scatterPlotDataBuilder.toString());
+        }
+
+        if (dateRange.getStart() < 0)
+        {
+            sr.getStartAndEndDates()[0] = sdf.format(new Date(dateRange.getStart()));
+            sr.getStartAndEndDates()[1] = sdf.format(new Date(dateRange.getEnd()));
         }
 
         sr.setTotalNumberOfLetters(result.getNumberOfResults());
 
-        System.out.println("search filtered" + result.getNumberOfResults());
+        System.out.println("getSelectedLetters method" + result.getNumberOfResults());
 
         return sr;
     }
@@ -130,6 +131,8 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
     {
 
         LetterDisplay ld = new LetterDisplay();
+
+        ld.setId(letter.getId());
 
         if (StringUtils.isNotEmpty(letter.getEntry()))
         {
@@ -217,9 +220,15 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
             sr.setSelectedStats(scatterPlotDataBuilder.toString());
         }
 
+        if (dateRange.getStart() < 0)
+        {
+            sr.getStartAndEndDates()[0] = sdf.format(new Date(dateRange.getStart()));
+            sr.getStartAndEndDates()[1] = sdf.format(new Date(dateRange.getEnd()));
+        }
+
         sr.setTotalNumberOfLetters(result.getNumberOfResults());
 
-        System.out.println("search filtered offset " + result.getNumberOfResults());
+        System.out.println("getSelectedLettersWithOffset " + result.getNumberOfResults());
 
         return sr;
     }
@@ -256,6 +265,29 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
 
         sr.setWorkEvents(events);
 
+        HttpSession session = getThreadLocalRequest().getSession();
+
+        DateRange dateRange = new DateRange();
+
+        Object dateRangeObject = session.getAttribute(Constants.DATE_RANGE);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (dateRangeObject instanceof DateRange)
+        {
+            dateRange = (DateRange) dateRangeObject;
+
+        }
+
+        if (dateRange.getStart() < 0)
+        {
+            sr.getStartAndEndDates()[0] = sdf.format(new Date(dateRange.getStart()));
+            sr.getStartAndEndDates()[1] = sdf.format(new Date(dateRange.getEnd()));
+        }
+
+
+        System.out.println("getDataForCharts: " + sr.getStartAndEndDates()[0]);
+
         return sr;
     }
 
@@ -286,7 +318,6 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
                     dateRange.setEnd(end);
 
                     session.setAttribute(Constants.DATE_RANGE, dateRange);
-
 
                 } catch (ParseException e)
                 {
@@ -332,6 +363,15 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
         }
 
         sr.setTotalNumberOfLetters(result.getNumberOfResults());
+
+        if (dateRange.getStart() < 0)
+        {
+            sr.getStartAndEndDates()[0] = sdf.format(new Date(dateRange.getStart()));
+            sr.getStartAndEndDates()[1] = sdf.format(new Date(dateRange.getEnd()));
+        }
+
+
+        System.out.println("getLettersSubset method" + result.getNumberOfResults());
 
         return sr;
     }

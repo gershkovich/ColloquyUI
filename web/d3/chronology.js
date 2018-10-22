@@ -16,7 +16,7 @@ var x = d3.scaleUtc().range([0, width]),
 var svg;
 
 
-function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) {
+function buildChronologyChart(divId, dataIn, dataForEvents, documentType, startAndEndDates, location) {
 
     var parseDate = d3.timeParse("%Y-%m-%d");
 
@@ -38,7 +38,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) 
 
     var brush = d3.brushX()
         .extent([[0, 0], [width, height2]])
-        .on("brush", brushed);
+        .on("brush end", brushed);
 
     svg = d3.select(divId).append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -225,13 +225,9 @@ function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) 
 
         var monthsDiff = d3.timeMonth.count(x.domain()[0], x.domain()[1]);
 
-        //todo call function to load letters by range and selected text
+        //todo call function to load letters by range and selected text and facets
 
-        // us.colloquy.tolstoy.client.uplink.DataUplink.getData(formatDate(x.domain()[0]) , formatDate(x.domain()[1]));
-
-        us.colloquy.tolstoy.client.uplink.DataUplink.getData(formatDate(x.domain()[0]), formatDate(x.domain()[1]));
-
-        // console.log("month diff: " + monthsDiff);
+        us.colloquy.tolstoy.client.uplink.DataUplink.getDocumentsByRange(formatDate(x.domain()[0]), formatDate(x.domain()[1]));
 
         if (monthsDiff <= 40 && agg !== "days") {
             agg = "days";
@@ -385,7 +381,6 @@ function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) 
 
         var coordinates = d3.mouse(this);
         var mx = Math.round( coordinates[0]);
-       // var my = coordinates[1];
 
         var selectedDate = x.invert(mx);
 
@@ -418,8 +413,6 @@ function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) 
         myBrash.transition()       // apply a transition
             .duration(2000)
             .call(brush.move, [x3(d3.timeDay.offset(minR,-10)), x3(d3.timeDay.offset(maxR,+10))]);
-
-
 
     }
 
@@ -463,10 +456,6 @@ function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) 
 
 
     }
-
-    //us.colloquy.tolstoy.client.uplink.DataUplink.getData(formatDate(x.domain()[0]), formatDate(x.domain()[1]));
-
-    us.colloquy.tolstoy.client.uplink.DataUplink.getData(formatDate(x.domain()[0]), formatDate(x.domain()[1]));
 
     function type(d) {
         d.date = parseDate(d.date);
@@ -679,7 +668,20 @@ function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) 
 
                 });
 
-                renderEvents(1, i, listOfEvents, events, z(work.oritinalTitle), work.oritinalTitle);
+               
+
+
+                var workTitle = work.oritinalTitle;
+
+                if (location != "ru")
+                {
+                   //get translation from another language
+                    workTitle =  work.translation[location];
+                }
+
+
+
+                renderEvents(1, i, listOfEvents, events, z(work.oritinalTitle), workTitle);
 
             });
         }
@@ -721,12 +723,26 @@ function buildChronologyChart(divId, dataIn, dataForEvents, zMax, documentType) 
 
     buildAllEvents();
 
+    //finally if we have a date range already selected in session use it
+
+
+
+    if (Array.isArray(startAndEndDates) && startAndEndDates[0].length > 0)
+    {
+        myBrash
+            .call(brush.move, [x3(parseDate(startAndEndDates[0])), x3(parseDate(startAndEndDates[1]))]);
+
+        console.log(parseDate(startAndEndDates[0]) + " " +  parseDate(startAndEndDates[1]));
+    }
 }
 
 
 function buildScatterPlotChart(divId, dataIn, replace) {
+
     var toolTip = d3.select('.tooltip');
 
+
+    console.log("replace: " + replace);
 
     if (toolTip.empty()) {
         toolTip = d3.select("body").append("div")
@@ -741,9 +757,12 @@ function buildScatterPlotChart(divId, dataIn, replace) {
     }
 
 
+
     if (replace) {
         dots.selectAll(".dot").remove();
     }
+
+
 
     if (dataIn) {
         var parseDate = d3.timeParse("%Y-%m-%d");     //converts to date
@@ -806,8 +825,26 @@ function buildScatterPlotChart(divId, dataIn, replace) {
                 d3.select(this).style('fill', '#f2014f');
 
                 // console.log(JSON.stringify(d, null, 2));
-                us.colloquy.tolstoy.client.uplink.DataUplink.lookupDocument(d.id);
+                goToAnchor(d.id);
+                // us.colloquy.tolstoy.client.uplink.DataUplink.lookupDocument(d.id);
 
             });
     }
+}
+
+function goToAnchor(anchor) {
+    // var loc = document.location.toString().split('#')[0];
+    //
+    // document.location = loc + '#' + anchor;
+    // return false;
+
+
+    location.href = '#' + anchor;
+    // var elmnt = document.getElementById(anchor);
+    // // elmnt.scrollIntoView();
+    //
+    // var event = new Event('target');
+    // elmnt.dispatchEvent(event);
+    
+    return false;
 }

@@ -8,6 +8,7 @@ import us.colloquy.tolstoy.client.TolstoyConstants;
 import us.colloquy.tolstoy.client.TolstoyMessages;
 import us.colloquy.tolstoy.client.model.LetterDisplay;
 import us.colloquy.tolstoy.client.model.ServerResponse;
+import us.colloquy.tolstoy.client.panel.VisualisationPanel;
 import us.colloquy.tolstoy.client.util.CommonFormatter;
 
 /**
@@ -19,7 +20,6 @@ public class SearchAdditionalLettersAsynchCallback implements AsyncCallback<Serv
 
     private TolstoyMessages messages = GWT.create(TolstoyMessages.class);
 
-    private Label feedback;
 
     VerticalPanel lettersContainer;
 
@@ -27,10 +27,9 @@ public class SearchAdditionalLettersAsynchCallback implements AsyncCallback<Serv
 
     Image loadingProgressImage;
 
-    public SearchAdditionalLettersAsynchCallback(VerticalPanel lettersContainerIn, Label feedbackIn, Hidden totalNumberOfLoadedLettersIn, Image loadingProgressImageIn)
+    public SearchAdditionalLettersAsynchCallback(VerticalPanel lettersContainerIn,  Hidden totalNumberOfLoadedLettersIn, Image loadingProgressImageIn)
     {
 
-        feedback = feedbackIn;
         lettersContainer = lettersContainerIn;
         totalNumberOfLoadedLetters=totalNumberOfLoadedLettersIn;
         loadingProgressImage = loadingProgressImageIn;
@@ -39,8 +38,9 @@ public class SearchAdditionalLettersAsynchCallback implements AsyncCallback<Serv
     @Override
     public void onFailure(Throwable caught)
     {
-        feedback.setText(constants.retrievalError());
+        Label feedbackLabel =  (Label) VisualisationPanel.resultsFeedbackPanel.getWidget(0);
 
+        feedbackLabel.setText(constants.retrievalError());
         loadingProgressImage.setVisible(false);
     }
 
@@ -55,8 +55,9 @@ public class SearchAdditionalLettersAsynchCallback implements AsyncCallback<Serv
 
         totalNumberOfLoadedLetters.setValue((Integer.valueOf(totalNumberOfLoadedLetters.getValue()) + result.getLetters().size()) +"");
 
+        Label feedbackLabel =  (Label) VisualisationPanel.resultsFeedbackPanel.getWidget(0);
 
-        feedback.setText( messages.numberOfLetterFound(result.getTotalNumberOfLetters() + "", totalNumberOfLoadedLetters.getValue()));
+        feedbackLabel.setText(messages.numberOfLetterFound(result.getTotalNumberOfLetters() + "", totalNumberOfLoadedLetters.getValue()));
 
         buildScatterPlot("#div_for_svg", result.getSelectedStats(), false);
 

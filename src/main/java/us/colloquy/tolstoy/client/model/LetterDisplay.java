@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class LetterDisplay implements Serializable
 {
+    private String id;
     private Date date;
     private String toWhoom;
     private String content;
@@ -18,6 +19,15 @@ public class LetterDisplay implements Serializable
     private List<Annotation> annotations = new ArrayList<>();
     private String source;
 
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
+    }
 
     public Date getDate()
     {

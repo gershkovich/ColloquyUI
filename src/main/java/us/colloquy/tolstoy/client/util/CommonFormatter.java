@@ -22,6 +22,8 @@ public class CommonFormatter
         
         for (LetterDisplay ld: result.getLetters())
         {
+            String id = ld.getId();
+
             String toWhom = "";
 
             if (ld.getToWhoom()!= null && ld.getToWhoom().length() > 0)
@@ -29,8 +31,8 @@ public class CommonFormatter
                 toWhom = ld.getToWhoom() + " ";
             }
 
-            lettersContainer.add(new HTML("<div class=\"" + letterDisplayHeaderClass + "\" >" + sdf.format(ld.getDate())
-                    + " " + toWhom + ld.getSource() + "</div>"));
+            lettersContainer.add(new HTML("<div id=\"" + ld.getId() + "\" class=\"" + letterDisplayHeaderClass + "\" >" + sdf.format(ld.getDate())
+                    + " " + toWhom  + "</div>"));
 
             lettersContainer.add(new HTML("<div class=\"" + letterDisplayClass + "\" >" + ld.getContent() + "</div>"));
 
@@ -43,4 +45,5 @@ public class CommonFormatter
             lettersContainer.add(new HTML("<p></p>"));
         }
     }
+
 }

@@ -3,18 +3,11 @@ package us.colloquy.tolstoy.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -28,8 +21,6 @@ import us.colloquy.tolstoy.client.panel.VisualisationPanel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>
@@ -48,7 +39,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
     private final SimpleLayoutPanel mainPanel = new SimpleLayoutPanel();
 
-    private final Hyperlink descriptionLink = new Hyperlink(constants.about(), "show");
+//    private final Hyperlink descriptionLink = new Hyperlink(constants.about(), "show");
 
     private final List<Hyperlink> menuItems = new ArrayList<>();
 
@@ -77,7 +68,9 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
     HorizontalPanel miscNavigation = new HorizontalPanel();
 
-    public final static TextBox searchElastic = new TextBox();
+    String localeName = "";
+
+    public final static TextBox searchTextBox = new TextBox();
 
 
     public void onModuleLoad()
@@ -91,13 +84,11 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         titleBar.setWidth("100%");
 
-        dockLayoutPanel.addNorth(titleBar, 5);
+        dockLayoutPanel.addNorth(titleBar, 6);
 
-        String localeName = LocaleInfo.getCurrentLocale().getLocaleName();
+        localeName = LocaleInfo.getCurrentLocale().getLocaleName();
 
         VerticalPanel entireVerticalTitlePanel = new VerticalPanel();
-
-        //set small title that will be initially invisible it will be easy to change it if need bigger screen space
 
          smallTitle.setText(constants.projectTitle());
 
@@ -142,7 +133,6 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         titleBar.add(entireVerticalTitlePanel);
 
         dockLayoutPanel.addEast(contentPanel, 40);
-      //  contentPanel.getParent().getElement().setId("about_panel");
         dockLayoutPanel.setWidgetSize(contentPanel,0);
 
         //done with tile section
@@ -152,67 +142,30 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         //build central menu panel
         setMainCentralMenuPanel();
 
-        //todo replace central panel content and background on menu change
-
-
-//        navAboutPanel.setStyleName(css.navigationItemPanel());
-//        navIndexPanel.setStyleName(css.navigationItemPanel());
-//        navTechnicalPanel.setStyleName(css.navigationItemPanel());
-//        navCommentPanel.setStyleName(css.navigationItemPanel());
-//        //    navAuthorPanel.setStyleName(css.navigationItemPanel());
-
-
-//
-//        navAboutPanel.add(navAbout);
-//        navIndexPanel.add(navIndex);
-//        navTechnicalPanel.add(navTechnical);
-//        navCommentPanel.add(navComment);
-        //    navAuthorPanel.add(navAuthor);
-        // If the application starts with no history token, redirect to a new
-        // 'baz' state.
-
-
-        // Add widgets to the root panel.
-//        VerticalPanel navigationPanel = new VerticalPanel();
-//        navigationPanel.setStyleName(css.navigationPanel());
-//
-//
-//        // navigationPanel.add(lbl);
-//        navigationPanel.add(navAboutPanel);
-//        navigationPanel.add(navIndexPanel);
-//        navigationPanel.add(navTechnicalPanel);
-//        navigationPanel.add(navCommentPanel);
-        //   navigationPanel.add(navAuthorPanel);
-
-
         mainPanel.setWidth("100%");
 
         mainPanel.setWidget(mainCentralVerticalPanel);
 
-
-
-
         dockLayoutPanel.add(mainPanel);
+
+
+        Label enterIcon = new Label();
+
+        enterIcon.getElement().setId("enter_icon");
+        enterIcon.setStyleName("circleContainer");
+
+        enterIcon.addClickHandler(new ClickHandler()
+        {
+            @Override
+            public void onClick(ClickEvent event)
+            {
+                History.newItem("search");
+
+            }
+        });
+
+        mainCentralVerticalPanel.add(enterIcon);
         
-        //  VerticalPanel panel = new VerticalPanel();
-        flowPanel.addStyleName("flow");
-
-        final ScrollPanel scrollPanel = new ScrollPanel();
-
-        scrollPanel.setWidth("100%");
-
-
-       // scrollPanel.setAlwaysShowScrollBars(true);
-
-        contentPanel.setHeight("100%");
-        contentPanel.add(scrollPanel);
-
-        setAbout();
-        scrollPanel.add(flowPanel);
-
-        scrollPanel.addStyleName("scrollPanel");
-
-
 
         //  rp.getWidgetContainerElement(layoutPanel).getStyle().setOverflowY(Style.Overflow.AUTO);
 
@@ -233,7 +186,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 //        RootPanel.get("slot2").add(label);
 
 
-        scrollPanel.setHeight((Window.getClientHeight() - 80) + "px");
+    //  scrollPanel.setHeight((Window.getClientHeight() - 80) + "px");
 
         Window.addResizeHandler(new ResizeHandler() {
 
@@ -241,9 +194,11 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
                 @Override
                 public void run() {
 
-                    mainContentScroll.setHeight((Window.getClientHeight() - 110) + "px");
+                   // mainContentScroll.setHeight((Window.getClientHeight() - 110) + "px");
 
-                    scrollPanel.setHeight((Window.getClientHeight() - 80) + "px");
+             //       scrollPanel.setHeight((Window.getClientHeight() - 80) + "px");
+
+                  //  mainCentralVerticalPanel.setHeight((Window.getClientHeight() - 110) + "px");
 
                 }
             };
@@ -257,7 +212,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         RootLayoutPanel rp = RootLayoutPanel.get();
 
-        rp.setStyleName("about_panel");
+        rp.setStyleName("intro_background");
 
         rp.add(dockLayoutPanel);
 
@@ -269,15 +224,22 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         if (initToken.length() == 0)
         {
             History.newItem("home");
+
+            // Now that we've setup our listener, fire the initial history state.
+
+        } else if (initToken.matches(".*-.*"))
+        {
+            History.newItem("search");
         }
 
-        // Now that we've setup our listener, fire the initial history state.
         History.fireCurrentHistoryState();
 
-        if ( !Document.get().getElementById("enter_icon").hasChildNodes())
+
+        if (Document.get().getElementById("enter_icon") != null && !Document.get().getElementById("enter_icon").hasChildNodes())
         {
             generateIcons("#enter_icon", constants.search(), "Some help text");
         }
+
 
     }
 
@@ -313,11 +275,15 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         navComment.setText(constants.comments());
         navComment.setTargetHistoryToken("comments");
 
+//        descriptionLink.setText(constants.about());
+//        descriptionLink.setTargetHistoryToken("show");
+
         menuItems.add(navHome);
         menuItems.add(navIndex);
 //        menuItems.add(navSearch);
 ////        menuItems.add(navTechnical);
         menuItems.add(navComment);
+//        menuItems.add(descriptionLink);
 
 
 
@@ -342,12 +308,15 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 //        menuContainer.add(new HTML("&nbsp;"));
         menuContainer.add(navComment);
         menuContainer.add(new HTML("&nbsp;"));
+//        menuContainer.add(descriptionLink);
+//        menuContainer.add(new HTML("&nbsp;"));
 
         menuContainer.setCellHorizontalAlignment(navHome, HasHorizontalAlignment.ALIGN_LEFT);
         menuContainer.setCellHorizontalAlignment(navIndex, HasHorizontalAlignment.ALIGN_LEFT);
         menuContainer.setCellHorizontalAlignment(navSearch, HasHorizontalAlignment.ALIGN_LEFT);
         menuContainer.setCellHorizontalAlignment(navTechnical, HasHorizontalAlignment.ALIGN_LEFT);
         menuContainer.setCellHorizontalAlignment(navComment, HasHorizontalAlignment.ALIGN_LEFT);
+//        menuContainer.setCellHorizontalAlignment(descriptionLink, HasHorizontalAlignment.ALIGN_LEFT);
 
         titlePanel.add(menuContainer);
 
@@ -358,7 +327,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         mainContentScroll.setAlwaysShowScrollBars(true);
 
 
-        mainContentScroll.setHeight((Window.getClientHeight() - 110) + "px");
+       // mainContentScroll.setHeight((Window.getClientHeight() - 110) + "px");
 
         manageMenuStyles("home");
 
@@ -383,50 +352,11 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         mainCentralVerticalPanel.addStyleName("layoutStyle");
 
-        HorizontalPanel redArrowPanel = new HorizontalPanel();
+        mainCentralVerticalPanel.add(projectSubTitle);
+        
+        mainCentralVerticalPanel.add(new HTML());
 
-        redArrowPanel.setWidth("100%");
-
-        VerticalPanel enterPanel = new VerticalPanel();
-
-        enterPanel.add(projectSubTitle);
-
-        Label enterIcon = new Label();
-
-        enterIcon.getElement().setId("enter_icon");
-        enterIcon.setStyleName("circleContainer");
-
-        enterIcon.addClickHandler(new ClickHandler()
-        {
-            @Override
-            public void onClick(ClickEvent event)
-            {
-                History.newItem("search");
-
-            }
-        });
-
-        enterPanel.add(enterIcon);
-
-        redArrowPanel.add(enterPanel);
-
-        descriptionLink.addStyleName("arrorNav");
-
-        Image redArrowImage = new Image("navig-arr.png");
-
-        redArrowImage.addStyleName("redArrImage");
-
-        descriptionLink.getElement().appendChild(redArrowImage.getElement());
-
-        redArrowPanel.add(descriptionLink);
-
-        mainCentralVerticalPanel.add(redArrowPanel);
-
-
-        redArrowPanel.setCellHorizontalAlignment(projectSubTitle, HasHorizontalAlignment.ALIGN_LEFT);
-        redArrowPanel.setCellHorizontalAlignment(descriptionLink, HasHorizontalAlignment.ALIGN_RIGHT);
-        redArrowPanel.setCellVerticalAlignment(descriptionLink, HasVerticalAlignment.ALIGN_MIDDLE);
-
+        mainCentralVerticalPanel.setCellHorizontalAlignment(projectSubTitle, HasHorizontalAlignment.ALIGN_CENTER);
 
     }
 
@@ -577,11 +507,12 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         if ("show".equalsIgnoreCase(value))
         {
+            History.newItem("home");
 
             dockLayoutPanel.setWidgetSize(contentPanel,40);
             //dockLayoutPanel.setWidgetHidden(contentPanel, false);
 
-            descriptionLink.setTargetHistoryToken("hide");
+           // descriptionLink.setTargetHistoryToken("hide");
 
 
         } else if ("hide".equalsIgnoreCase(value))
@@ -589,7 +520,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
            // dockLayoutPanel.setWidgetHidden(contentPanel, true);
             dockLayoutPanel.setWidgetSize(contentPanel,0);
-            descriptionLink.setTargetHistoryToken("show");
+            //descriptionLink.setTargetHistoryToken("show");
 
 
 //        navAboutPanel.setStyleName(css.navigationItemPanelSelected());
@@ -598,6 +529,9 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         } else if ("home".equalsIgnoreCase(value))
         {
+            dockLayoutPanel.setWidgetSize(contentPanel,0);
+           // descriptionLink.setTargetHistoryToken("show");
+
             clearStyles();
 
             titlePanel.clear();
@@ -624,7 +558,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
                 generateIcons("#enter_icon", constants.search(), "Some help text");
             }
 
-            RootLayoutPanel.get().setStyleName("about_panel");
+            RootLayoutPanel.get().setStyleName("initial_background");
 
         } else if ("menuItems".equalsIgnoreCase(value))
         {
@@ -639,18 +573,18 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
             mainPanel.setWidget(mainContentScroll);
             menuLink.setTargetHistoryToken("home");
-            menuIcon.setUrl("menuIconDefault.png");
+
 
             manageMenuStyles("introduction");
 
-            setIndex();
+            setIntroduction();
 
            // titlePanel.add(menuLink);  //todo remove menu link
             titlePanel.setCellHorizontalAlignment(menuLink, HasHorizontalAlignment.ALIGN_RIGHT);
 
             titlePanel.setCellVerticalAlignment(menuLink, HasVerticalAlignment.ALIGN_MIDDLE);
 
-            RootLayoutPanel.get().setStyleName("about_panel");
+            RootLayoutPanel.get().setStyleName("initial_background");
 
         } else if ("technology".equalsIgnoreCase(value) )
         {
@@ -660,17 +594,21 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         } else if ("introduction".equalsIgnoreCase(value))
         {
             //set content
+            dockLayoutPanel.setWidgetSize(contentPanel,0);
+          //  descriptionLink.setTargetHistoryToken("show");
           
-            setIndex();
+            setIntroduction();
             manageMenuStyles(value);
 
+            RootLayoutPanel.get().setStyleName("intro_background");
 
-        }  else if ("search".equalsIgnoreCase(value))
+
+        }  else if ("search".equalsIgnoreCase(value) )
         {
             clearStyles();
             //menuLink.setTargetHistoryToken("search");
             mainPanel.clear();
-            mainPanel.removeStyleName("comment_panel_style");
+            mainPanel.setStyleName("comment_main");
           //  visualizationPanel.setSize("100%","100%");
            // visualizationPanel.add(new Label("search"));
 
@@ -683,7 +621,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
             searchFacets.getIndexesList().add("tolstoy_letters");
             searchFacets.getIndexesList().add("tolstoy_diaries");
 
-           final  VisualisationPanel vp = new VisualisationPanel(searchElastic, numberOfloadedLetters, loadingProgressImage, searchFacets);
+           final  VisualisationPanel vp = new VisualisationPanel(searchTextBox, numberOfloadedLetters, loadingProgressImage, searchFacets, localeName );
 
            //make async call to get initial data for visualization
 
@@ -691,9 +629,9 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
             mainPanel.add(vp);
 
-            searchElastic.setStyleName("seachBox");
+            searchTextBox.setStyleName("seachBox");
 
-            searchElastic.addKeyUpHandler(new KeyUpHandler()
+            searchTextBox.addKeyUpHandler(new KeyUpHandler()
             {
                 @Override
                 public void onKeyUp(KeyUpEvent event)
@@ -704,7 +642,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
                         loadingProgressImage.setVisible(true);
 
-                        TolstoyService.App.getInstance().getSelectedLetters(searchElastic.getText(), searchFacets,
+                        TolstoyService.App.getInstance().getSelectedLetters(searchTextBox.getText(), searchFacets,
                                 new SearchMaterialAsynchCallback(vp, loadingProgressImage));
                     }
 
@@ -727,8 +665,6 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
             Anchor searchExamples = new Anchor();
 
-            HorizontalPanel searchAndButtonpanel = new HorizontalPanel();
-
             searchExamples.setText(constants.searchExamplesLink());
 
             searchExamplePanel.setStyleName("search_examples");
@@ -746,7 +682,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
                 {
 
                     //todo call server to get examples.
-                    SearchExamplesPopUp popupPanel = new SearchExamplesPopUp(searchElastic, vp, loadingProgressImage
+                    SearchExamplesPopUp popupPanel = new SearchExamplesPopUp(searchTextBox, vp, loadingProgressImage
                     );
 
 
@@ -761,13 +697,15 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
             searchPanel.setCellHorizontalAlignment(searchExamples, HorizontalPanel.ALIGN_LEFT);
 
+            HorizontalPanel searchAndButtonpanel = new HorizontalPanel();
+
             searchAndButtonpanel.setWidth("100%");
 
-            searchAndButtonpanel.add(searchElastic);
+            searchAndButtonpanel.add(searchTextBox);
 
-            searchAndButtonpanel.setCellHorizontalAlignment(searchElastic, HorizontalPanel.ALIGN_LEFT);
+            searchAndButtonpanel.setCellHorizontalAlignment(searchTextBox, HorizontalPanel.ALIGN_LEFT);
 
-            searchAndButtonpanel.setCellVerticalAlignment(searchElastic, HasVerticalAlignment.ALIGN_MIDDLE);
+            searchAndButtonpanel.setCellVerticalAlignment(searchTextBox, HasVerticalAlignment.ALIGN_MIDDLE);
 
             searchAndButtonpanel.add(searchButton);
 
@@ -788,7 +726,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
             titlePanel.setCellHorizontalAlignment(searchPanel, HasHorizontalAlignment.ALIGN_LEFT);
 
-            menuIcon.setUrl("menuIconDefault.png");
+            menuIcon.setUrl("images/back.png");
 
            menuLink.setTargetHistoryToken("home");
 
@@ -804,18 +742,23 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
                 vp.getLettersContainer().clear();
 
                 loadingProgressImage.setVisible(true);
-                TolstoyService.App.getInstance().getSelectedLetters(searchElastic.getText(), searchFacets,
+                TolstoyService.App.getInstance().getSelectedLetters(searchTextBox.getText(), searchFacets,
                         new SearchMaterialAsynchCallback(vp,loadingProgressImage));
 
             });
 
-            RootLayoutPanel.get().removeStyleName("about_panel");
+            RootLayoutPanel.get().setStyleName("search_background");
 
         }
         else if ("comments".equalsIgnoreCase(value))
         {
+            dockLayoutPanel.setWidgetSize(contentPanel,0);
+          //  descriptionLink.setTargetHistoryToken("show");
+
             setComment();
             manageMenuStyles(value);
+
+            RootLayoutPanel.get().setStyleName("comment_background");
 
         }
 
@@ -858,80 +801,8 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
     }
 
 
-    private void setAbout()
-    {
-        flowPanel.clear();
 
-        HTML par1 = new HTML(constants.par1());
-
-        par1.addStyleName("textPara");
-
-        HTML par2 = new HTML(constants.par2());
-
-        par2.addStyleName("textPara");
-
-        HTML par3 = new HTML(constants.par3());
-
-        par3.addStyleName("textPara");
-
-        HTML par4 = new HTML(constants.par4());
-
-        par4.addStyleName("textPara");
-
-        HTML par5 = new HTML(constants.par5());
-
-        par5.addStyleName("textPara");
-
-        HTML par6 = new HTML(constants.par6());
-
-        par6.addStyleName("textPara");
-
-        HTML par7 = new HTML(constants.par7());
-
-        par7.addStyleName("textPara");
-
-        HTML parSignatureName = new HTML(constants.parSignatureName());
-        parSignatureName.addStyleName("textSign");
-        HTML parSignatureDept = new HTML(constants.parSignatureDept());
-        parSignatureDept.addStyleName("textSign");
-        HTML parSignatureDeptLine2 = new HTML(constants.parSignatureDeptLine2());
-        parSignatureDeptLine2.addStyleName("textSign");
-
-        HTML parSignatureInst = new HTML(constants.parSignatureInst());
-        parSignatureInst.addStyleName("textSign");
-        HTML parSignatureCity = new HTML(constants.parSignatureCity());
-        parSignatureCity.addStyleName("textSign");
-
-        SafeHtmlBuilder builder = new SafeHtmlBuilder();
-
-        builder.appendEscaped(constants.parPersonalPage());
-
-        Anchor parSignatureLink = new Anchor(builder.toSafeHtml(), constants.parSignatureLink());
-
-        parSignatureLink.addStyleName("textSign");
-
-
-        //  VerticalPanel panel = new VerticalPanel();
-        flowPanel.addStyleName("flow");
-
-
-        flowPanel.add(par1);
-        flowPanel.add(par2);
-        flowPanel.add(par3);
-        flowPanel.add(par4);
-        flowPanel.add(par5);
-        flowPanel.add(new HTML("&nbsp;"));
-        flowPanel.add(parSignatureName);
-        flowPanel.add(parSignatureDept);
-        flowPanel.add(parSignatureDeptLine2);
-        flowPanel.add(parSignatureInst);
-        flowPanel.add(parSignatureCity);
-        flowPanel.add(parSignatureLink);
-
-    }
-
-
-    private void setIndex()
+    private void setIntroduction()
     {
         mainPanel.clear();
 
@@ -948,17 +819,35 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         commentBasePanel.add(flowPanelMain);
 
-        commentBasePanel.setCellHorizontalAlignment(flowPanelMain, HasHorizontalAlignment.ALIGN_RIGHT);
+        commentBasePanel.setCellHorizontalAlignment(flowPanelMain, HasHorizontalAlignment.ALIGN_CENTER);
 
-        flowPanelMain.setHeight(Window.getClientHeight() + "px");
+      //  flowPanelMain.setHeight(Window.getClientHeight() + "px");
 
         ScrollPanel commentPanel = new ScrollPanel();
 
 
-        commentPanel.setHeight(Window.getClientHeight() + "px");
+       // commentPanel.setHeight(Window.getClientHeight() + "px");
         commentPanel.setWidth("100%");
 
         flowPanelMain.add(commentPanel);
+
+
+        Label enterIcon = new Label();
+
+        enterIcon.getElement().setId("enter_icon_intro");
+        enterIcon.setStyleName("circleContainer");
+
+        enterIcon.addClickHandler(new ClickHandler()
+        {
+            @Override
+            public void onClick(ClickEvent event)
+            {
+                History.newItem("search");
+
+            }
+        });
+
+        commentBasePanel.add(enterIcon);
 
 
 //        mainPanel.clear();
@@ -1077,12 +966,16 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         vp.setHeight("100%");
 
+        if ( !Document.get().getElementById("enter_icon_intro").hasChildNodes())
+        {
+            generateIcons("#enter_icon_intro", constants.search(), "Some help text");
+        }
+
     }
 
     private void setTechnical()
     {
         mainPanel.clear();
-        mainPanel.removeStyleName("comment_panel_style");
 
         mainPanel.setWidget(mainContentScroll);
 
@@ -1146,10 +1039,13 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
     {
         mainPanel.clear();
 
+        mainPanel.setStyleName("comment_main");
+
+
         VerticalPanel commentBasePanel = new VerticalPanel(); //so we can align everything correctly
 
         commentBasePanel.setStyleName("content_base");
-        commentBasePanel.addStyleName("comment_panel_style");
+       // commentBasePanel.addStyleName("comment_panel_style");
 
         flowPanelMain.clear();
 
@@ -1168,7 +1064,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         hand.setStyleName("hand");
 
-        flowPanelMain.add(hand);
+     //   flowPanelMain.add(hand);
 
 
 //        flowPanelMain.add(label);
@@ -1177,7 +1073,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 //
 //        label.setHTML("&nbsp;");
 
-        flowPanelMain.setHeight(Window.getClientHeight() + "px");
+     //   flowPanelMain.setHeight(Window.getClientHeight() + "px");
 
 //        final TextBox emailAddress = new TextBox();
 //
@@ -1282,7 +1178,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         discussLbl.getElement().setId("disqus_thread");
         commentPanel.add(discussLbl);
 
-        commentPanel.setHeight(Window.getClientHeight() + "px");
+       // commentPanel.setHeight(Window.getClientHeight() + "px");
         commentPanel.setWidth("100%");
         discussLbl.setStyleName("disqus_comment");
         
@@ -1320,7 +1216,6 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
     }-*/;
 
     native void generateIcons(String divId, String labelText, String helpText) /*-{
-
 
         $wnd.generateSiteIcons(divId, labelText, helpText);
     }-*/;

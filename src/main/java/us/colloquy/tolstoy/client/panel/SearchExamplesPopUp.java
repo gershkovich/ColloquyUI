@@ -1,8 +1,8 @@
 package us.colloquy.tolstoy.client.panel;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
@@ -173,14 +173,17 @@ public class SearchExamplesPopUp
 
                     searchElastic.setFocus(true);
 
+                    DomEvent.fireNativeEvent(Document.get()
+                            .createKeyUpEvent(false, false, false, false, KeyCodes.KEY_ENTER), searchElastic);
+
                     loadingProgressImage.setVisible(true);
 
-                    SearchFacets searchFacets = new SearchFacets();
-
-                    //collect info into search facet
-
-                    TolstoyService.App.getInstance().getSelectedLetters(searchElastic.getText(), searchFacets,
-                            new SearchMaterialAsynchCallback(vp, loadingProgressImage));
+//                    SearchFacets searchFacets = new SearchFacets();
+//
+//                    //collect info into search facet
+//
+//                    TolstoyService.App.getInstance().getSelectedLetters(searchElastic.getText(), searchFacets,
+//                            new SearchMaterialAsynchCallback(vp, loadingProgressImage));
 
 
                 }
