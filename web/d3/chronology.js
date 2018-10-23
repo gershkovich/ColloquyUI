@@ -151,7 +151,8 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                 };
                         })
                         .entries(padded_data);
-
+                        
+                /* @peter: get the list of all books here */
                 book_titles = data_extent.sort(function (a, b){
                         a_title = a["value"]["en_title"];
                         b_title = b["value"]["en_title"];
@@ -276,11 +277,12 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                         return y_event(d["row_number"]);
                                 })
                                 .attr("height", 7);
-
+                        
+                        /* @peter: calculate what books are visible right now, these get added to book list*/
                         var local_books = book_titles.filter(function (d) {
                                 return x(d["value"]["min_extent"]) < width && x(d["value"]["max_extent"]) > 0;
                         });
-
+                        /* @peter: the book list handlers is registered here */
                         bookUl.selectAll("li").remove();
                         bookUl.selectAll("li")
                                 .data(local_books)
@@ -555,7 +557,11 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
                 });
         }
-
+        /* @peter: grab these three functions. I don't think you have a "continuation", 
+                   just the work periods marked. I turn the work periods yellow, but 
+                   you could do something else, like bolding them or turning them white 
+                   with a black border
+        */
         function book_mouseout(book){
                 svg.selectAll('rect.continuation')
                     .attr('class', 'continuation');
