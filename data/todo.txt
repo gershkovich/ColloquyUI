@@ -1,7 +1,0 @@
-if len(first line) < 5 then
-	check for recipient to strip
-
-if last_line or second_last_line < 5 then
-	check for tolstoy's name
-
-using NER, strip all dates
