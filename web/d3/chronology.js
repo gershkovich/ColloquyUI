@@ -727,7 +727,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, documentType, startA
 
 
 
-    if (Array.isArray(startAndEndDates) && startAndEndDates[0].length > 0)
+    if (Array.isArray(startAndEndDates) && startAndEndDates[0] !== null && startAndEndDates[0].length > 0)
     {
         myBrash
             .call(brush.move, [x3(parseDate(startAndEndDates[0])), x3(parseDate(startAndEndDates[1]))]);

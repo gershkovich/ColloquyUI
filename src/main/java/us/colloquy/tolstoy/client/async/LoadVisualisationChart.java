@@ -3,6 +3,7 @@ package us.colloquy.tolstoy.client.async;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import us.colloquy.tolstoy.client.TolstoyConstants;
 import us.colloquy.tolstoy.client.TolstoyMessages;
 import us.colloquy.tolstoy.client.model.ServerResponse;
@@ -20,7 +21,6 @@ public class LoadVisualisationChart implements AsyncCallback<ServerResponse>
     private TolstoyMessages messages = GWT.create(TolstoyMessages.class);
 
 
-
     public LoadVisualisationChart(VisualisationPanel vpIn)
     {
 
@@ -31,7 +31,9 @@ public class LoadVisualisationChart implements AsyncCallback<ServerResponse>
     @Override
     public void onFailure(Throwable caught)
     {
-        vp.getFeedback().setText(constants.retrievalError());
+        Label feedbackLabel =  (Label) VisualisationPanel.resultsFeedbackPanel.getWidget(0);
+
+        feedbackLabel.setText(constants.retrievalError());
 
     }
 
@@ -40,11 +42,14 @@ public class LoadVisualisationChart implements AsyncCallback<ServerResponse>
     {
         String documentType = constants.documentTerm();
 
+        consoleLog("document type in load vis: " + documentType + " " + VisualisationPanel.searchFacets.getIndexesList().get(0));
+
         if (VisualisationPanel.searchFacets.getIndexesList().size() == 1)
         {
             if ("tolstoy_diaries".equalsIgnoreCase(VisualisationPanel.searchFacets.getIndexesList().get(0)))
             {
                 documentType = constants.diariesCheckboxLabel();//same
+
             }   else
             {
                 documentType = constants.lettersCheckboxLabel();//same

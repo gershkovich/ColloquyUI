@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import us.colloquy.tolstoy.client.Tolstoy;
 import us.colloquy.tolstoy.client.TolstoyConstants;
 import us.colloquy.tolstoy.client.TolstoyMessages;
 import us.colloquy.tolstoy.client.model.LetterDisplay;
@@ -39,7 +40,10 @@ public class SearchMaterialAsynchCallback  implements AsyncCallback<ServerRespon
     {
         loadingProgressImage.setVisible(false);
 
-        vp.getFeedback().setText(constants.retrievalError());
+        Label feedbackLabel =  (Label) VisualisationPanel.resultsFeedbackPanel.getWidget(0);
+
+        feedbackLabel.setText(constants.retrievalError());
+
     }
 
     @Override
@@ -51,9 +55,13 @@ public class SearchMaterialAsynchCallback  implements AsyncCallback<ServerRespon
 
         CommonFormatter.formatLetterDisplay(result, vp.getLettersContainer());
 
-        vp.getNumberOfLoadedLetters().setValue(result.getLetters().size() + "");
+       Tolstoy.numberOfLoadedLetters.setValue(result.getLetters().size() + "");
 
-        vp.getFeedback().setText(messages.numberOfLetterFound(result.getTotalNumberOfLetters() + "", vp.getNumberOfLoadedLetters().getValue()));
+        Tolstoy.totalNumberOfLetters.setValue(result.getTotalNumberOfLetters() + "");
+
+        Label feedbackLabel =  (Label) VisualisationPanel.resultsFeedbackPanel.getWidget(0);
+
+        feedbackLabel.setText(messages.numberOfLetterFound(Tolstoy.numberOfLoadedLetters.getValue(), result.getTotalNumberOfLetters() + ""));
 
         buildScatterPlot("#div_for_svg", result.getSelectedStats(), true);
 

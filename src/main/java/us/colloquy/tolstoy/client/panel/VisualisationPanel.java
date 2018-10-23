@@ -14,6 +14,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import us.colloquy.tolstoy.client.Tolstoy;
 import us.colloquy.tolstoy.client.TolstoyConstants;
 import us.colloquy.tolstoy.client.TolstoyMessages;
 import us.colloquy.tolstoy.client.TolstoyService;
@@ -39,8 +40,6 @@ public class VisualisationPanel extends Composite
 
     public static final HorizontalPanel resultsFeedbackPanel = new HorizontalPanel();
 
-    private final Hidden numberOfLoadedLetters;
-
     public final static VerticalPanel lettersContainer = new VerticalPanel();
 
     private final Image loadingProgressImage;
@@ -51,11 +50,9 @@ public class VisualisationPanel extends Composite
 
     private final CheckBox diariesCheckbox = new CheckBox(constants.diariesCheckboxLabel());
 
-    public VisualisationPanel(TextBox searchTextBoxIn, Hidden numberOfLoadedLettersIn, Image loadingProgressImageIn, SearchFacets searchFacetsIn, String localeIn)
+    public VisualisationPanel(TextBox searchTextBoxIn,  Image loadingProgressImageIn, SearchFacets searchFacetsIn, String localeIn)
     {
         searchTextBox = searchTextBoxIn;
-
-        numberOfLoadedLetters = numberOfLoadedLettersIn;
 
         loadingProgressImage = loadingProgressImageIn;
 
@@ -230,38 +227,25 @@ public class VisualisationPanel extends Composite
                 //on scroll down to the bottom add more records
                 int max = lettersScroll.getMaximumVerticalScrollPosition();
                 int pos = lettersScroll.getVerticalScrollPosition();
+                
+                //figure out if all are loaded
 
-                int total = 0;
-                int loaded = -1;
+                int totalLettersFound = Integer.valueOf(Tolstoy.totalNumberOfLetters.getValue());
 
-                String[] recordsCounts = feedback.getText().split(",");
+                int totalLettersLoadedOnClient = Integer.valueOf(Tolstoy.numberOfLoadedLetters.getValue());
 
-                if (recordsCounts.length == 2)
+
+                if ((max - pos) < 20 && totalLettersFound > totalLettersLoadedOnClient && "false".equalsIgnoreCase( Tolstoy.loadInProgress.getValue()))
                 {
+                    Tolstoy.loadInProgress.setValue("true");
 
-                    String totalS = recordsCounts[0].replaceAll("\\D", "").trim();
-                    String loadedS = recordsCounts[1].replaceAll("\\D", "").trim();
-
-                    if (totalS.matches("\\d{1,10}") && loadedS.matches("\\d{1,10}"))
-                    {
-                        total = Integer.valueOf(totalS);
-                        loaded = Integer.valueOf(loadedS);
-                    }
-                }
-
-                if ((max - pos) < 20 && total != loaded)
-                {
-                    loadingProgressImage.setVisible(true);
-
-                    int totalLettersLoadedOnClient = Integer.valueOf(numberOfLoadedLetters.getValue());
-
-                    SearchFacets searchFacets = new SearchFacets();
+                    loadingProgressImage.setVisible(true);  //todo could use that as a flag of loading progress
 
                     //collect info into search facet
                      //todo move that to on click
                     //load more records
                     TolstoyService.App.getInstance().getSelectedLettersWithOffset(totalLettersLoadedOnClient, searchTextBox.getText(), searchFacets,
-                            new SearchAdditionalLettersAsynchCallback(lettersContainer, feedback, numberOfLoadedLetters, loadingProgressImage));
+                            new SearchAdditionalLettersAsynchCallback(lettersContainer, loadingProgressImage));
                 }
             }
         });
@@ -318,11 +302,7 @@ public class VisualisationPanel extends Composite
             loadingProgressImage.setVisible(true);
             //do search with text the content of text box;
             //this call will load the diagram first and then load records via DataUplink class
-            TolstoyService.App.getInstance().getDataForCharts( searchFacets, new UpdateVisualisationChart(searchTextBox, numberOfLoadedLetters));
-
-//            //load more records
-//            TolstoyService.App.getInstance().getSelectedLettersWithOffset(0, searchTextBox.getText(), searchFacets,
-//                    new SearchAdditionalLettersAsynchCallback(lettersContainer, feedback, numberOfLoadedLetters, loadingProgressImage));
+            TolstoyService.App.getInstance().getDataForCharts( searchFacets, new UpdateVisualisationChart(searchTextBox));
         }
     }
 
@@ -347,20 +327,6 @@ public class VisualisationPanel extends Composite
         return lettersContainer;
     }
 
-    public Label getFeedback()
-    {
-        return feedback;
-    }
-
-    public void setFeedback(Label feedback)
-    {
-        this.feedback = feedback;
-    }
-
-    public Hidden getNumberOfLoadedLetters()
-    {
-        return numberOfLoadedLetters;
-    }
 
 
     // call chronology.js to create Chronology Chart
@@ -382,12 +348,10 @@ public class VisualisationPanel extends Composite
     {
         private TolstoyMessages messages = GWT.create(TolstoyMessages.class);
 
-        Hidden totalNumberOfLoadedLetters;
         TextBox searchTextBox;
 
-        public UpdateVisualisationChart(TextBox searchTextBoxIn, Hidden totalNumberOfLoadedLettersIn)
+        public UpdateVisualisationChart(TextBox searchTextBoxIn)
         {
-            totalNumberOfLoadedLetters=totalNumberOfLoadedLettersIn;
 
             searchTextBox = searchTextBoxIn;
 
@@ -396,7 +360,7 @@ public class VisualisationPanel extends Composite
         @Override
         public void onFailure(Throwable caught)
         {
-            getFeedback().setText(constants.retrievalError());
+            feedback.setText(constants.retrievalError());
 
         }
 
@@ -417,22 +381,11 @@ public class VisualisationPanel extends Composite
                 }
             }
 
-            feedback.setText( messages.numberOfLetterFound(result.getTotalNumberOfLetters() + "", totalNumberOfLoadedLetters.getValue()));
+            feedback.setText( ""); //todo that is a reset and we may put a progress bar here
 
             createVisualization(result.getCsvLetterData(), result.getWorkEvents(), documentType, result.getStartAndEndDates());
 
-            //that just clears scatterplot because there is no result back
-           // buildScatterPlot("#div_for_svg", result.getSelectedStats(), true);
 
-            //in theory now we need another search based on the status of
-            if (searchTextBox.getText().length() > 0 )
-            {
-                consoleLog("has text");
-
-                //now we need to run a search based on dates and ranges to apply facets
-                
-
-            }
         }
     }
 

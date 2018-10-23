@@ -269,7 +269,9 @@ public class ElasticConnector
 
             searchRequest.source(searchSourceBuilder);
 
-            searchSourceBuilder.size(100);
+            searchSourceBuilder.size(10);
+
+            System.out.println("From: " + fromInt);
 
             searchSourceBuilder.from(fromInt);
 
@@ -289,6 +291,10 @@ public class ElasticConnector
             SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
 
             SearchHits hits = searchResponse.getHits();
+
+
+            System.out.println("total hits" + searchResponse.getHits().getHits().length);
+
 
             result.setNumberOfResults(hits.getTotalHits());
 

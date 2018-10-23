@@ -166,7 +166,7 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
 
         //let's make info line here
 
-        setScatterPlotData(sdf.format(ld.getDate()), numOfWords, letter.getId(), briefDescription,  scatterPlotDataBuilder);
+        setScatterPlotData(sdf.format(ld.getDate()), numOfWords, letter.getId(), briefDescription, scatterPlotDataBuilder);
 
     }
 
@@ -186,7 +186,6 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
         if (dateRangeObject instanceof DateRange)
         {
             dateRange = (DateRange) dateRangeObject;
-
         }
 
         IndexSearchResult result = new IndexSearchResult();
@@ -206,19 +205,21 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
         ec.queryStringSearchFiltered(searchStringModified, properties, result, totalLettersLoadedOnClient,
                 dateRange.getStart(), dateRange.getEnd(), searchFacets.getIndexesList().toArray(new String[0]));
 
+
+        StringBuilder scatterPlotDataBuilder = new StringBuilder();
+        scatterPlotDataBuilder.append(SCATTER_PLOT_HEADER);
+
+        for (Letter letter : result.getLetters())
+        {
+            createServerResponse(letter, sdf, scatterPlotDataBuilder, sr);
+
+        }
+
         if (StringUtils.isNotEmpty(searchCriteria))
         {
-            StringBuilder scatterPlotDataBuilder = new StringBuilder();
-            scatterPlotDataBuilder.append(SCATTER_PLOT_HEADER);
-
-            for (Letter letter : result.getLetters())
-            {
-                createServerResponse(letter, sdf, scatterPlotDataBuilder, sr);
-
-            }
-
             sr.setSelectedStats(scatterPlotDataBuilder.toString());
         }
+
 
         if (dateRange.getStart() < 0)
         {

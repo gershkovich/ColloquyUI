@@ -1,5 +1,6 @@
 package us.colloquy.tolstoy.client.uplink;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.DOM;
@@ -10,6 +11,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 import us.colloquy.tolstoy.client.Tolstoy;
+import us.colloquy.tolstoy.client.TolstoyConstants;
+import us.colloquy.tolstoy.client.TolstoyMessages;
 import us.colloquy.tolstoy.client.TolstoyService;
 import us.colloquy.tolstoy.client.model.ServerResponse;
 import us.colloquy.tolstoy.client.panel.VisualisationPanel;
@@ -28,6 +31,9 @@ public class DataUplink
     public int y;
 
     private static Timer delayTimer = null;
+
+    private static final TolstoyConstants constants = GWT.create(TolstoyConstants.class);
+    private static final TolstoyMessages messages = GWT.create(TolstoyMessages.class);
 
     @JsMethod
     public int sum()
@@ -105,7 +111,11 @@ public class DataUplink
 
             Label feedbackLabel =  (Label) VisualisationPanel.resultsFeedbackPanel.getWidget(0);
 
-            feedbackLabel.setText("I am here");
+            Tolstoy.numberOfLoadedLetters.setValue(result.getLetters().size() + "");  //total reset
+            Tolstoy.totalNumberOfLetters.setValue(result.getTotalNumberOfLetters() + "");
+
+            feedbackLabel.setText(messages.numberOfLetterFound( result.getLetters().size() + "" , result.getTotalNumberOfLetters() + ""));
+            //at this point we have everything
 
             //we'll populate the entire window with letters here
             CommonFormatter.formatLetterDisplay(result, lettersContainer);
@@ -118,6 +128,8 @@ public class DataUplink
             }
 
             buildScatterPlot("#div_for_svg", result.getSelectedStats(), false);
+
+            Tolstoy.loadInProgress.setValue("false");
         }
 
         public void onFailure(Throwable throwable)

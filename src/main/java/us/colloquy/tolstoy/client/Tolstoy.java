@@ -39,6 +39,12 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
     private final SimpleLayoutPanel mainPanel = new SimpleLayoutPanel();
 
+    public static final Hidden numberOfLoadedLetters = new Hidden();
+
+    public static final Hidden totalNumberOfLetters = new Hidden();
+
+    public static final Hidden loadInProgress = new Hidden();
+
 //    private final Hyperlink descriptionLink = new Hyperlink(constants.about(), "show");
 
     private final List<Hyperlink> menuItems = new ArrayList<>();
@@ -75,6 +81,8 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
     public void onModuleLoad()
     {
+
+        numberOfLoadedLetters.setValue("0");
 
         Window.setTitle(constants.projectTitle());
 
@@ -621,7 +629,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
             searchFacets.getIndexesList().add("tolstoy_letters");
             searchFacets.getIndexesList().add("tolstoy_diaries");
 
-           final  VisualisationPanel vp = new VisualisationPanel(searchTextBox, numberOfloadedLetters, loadingProgressImage, searchFacets, localeName );
+           final  VisualisationPanel vp = new VisualisationPanel(searchTextBox, loadingProgressImage, searchFacets, localeName );
 
            //make async call to get initial data for visualization
 
