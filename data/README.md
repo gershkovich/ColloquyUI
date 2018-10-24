@@ -22,3 +22,7 @@ This usually improves topic model results and is a customary step in topic model
 3. We generate a stop list based on the contents of the letters themselves. Our script generates a stop list based on the 400 most common lemmas. We then concatentate our custom list to a stock list for Russian, French, German, and English languages. I also manually added a few elements to the stock list, including the months of the year.
 
 4. Then we import our data into a Mallet web, and run Mallet. I tried 50, 60, 70, 80, 90, and 100 topics, and found that 80 topics yielded the best results. (todo: look at some statistics for the project)
+
+## Todo
+- investigate the rectangle brackets in the letters, e.g. in letters/90-22. Should we replace regex '\[(w+)\]' with '\1'?
+- write get-named-entities.py
