@@ -16,7 +16,8 @@ var x = d3.scaleUtc().range([0, width]),
 var svg;
 
 
-function buildChronologyChart(divId, dataIn, dataForEvents, documentType, startAndEndDates, location) {
+
+function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAndEndDates, location) {
 
     var parseDate = d3.timeParse("%Y-%m-%d");
 
@@ -89,9 +90,17 @@ function buildChronologyChart(divId, dataIn, dataForEvents, documentType, startA
 
     //now rewrite data
 
-    x.domain(d3.extent(dataByMonth, function (d) {
-        return d.date;
-    }));
+    // x.domain(d3.extent(dataByMonth, function (d) {
+    //
+    //     return d.date;
+    //
+    // }));
+
+
+    x.domain([new Date(1840,1,1), new Date(1911,1,1)]); //we hardcode it to avoid shift in diaries vs letters
+
+   //console.log(JSON.stringify(x.domain(), null, 2));
+
     y.domain([0, d3.max(dataByMonth, function (d) {
         return d.letters;
     })]);
@@ -153,7 +162,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, documentType, startA
         .attr("x", 0 - (height - 50))
         .attr("dy", "1em")
         .style("text-anchor", "middle")
-        .text(documentType).style("font-size", "0.7em").style("fill", "#113f6c");
+        .text(yAxisLabel[0]).style("font-size", "0.7em").style("fill", "#113f6c");
 
     svg.append("text")
         .attr("transform",
@@ -237,7 +246,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, documentType, startA
             y.domain([0, d3.max(data, function (d) {
                 return d.letters;
             })]);
-            update(data, "Letter per day", "DarkKhaki");
+            update(data, yAxisLabel[2], "DarkKhaki");
 
 
         } else if (monthsDiff > 40 && monthsDiff < 100 && agg !== "weeks") {
@@ -247,7 +256,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, documentType, startA
                 return d.letters;
             })]);
             //switch to moths
-            update(dataByWeek, "Letter per week", "CadetBlue");
+            update(dataByWeek, yAxisLabel[1], "CadetBlue");
 
         }
         else if (monthsDiff >= 100 && agg !== "months") {
@@ -257,7 +266,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, documentType, startA
                 return d.letters;
             })]);
             //switch to moths
-            update(dataByMonth, "Letter per month", "SteelBlue");
+            update(dataByMonth, yAxisLabel[0], "SteelBlue");
 
         }
         // console.log(x.invert(position[0]));
@@ -731,8 +740,6 @@ function buildChronologyChart(divId, dataIn, dataForEvents, documentType, startA
     {
         myBrash
             .call(brush.move, [x3(parseDate(startAndEndDates[0])), x3(parseDate(startAndEndDates[1]))]);
-
-        console.log(parseDate(startAndEndDates[0]) + " " +  parseDate(startAndEndDates[1]));
     }
 }
 
@@ -740,9 +747,6 @@ function buildChronologyChart(divId, dataIn, dataForEvents, documentType, startA
 function buildScatterPlotChart(divId, dataIn, replace) {
 
     var toolTip = d3.select('.tooltip');
-
-
-    console.log("replace: " + replace);
 
     if (toolTip.empty()) {
         toolTip = d3.select("body").append("div")

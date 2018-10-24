@@ -108,6 +108,7 @@ public class DataUplink
             VerticalPanel lettersContainer = VisualisationPanel.lettersContainer;
 
             lettersContainer.clear();
+            lettersContainer.getParent().getElement().setScrollTop(0);
 
             Label feedbackLabel =  (Label) VisualisationPanel.resultsFeedbackPanel.getWidget(0);
 
@@ -118,6 +119,8 @@ public class DataUplink
             //at this point we have everything
 
             //we'll populate the entire window with letters here
+
+
             CommonFormatter.formatLetterDisplay(result, lettersContainer);
 
             if (DOM.getElementById("li_1") != null)

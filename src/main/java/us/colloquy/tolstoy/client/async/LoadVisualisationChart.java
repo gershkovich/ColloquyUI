@@ -40,23 +40,31 @@ public class LoadVisualisationChart implements AsyncCallback<ServerResponse>
     @Override
     public void onSuccess(ServerResponse result)
     {
-        String documentType = constants.documentTerm();
+        String [] yAxisLabels = new String [3];
 
-        consoleLog("document type in load vis: " + documentType + " " + VisualisationPanel.searchFacets.getIndexesList().get(0));
+        String documentType = constants.documentsLabel();
 
         if (VisualisationPanel.searchFacets.getIndexesList().size() == 1)
         {
             if ("tolstoy_diaries".equalsIgnoreCase(VisualisationPanel.searchFacets.getIndexesList().get(0)))
             {
-                documentType = constants.diariesCheckboxLabel();//same
+                documentType = constants.diariesLabel();
 
             }   else
             {
-                documentType = constants.lettersCheckboxLabel();//same
+                documentType = constants.lettersLabel();
             }
         }
 
-        vp.createVisualization(result.getCsvLetterData(), result.getWorkEvents(), documentType, result.getStartAndEndDates());
+        String [] periods = constants.scaleТimePeriod().split(",");
+
+        for (int i = 0; i < periods.length; i++ )
+        {
+            yAxisLabels[i] = documentType + " " + periods[i];
+
+        }
+
+        vp.createVisualization(result.getCsvLetterData(), result.getWorkEvents(), yAxisLabels, result.getStartAndEndDates());
     }
 
     native void consoleLog(String message) /*-{

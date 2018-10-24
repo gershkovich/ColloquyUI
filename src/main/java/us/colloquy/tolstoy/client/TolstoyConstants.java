@@ -121,7 +121,10 @@ public interface TolstoyConstants extends Constants {
     String diariesCheckboxLabel();
     String lettersCheckboxLabel();
 
-    String documentTerm();
+    String documentsLabel();
+    String lettersLabel();
+    String diariesLabel();
+    String scaleТimePeriod();
 
     String par11();
 

@@ -307,11 +307,11 @@ public class VisualisationPanel extends Composite
     }
 
 
-    public void createVisualization(String csvLettersData, String allEvents, String documentType, String [] startAndEndDates)
+    public void createVisualization(String csvLettersData, String allEvents, String [] yAxisLabel, String [] startAndEndDates)
     {
         Document.get().getElementById("div_for_svg").removeAllChildren();
 
-        buildChronology("#div_for_svg", csvLettersData, allEvents, documentType, startAndEndDates, LocaleInfo.getCurrentLocale().getLocaleName());
+        buildChronology("#div_for_svg", csvLettersData, allEvents, yAxisLabel, startAndEndDates, LocaleInfo.getCurrentLocale().getLocaleName());
     }
 
 
@@ -330,9 +330,9 @@ public class VisualisationPanel extends Composite
 
 
     // call chronology.js to create Chronology Chart
-    private native void buildChronology(String div, String datString, String allEvents, String documentType, String [] startAndEndDates, String location)/*-{
+    private native void buildChronology(String div, String datString, String allEvents, String [] yAxisLabel , String [] startAndEndDates, String location)/*-{
 
-        $wnd.buildChronologyChart(div, datString, allEvents, documentType, startAndEndDates, location);
+        $wnd.buildChronologyChart(div, datString, allEvents, yAxisLabel, startAndEndDates, location);
     }-*/;
 
     // call chronology.js to create Chronology Chart
@@ -367,23 +367,33 @@ public class VisualisationPanel extends Composite
         @Override
         public void onSuccess(ServerResponse result)
         {
-            String documentType = constants.documentTerm();
+            String [] yAxisLabels = new String [3];
 
-            if (searchFacets.getIndexesList().size() == 1)
+            String documentType = constants.documentsLabel();
+
+            if (searchFacets.getIndexesList().size() == 1)   //
             {
                 if ("tolstoy_diaries".equalsIgnoreCase(searchFacets.getIndexesList().get(0)))
                 {
-                    documentType = constants.diariesCheckboxLabel();//same
+                    documentType = constants.diariesLabel();
 
                 }   else
                 {
-                    documentType = constants.lettersCheckboxLabel();//same
+                    documentType = constants.lettersLabel();
                 }
+            }
+
+            String [] periods = constants.scaleТimePeriod().split(",");
+
+            for (int i = 0; i < periods.length; i++ )
+            {
+                yAxisLabels[i] = documentType + " " + periods[i];
+
             }
 
             feedback.setText( ""); //todo that is a reset and we may put a progress bar here
 
-            createVisualization(result.getCsvLetterData(), result.getWorkEvents(), documentType, result.getStartAndEndDates());
+            createVisualization(result.getCsvLetterData(), result.getWorkEvents(), yAxisLabels, result.getStartAndEndDates());
 
 
         }

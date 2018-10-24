@@ -269,7 +269,7 @@ public class ElasticConnector
 
             searchRequest.source(searchSourceBuilder);
 
-            searchSourceBuilder.size(10);
+            searchSourceBuilder.size(100);
 
             System.out.println("From: " + fromInt);
 
