@@ -50,6 +50,8 @@ public class VisualisationPanel extends Composite
 
     private final CheckBox diariesCheckbox = new CheckBox(constants.diariesCheckboxLabel());
 
+    private final DeckPanel deckPanelForOptions = new DeckPanel();
+
     public VisualisationPanel(TextBox searchTextBoxIn,  Image loadingProgressImageIn, SearchFacets searchFacetsIn, String localeIn)
     {
         searchTextBox = searchTextBoxIn;
@@ -137,9 +139,7 @@ public class VisualisationPanel extends Composite
 
         VerticalPanel facetVerticalPanel = new VerticalPanel();
 
-        HorizontalPanel letterHorizontalPanel = new HorizontalPanel();
-
-        HorizontalPanel diariesHorizontalPanel = new HorizontalPanel();
+        HorizontalPanel documentsCheckboxesHorizontalPanel = new HorizontalPanel();
 
         letterCheckbox.setStyleName("checkBoxSmallLabel");
 
@@ -148,9 +148,9 @@ public class VisualisationPanel extends Composite
         letterCheckbox.setValue(true);
         diariesCheckbox.setValue(true);
 
-        letterHorizontalPanel.add(letterCheckbox);
+        documentsCheckboxesHorizontalPanel.add(letterCheckbox);
 
-        letterHorizontalPanel.add(diariesCheckbox);
+        documentsCheckboxesHorizontalPanel.add(diariesCheckbox);
 
         letterCheckbox.addClickHandler(new ClickHandler()
         {
@@ -178,10 +178,29 @@ public class VisualisationPanel extends Composite
 //        diariesLabel.setStyleName("titleSmallLabel");
 //        lettersLabel.setStyleName("titleSmallLabel");
 
-        facetVerticalPanel.add(letterHorizontalPanel);
-        facetVerticalPanel.add(diariesHorizontalPanel);
+        facetVerticalPanel.add(documentsCheckboxesHorizontalPanel);
 
-        slp.addWest(facetVerticalPanel, Window.getClientWidth() / 7.8);
+
+        deckPanelForOptions.add(facetVerticalPanel);
+
+        deckPanelForOptions.setStyleName("deck_panel_for_options");
+
+        ScrollPanel tolstoyWorksScroll = new ScrollPanel();
+
+        VerticalPanel tolstoyWorks = new VerticalPanel();
+        Label workCollectionLabel = new Label("future place for all works");
+        
+        workCollectionLabel.getElement().setId("all_works_collection");
+        tolstoyWorks.add(workCollectionLabel);
+
+        tolstoyWorksScroll.setWidget(tolstoyWorks);
+
+        deckPanelForOptions.add(tolstoyWorksScroll);
+
+        slp.addWest(deckPanelForOptions, Window.getClientWidth() / 7.8);
+
+
+
         slp.addNorth(chronologyPanel, 410);
 
         slp.addStyleName("splitLayoutPanel");
@@ -399,4 +418,8 @@ public class VisualisationPanel extends Composite
         }
     }
 
+    public DeckPanel getDeckPanelForOptions()
+    {
+        return deckPanelForOptions;
+    }
 }

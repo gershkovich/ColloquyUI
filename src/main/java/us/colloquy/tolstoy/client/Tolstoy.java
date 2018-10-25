@@ -132,7 +132,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         menuIcon.setTitle(constants.menuText());
 
         titlePanel.setWidth("100%");
-        titlePanel.setHeight("100%");
+       // titlePanel.setHeight("100%");
 
 
         titlePanel.setCellVerticalAlignment(menuLink, HasVerticalAlignment.ALIGN_MIDDLE);
@@ -629,7 +629,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
             searchFacets.getIndexesList().add("tolstoy_letters");
             searchFacets.getIndexesList().add("tolstoy_diaries");
 
-           final  VisualisationPanel vp = new VisualisationPanel(searchTextBox, loadingProgressImage, searchFacets, localeName );
+            final  VisualisationPanel vp = new VisualisationPanel(searchTextBox, loadingProgressImage, searchFacets, localeName );
 
            //make async call to get initial data for visualization
 
@@ -659,8 +659,6 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
             titlePanel.clear();
 
-           // dockLayoutPanel.setWidgetHidden(contentPanel, true);
-
             dockLayoutPanel.setWidgetSize(contentPanel,0);
 
             HorizontalPanel searchPanel = new HorizontalPanel();
@@ -683,6 +681,63 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
             searchPanel.add(searchExamplePanel);
 
+            HorizontalPanel dockHorizontalPanel = new HorizontalPanel();
+
+            searchExamplePanel.setCellVerticalAlignment(searchExamples, HasVerticalAlignment.ALIGN_TOP);
+
+
+            Label facetsTabLabel =  new Label(constants.fasets());
+
+            facetsTabLabel.setStyleName("options_tab");
+
+            dockHorizontalPanel.add(facetsTabLabel);
+
+           Label worksTabLabel =  new Label(constants.works());
+
+           worksTabLabel.setStyleName("options_tab");
+
+            dockHorizontalPanel.add(worksTabLabel);
+
+            searchExamplePanel.add(dockHorizontalPanel);
+
+            searchExamplePanel.setCellHorizontalAlignment(dockHorizontalPanel, HasHorizontalAlignment.ALIGN_LEFT);
+
+            searchExamplePanel.setCellHorizontalAlignment(worksTabLabel, HasHorizontalAlignment.ALIGN_LEFT);
+
+            facetsTabLabel.addStyleName("options_tab_sel");
+            worksTabLabel.removeStyleName("options_tab_sel");
+
+            vp.getDeckPanelForOptions().showWidget(0);
+
+
+            //handle Deck panel on VisualisationPanel
+             worksTabLabel.addClickHandler(new ClickHandler()
+             {
+                 @Override
+                 public void onClick(ClickEvent event)
+                 {
+
+                     facetsTabLabel.removeStyleName("options_tab_sel");
+                     worksTabLabel.addStyleName("options_tab_sel");
+                     vp.getDeckPanelForOptions().showWidget(1);
+
+                 }
+             });
+
+            facetsTabLabel.addClickHandler(new ClickHandler()
+            {
+                @Override
+                public void onClick(ClickEvent event)
+                {
+
+                    facetsTabLabel.addStyleName("options_tab_sel");
+                    worksTabLabel.removeStyleName("options_tab_sel");
+                    vp.getDeckPanelForOptions().showWidget(0);
+
+                }
+            });
+
+
             searchExamples.addClickHandler(new ClickHandler()
             {
                 @Override
@@ -704,6 +759,8 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
             });
 
             searchPanel.setCellHorizontalAlignment(searchExamples, HorizontalPanel.ALIGN_LEFT);
+
+            searchPanel.setCellVerticalAlignment(searchExamples, HasVerticalAlignment.ALIGN_TOP);
 
             HorizontalPanel searchAndButtonpanel = new HorizontalPanel();
 

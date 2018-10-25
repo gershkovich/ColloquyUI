@@ -67,7 +67,7 @@ public class SearchExamplesPopUp
 
         
 
-        dialogBox.setHTML("<span class=\"header_label\"><b>Search Examples</b></span>");
+        dialogBox.setHTML("<span class=\"header_label\"><b> " + constants.searchExamplesPopUpTitle() +  "</b></span>");
 
         dialogBox.setWidget(mainPanel);
     }

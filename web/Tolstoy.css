@@ -323,6 +323,8 @@ html, body {
     cursor: pointer;
     padding-left: 2em;
     padding-top: 1em;
+
+    white-space: nowrap;
 }
 
 .navigation {
@@ -1029,4 +1031,46 @@ gwt-PopupPanelGlass {
      font: 0.8em "Open Sans", sans-serif;
         font-weight: lighter;
         color: #007c77;
+}
+
+.options_tab {
+
+    margin-top: 1vh;
+    font: 0.8em "Open Sans", sans-serif;
+    font-weight: lighter;
+    font-variant: small-caps;
+    color: #007c77;
+
+    border-style: solid;
+    border-width: thin;
+    border-color: lightgray;
+
+    border-bottom: none;
+
+    border-top-left-radius: 10px 5px;
+    border-top-right-radius:  10px 5px;
+    padding: 3px;
+
+    white-space:nowrap;
+    display: inline-block;
+
+    -webkit-user-select: none; /* Safari 3.1+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
+
+
+}
+
+.options_tab_sel {
+
+    background-color: white;
+}
+
+.deck_panel_for_options {
+    
+    background-color: white;
+    height: 90vh;
+    width: 100%;
+
 }

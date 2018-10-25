@@ -129,4 +129,10 @@ public interface TolstoyConstants extends Constants {
     String par11();
 
     String resultsLabel();
+
+    String works();
+
+    String fasets();
+
+    String searchExamplesPopUpTitle();
 }
