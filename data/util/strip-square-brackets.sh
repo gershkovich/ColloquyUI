@@ -29,7 +29,7 @@ def strip_brackets(raw_path):
     out_fp.close()
     raw_fp.close()
 
-letter_paths = letter_paths[:10]
+#letter_paths = letter_paths[:10]
     
 pool = Pool(num_procs)
 pool.map(strip_brackets, letter_paths)
