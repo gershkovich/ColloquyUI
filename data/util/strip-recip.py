@@ -8,7 +8,7 @@ if len(sys.argv) < 3:
 
 in_fp = open(sys.argv[1], 'r')
 out_fp = open(sys.argv[2], 'w')
-recips_fp = open('recipients.json', 'r')
+recips_fp = open('util/recipients.json', 'r')
 
 in_buff = in_fp.read()
 recips = json.load(recips_fp)
