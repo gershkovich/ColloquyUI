@@ -30,3 +30,4 @@ all_names = pool.map(process_ltr, letters)
 
 with open('../names.json', 'w') as out_fp:
     json.dump(all_names, out_fp, ensure_ascii=False)
+
