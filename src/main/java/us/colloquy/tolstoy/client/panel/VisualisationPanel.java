@@ -188,9 +188,10 @@ public class VisualisationPanel extends Composite
         ScrollPanel tolstoyWorksScroll = new ScrollPanel();
 
         VerticalPanel tolstoyWorks = new VerticalPanel();
-        Label workCollectionLabel = new Label("future place for all works");
-        
-        workCollectionLabel.getElement().setId("all_works_collection");
+        Label workCollectionLabel = new Label();
+
+        workCollectionLabel.getElement().setId("book-list");
+        workCollectionLabel.setStyleName("book_list");
         tolstoyWorks.add(workCollectionLabel);
 
         tolstoyWorksScroll.setWidget(tolstoyWorks);
@@ -410,7 +411,7 @@ public class VisualisationPanel extends Composite
 
             }
 
-            feedback.setText( ""); //todo that is a reset and we may put a progress bar here
+            feedback.setText( "..."); //todo that is a reset and we may put a progress bar here
 
             createVisualization(result.getCsvLetterData(), result.getWorkEvents(), yAxisLabels, result.getStartAndEndDates());
 

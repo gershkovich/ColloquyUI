@@ -1065,6 +1065,7 @@ gwt-PopupPanelGlass {
 .options_tab_sel {
 
     background-color: white;
+    border-color: black;
 }
 
 .deck_panel_for_options {
@@ -1073,4 +1074,53 @@ gwt-PopupPanelGlass {
     height: 90vh;
     width: 100%;
 
+}
+
+.highlighter_line{
+
+    stroke: lightgray;
+    stroke-width: 15px;
+
+}
+
+
+
+.book_list{
+
+    overflow-y: scroll;
+
+    height: 90vh;
+    width: 100%;
+    text-overflow:ellipsis;
+    text-wrap: none;
+    white-space: nowrap;
+    overflow-x: hidden;
+}
+
+.book_list_items {
+
+    font-family: "Helvetica Neue";
+    font-size: 0.8em;
+
+    /*font-variant: small-caps;*/
+
+
+    cursor: pointer;
+
+    margin-left: 2px;
+
+    white-space: nowrap;
+    width: 12vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #256f6a;
+
+
+
+}
+
+.book_list_items:hover{
+    text-overflow:clip;
+    width:auto;
+    white-space: normal;
 }
