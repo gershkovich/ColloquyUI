@@ -347,7 +347,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
         var local_books = book_titles.filter(function (d) {
             //return x(d["value"]["min_extent"]) < width && x(d["value"]["max_extent"]) > 0;
 
-            console.log(d.value.min_extent);
+
             var matchingPeriod = false;
 
             matchingPeriod = d.value.events.some(function (el, i) {
@@ -378,7 +378,12 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
             })
             .text(function (d) {
-                return d["value"]["en_title"];
+                if (location != "ru") {
+                    return d["value"]["en_title"];
+                } else
+                {
+                    return d["value"]["ru_title"];
+                }
             })
             .on('mouseover', function (d) {
                 book_mouseover(d);
@@ -387,11 +392,22 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
                 book_mouseout(d);
             })
             .on('click', function (d) {
-                bookUl.selectAll("div").style('color', '#256f6a');
-                d3.select(this).style('color', '#ff0014');
 
-                book_click(d);
-            });
+                bookUl.selectAll("div").style('color', '#256f6a');
+                eventFocus.selectAll(".highlighter_line").remove();
+
+                if (selected_line_coordinates && d.key == selected_line_coordinates.key) {
+
+                    selected_line_coordinates.key="xyz";
+
+                } else {
+                    d3.select(this).style('color', '#ff0014');
+
+                    book_click(d);
+                }
+
+
+            }).on('dblclick', selectTimelineForPeriod);;
 
     }
 
@@ -500,6 +516,17 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
         myBrash.transition()       // apply a transition
             .duration(2000)
             .call(brush.move, [x3(d3.timeDay.offset(minR, -10)), x3(d3.timeDay.offset(maxR, +10))]);
+
+    }
+
+    function selectTimelineForPeriod(d) {
+
+        console.log( JSON.stringify(d, null, 2));
+
+
+        myBrash.transition()       // apply a transition
+            .duration(2000)
+            .call(brush.move, [x3(d3.timeDay.offset(d.value.min_extent, -10)), x3(d3.timeDay.offset(d.value.max_extent, +10))]);
 
     }
 
@@ -662,13 +689,21 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
         highlighter_line.on("mouseover", function (d) {
 
-            console.log(JSON.stringify(selected_line_coordinates, null, 2));
             toolTip.transition()
                 .duration(200)
                 .style("opacity", .9);
-            toolTip.text(selected_line_coordinates.title)
-                .style("left", (d3.event.pageX) + "px")
-                .style("top", (d3.event.pageY - 30) + "px");
+            if (location != "ru") {
+
+                toolTip.text(selected_line_coordinates.title)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 30) + "px");
+            } else
+            {
+                toolTip.text(selected_line_coordinates.key)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 30) + "px");
+            }
+
         })
             .on("mouseout", function (d) {
                 toolTip.transition()
@@ -864,9 +899,16 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
             });
 
             book_titles.sort(function (a, b) {
-                a_title = a["value"]["en_title"];
-                b_title = b["value"]["en_title"];
-                return a_title.localeCompare(b_title, 'en');
+                if (location != "ru") {
+                    a_title = a["value"]["en_title"];
+                    b_title = b["value"]["en_title"];
+                    return a_title.localeCompare(b_title, 'en');
+                } else
+                {
+                    a_title = a["value"]["ru_title"];
+                    b_title = b["value"]["ru_title"];
+                    return a_title.localeCompare(b_title, 'ru');
+                }
             });
 
 
@@ -912,7 +954,6 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
         var local_books = book_titles.filter(function (d) {
             //return x(d["value"]["min_extent"]) < width && x(d["value"]["max_extent"]) > 0;
 
-            console.log(d.value.min_extent);
             var matchingPeriod = false;
 
             matchingPeriod = d.value.events.some(function (el, i) {
@@ -943,7 +984,12 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
             })
             .text(function (d) {
-                return d["value"]["en_title"];
+                if (location != "ru") {
+                    return d["value"]["en_title"];
+                } else
+                {
+                    return d["value"]["ru_title"];
+                }
             })
             .on('mouseover', function (d) {
                 book_mouseover(d);
@@ -953,10 +999,19 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
             })
             .on('click', function (d) {
                 bookUl.selectAll("div").style('color', '#256f6a');
-                d3.select(this).style('color', '#ff0014');
 
-                book_click(d);
-            });
+                eventFocus.selectAll(".highlighter_line").remove();
+
+                if (selected_line_coordinates && d.key == selected_line_coordinates.key) {
+                    selected_line_coordinates.key="xyz";
+
+                } else {
+                    d3.select(this).style('color', '#ff0014');
+
+                    book_click(d);
+                }
+
+            }).on('dblclick', selectTimelineForPeriod);
 
     }
 
@@ -969,8 +1024,6 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
     buildAllEvents();
 
     buildTitlesList();
-
-
 
 
 }

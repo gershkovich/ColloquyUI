@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+
+    <!--use for external packages when necessary -->
+    <appender name="commonLogger" class="org.apache.log4j.FileAppender">
+
+        <param name="file" value="logs/common_log.out"/>
+
+        <param name="threshold" value="fatal"/>
+
+        <param name="immediateFlush" value="true"/>
+
+        <param name="append" value="true"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+
+            <param name="conversionPattern" value="%d [%r] [%t] %p %m%n"/>
+
+        </layout>
+
+    </appender>
+
+    <!--Logger regular Logger is a file logger with standard pattern use if for production-->
+    <appender name="regularLogger" class="org.apache.log4j.FileAppender">
+
+        <param name="file" value="logs/path_portal_log.out"/>
+
+        <param name="threshold" value="fatal"/>
+
+        <param name="immediateFlush" value="true"/>
+
+        <param name="append" value="true"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+
+            <param name="conversionPattern" value="%d [%r] [%t] %p %m%n"/>
+
+        </layout>
+
+    </appender>
+
+
+    <!--Logger file Logger is using conversion pattern that could slow down the program use for debug only-->
+    <appender name="fileLogger" class="org.apache.log4j.FileAppender">
+
+        <param name="file" value="logs/portal_debug.out"/>
+
+        <param name="threshold" value="fatal"/>
+
+        <param name="immediateFlush" value="true"/>
+
+        <param name="append" value="true"/>
+
+        <layout class="org.apache.log4j.PatternLayout">
+
+            <param name="conversionPattern" value="%C %L %d [%r] [%t] %p %m%n"/>
+
+        </layout>
+
+    </appender>
+
+
+    <!-- Use for testing only - the output will go to Console -->
+
+    <appender name="consoleLogger" class="org.apache.log4j.ConsoleAppender">
+
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="conversionPattern" value="%d [%r] [%t] %p %m%n"/>
+        </layout>
+
+    </appender>
+
+
+    <root>
+
+        <priority value="fatal"/>
+
+        <appender-ref ref="consoleLogger"/>
+
+    </root>
+
+</log4j:configuration>
+
