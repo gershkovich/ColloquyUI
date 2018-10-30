@@ -135,4 +135,32 @@ public interface TolstoyConstants extends Constants {
     String fasets();
 
     String searchExamplesPopUpTitle();
+
+    String titleMission();
+
+    String titleOnSources();
+
+    String titleTimeline();
+
+    String titleTech();
+
+    String titleTeam();
+
+    String parTatyana();
+
+    String parPeter();
+
+    String parRichie();
+
+    String titleAck();
+
+    String parAck();
+
+    String titleUsingPlatform();
+
+    String captionIntro();
+
+    String titleSampleSearch();
+
+    String parSampleSearch();
 }

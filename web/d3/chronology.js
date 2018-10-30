@@ -898,15 +898,17 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
             });
 
+            var regex1 = /^(the|a|an)\s/i;
+
             book_titles.sort(function (a, b) {
-                if (location != "ru") {
-                    a_title = a["value"]["en_title"];
-                    b_title = b["value"]["en_title"];
+                if (location == "en") {
+                    a_title = a.value.en_title.replace(regex1,"");
+                    b_title = b.value.en_title.replace(regex1,"");
                     return a_title.localeCompare(b_title, 'en');
                 } else
                 {
-                    a_title = a["value"]["ru_title"];
-                    b_title = b["value"]["ru_title"];
+                    a_title = a.value.ru_title;
+                    b_title = b.value.ru_title;
                     return a_title.localeCompare(b_title, 'ru');
                 }
             });

@@ -284,6 +284,23 @@ html, body {
     /*text-decoration-line: underline;*/
 }
 
+
+.textTitle {
+
+    padding-top: 1.2em;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bold;
+    color: #09352e;
+    width: 92%;
+    min-width: 10em;
+    margin-left: 2em;
+    text-align: left;
+    text-justify: inter-word;
+    font-size: 1.2em;
+    right: 0;
+
+}
+
 .textPara {
 
     padding-top: 1.2em;

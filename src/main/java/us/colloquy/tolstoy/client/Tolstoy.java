@@ -4,9 +4,11 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.VideoElement;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.media.client.Video;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
@@ -886,12 +888,8 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         commentBasePanel.setCellHorizontalAlignment(flowPanelMain, HasHorizontalAlignment.ALIGN_CENTER);
 
-      //  flowPanelMain.setHeight(Window.getClientHeight() + "px");
-
         ScrollPanel commentPanel = new ScrollPanel();
 
-
-       // commentPanel.setHeight(Window.getClientHeight() + "px");
         commentPanel.setWidth("100%");
 
         flowPanelMain.add(commentPanel);
@@ -914,74 +912,9 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         commentBasePanel.add(enterIcon);
 
-
-//        mainPanel.clear();
-//
-//        VerticalPanel commentBasePanel = new VerticalPanel();
-//
-//        commentBasePanel.setStyleName("content_base");
-//        commentBasePanel.addStyleName("index_panel_style");
-//
-//        flowPanelMain.clear();
-//
-//        flowPanelMain.setStyleName("flowMain");
-//
-//        mainPanel.setWidget(commentBasePanel);
-//
-//        commentBasePanel.add(flowPanelMain);
-//
-//        commentBasePanel.setCellHorizontalAlignment(flowPanelMain, HasHorizontalAlignment.ALIGN_RIGHT);
-//
-//        flowPanelMain.setHeight(Window.getClientHeight() + "px");
-//
-//        ScrollPanel commentPanel = new ScrollPanel();
-//
-//        flowPanelMain.add(commentPanel);
-//
         VerticalPanel vp = new VerticalPanel();
 
-         commentPanel.setWidget(vp);
-
-        //  flowPanelMain.setHeight(Window.getClientHeight() + "px");
-
-//        submitButton.addClickHandler(new ClickHandler()
-//        {
-//            public void onClick(ClickEvent event)
-//            {
-//                if (emailAddress.getText() != null
-//
-//                        && textArea.getText() != null && textArea.getText().length() > 5)
-//                {
-//                    TolstoyService.App.getInstance().submitComments(emailAddress.getText(), textArea.getText(), new CommentsAsyncCallback(label));
-//
-//                } else
-//                {
-//                    label.setText(constants.emailFeedbackErr1());
-//                }
-//            }
-//        });
-
-
-
-//        mainPanel.clear();
-//        mainPanel.setWidget(mainContentScroll);
-//        mainPanel.removeStyleName("comment_panel_style");
-//
-//        mainPanel.setStyleName("index_panel_style");
-//
-//        mainContentScroll.clear();
-//
-//        mainContentScroll.setStyleName("index_panel_scroll");
-//
-//
-//
-//        VerticalPanel indexVerticalPanel = new VerticalPanel();
-//
-//        mainContentScroll.setWidget(indexVerticalPanel);
-//
-//        indexVerticalPanel.setStyleName("index_vertical");
-
-//        indexVerticalPanel.setStyleName("flowMain");
+        commentPanel.setWidget(vp);
 
         Image img = new Image("images/searchEx1.png");
 
@@ -990,6 +923,77 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         Image img2 = new Image("images/searchEx2.png");
 
         img2.setStyleName("intro_image");
+
+        HTML par1 = new HTML(constants.par1());
+
+        par1.addStyleName("textPara");
+
+        HTML par2 = new HTML(constants.par2());
+
+        par2.addStyleName("textPara");
+
+        HTML par3 = new HTML(constants.par3());
+
+        par3.addStyleName("textPara");
+
+        HTML par4 = new HTML(constants.par4());
+
+        par4.addStyleName("textPara");
+
+        HTML par5 = new HTML(constants.par5());
+
+        par5.addStyleName("textPara");
+
+        HTML par6 = new HTML(constants.par6());
+
+        par6.addStyleName("textPara");
+
+        HTML titleMission = new HTML(constants.titleMission());
+
+        titleMission.addStyleName("textTitle");
+
+        HTML titleUsingPlatform = new HTML(constants.titleUsingPlatform());
+
+        titleUsingPlatform.addStyleName("textTitle");
+
+        HTML titleSampleSearch = new HTML(constants.titleSampleSearch());
+
+        titleSampleSearch.addStyleName("textTitle");
+
+
+        HTML parSampleSearch = new HTML(constants.parSampleSearch());
+
+        parSampleSearch.addStyleName("textPara");
+
+
+        HTML captionIntro = new HTML(constants.captionIntro());
+
+        captionIntro.addStyleName("textTitle");
+
+        HTML titleOnSources = new HTML(constants.titleOnSources());
+
+        titleOnSources.addStyleName("textTitle");
+
+        HTML titleTimeline = new HTML(constants.titleTimeline());
+
+        titleTimeline.addStyleName("textTitle");
+
+
+        HTML titleTech = new HTML(constants.titleTech());
+
+        titleTech.addStyleName("textTitle");
+
+        HTML titleTeam = new HTML(constants.titleTeam());
+
+        titleTeam.addStyleName("textTitle");
+
+        HTML titleAck = new HTML(constants.titleAck());
+
+        titleAck.addStyleName("textTitle");
+
+
+
+
 
         HTML par7 = new HTML(constants.par7());
 
@@ -1003,14 +1007,60 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         par10.addStyleName("textPara");
 
+        HTML parTatyana = new HTML(constants.parTatyana());
+
+        parTatyana.addStyleName("textPara");
+
+        HTML parPeter = new HTML(constants.parPeter());
+
+        parPeter.addStyleName("textPara");
+
+        HTML parRichie = new HTML(constants.parRichie());
+
+        parRichie.addStyleName("textPara");
+
+        HTML parAck = new HTML(constants.parAck());
+
+        parAck.addStyleName("textPara");
+
         HTML parRef1 = new HTML(constants.parRef1());
 
         parRef1.addStyleName("textRef");
 
+        vp.add(titleMission);
 
-        vp.add(par7);
+        vp.add(par1);
 
-        vp.add(par8);
+        vp.add(par2);
+
+        vp.add(par3);
+
+        vp.add(par4);
+
+        vp.add(titleUsingPlatform);
+
+        vp.add(par5);
+
+        Video video = Video.createIfSupported();
+        if (video == null) {
+            RootPanel.get().add(new Label("Your browser doesn't support HTML5 Video"));
+            return;
+        }
+
+        video.addSource("images/introduction.mp4", VideoElement.TYPE_MP4);
+        video.setControls(true);
+        video.setWidth("80%");
+
+        vp.add(captionIntro);
+        vp.add(video);
+        vp.add(new HTML("&nbsp;"));
+
+        vp.setCellHorizontalAlignment(video, HasHorizontalAlignment.ALIGN_CENTER);
+
+        vp.add(titleSampleSearch);
+
+        vp.add(parSampleSearch);
+
 
 //        flowPanelMain.add(dateSearchAnchor);
         vp.add(new HTML("&nbsp;"));
@@ -1021,13 +1071,41 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         par11.addStyleName("textPara");
 
         vp.add(par11);
+        vp.add(new HTML("&nbsp;"));
         vp.add(img2);
 //        flowPanelMain.add(par9);
 //        flowPanelMain.add(lesMiserablesAnchor);
         vp.add(new HTML("&nbsp;"));
-        vp.add(par10);
+
+
+        vp.add(titleOnSources);
+
+        vp.add(par6);
+
+
+        vp.add(titleTimeline);
+        vp.add(par7);
+
+
+        vp.add(titleTech);
+        vp.add(par8);
+
+        vp.add(titleTeam);
+        vp.add(parTatyana);
+
+        vp.add(parPeter);
+
+        vp.add(parRichie);
+
+        vp.add(titleAck);
+        vp.add(parAck);
+        
+       // vp.add(par10);
         vp.add(new HTML("<hr>"));
-        vp.add(parRef1);
+
+        vp.add(new HTML("&nbsp;"));
+        vp.add(new HTML("&nbsp;"));
+      //  vp.add(parRef1);
 
         vp.setHeight("100%");
 
