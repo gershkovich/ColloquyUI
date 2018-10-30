@@ -2,14 +2,14 @@ from natasha import PersonExtractor
 from os.path import isfile, join, basename
 from os import listdir
 import json
-from queue import Queue
 from multiprocessing import Pool
 import sys
+import codecs
 
 def process_ltr(ltr):
     names = []
     extractor = PersonExtractor()
-    with open(ltr, 'r') as letter_fp:
+    with codecs.open(ltr, mode='r', encoding='utf-8') as letter_fp:
         contents = letter_fp.read()
         matches = extractor(contents)
         for m in matches:
@@ -17,7 +17,7 @@ def process_ltr(ltr):
                           "filename": basename(ltr)})
     return names
 
-ltr_root = '../letters'
+ltr_root = 'letters'
 letters = [join(ltr_root, f) for f in listdir(ltr_root) if isfile(join(ltr_root, f))]
 
 if len(sys.argv) < 2:
@@ -25,9 +25,11 @@ if len(sys.argv) < 2:
 	exit()
 
 num_procs = int(sys.argv[1])
-pool = Pool(num_procs)
-all_names = pool.map(process_ltr, letters)
+if num_procs > 0:
+    pool = Pool(num_procs)
+    all_names = pool.map(process_ltr, letters)
+else:
+    all_names = [process_ltr(ltr_path) for ltr_path in letters] 
 
-with open('../names.json', 'w') as out_fp:
+with codecs.open('util/names.json', mode='w', encoding='utf-8') as out_fp:
     json.dump(all_names, out_fp, ensure_ascii=False)
-

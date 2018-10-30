@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#SBATCH --time=01:00:00
+#SBATCH --time=00:10:00
 #SBATCH --job-name=""
 #SBATCH --cluster=smp
 #SBATCH --partition=smp
@@ -11,9 +11,4 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=richardbfulop@gmail.com
 
-export PATH=$PATH:"~/local/bin/"
-module load java
-./util/strip-square-brackets.sh letters temp/clean 10
-./util/run-mystem.sh
-./util/clean-mallet-input.sh
-./util/mallet-import.sh
+python ./util/get-named-entities.py 10
