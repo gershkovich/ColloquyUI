@@ -21,6 +21,8 @@ var book_titles = [];
 
 function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAndEndDates, location) {
 
+    var predefinedDates = [new Date(1840, 1, 1), new Date(1911, 1, 1)];
+
     var parseDate = d3.timeParse("%Y-%m-%d");
 
     var formatDate = d3.timeFormat("%Y-%m-%d");
@@ -124,7 +126,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
     // }));
 
 
-    x.domain([new Date(1840, 1, 1), new Date(1911, 1, 1)]); //we hardcode it to avoid shift in diaries vs letters
+    x.domain(predefinedDates); //we hardcode it to avoid shift in diaries vs letters
 
     //console.log(JSON.stringify(x.domain(), null, 2));
 
@@ -380,8 +382,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
             .text(function (d) {
                 if (location != "ru") {
                     return d["value"]["en_title"];
-                } else
-                {
+                } else {
                     return d["value"]["ru_title"];
                 }
             })
@@ -398,7 +399,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
                 if (selected_line_coordinates && d.key == selected_line_coordinates.key) {
 
-                    selected_line_coordinates.key="xyz";
+                    selected_line_coordinates.key = "xyz";
 
                 } else {
                     d3.select(this).style('color', '#ff0014');
@@ -407,7 +408,8 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
                 }
 
 
-            }).on('dblclick', selectTimelineForPeriod);;
+            }).on('dblclick', selectTimelineForPeriod);
+        ;
 
     }
 
@@ -521,7 +523,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
     function selectTimelineForPeriod(d) {
 
-        console.log( JSON.stringify(d, null, 2));
+        console.log(JSON.stringify(d, null, 2));
 
 
         myBrash.transition()       // apply a transition
@@ -697,8 +699,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
                 toolTip.text(selected_line_coordinates.title)
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY - 30) + "px");
-            } else
-            {
+            } else {
                 toolTip.text(selected_line_coordinates.key)
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY - 30) + "px");
@@ -902,11 +903,10 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
             book_titles.sort(function (a, b) {
                 if (location == "en") {
-                    a_title = a.value.en_title.replace(regex1,"");
-                    b_title = b.value.en_title.replace(regex1,"");
+                    a_title = a.value.en_title.replace(regex1, "");
+                    b_title = b.value.en_title.replace(regex1, "");
                     return a_title.localeCompare(b_title, 'en');
-                } else
-                {
+                } else {
                     a_title = a.value.ru_title;
                     b_title = b.value.ru_title;
                     return a_title.localeCompare(b_title, 'ru');
@@ -988,8 +988,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
             .text(function (d) {
                 if (location != "ru") {
                     return d["value"]["en_title"];
-                } else
-                {
+                } else {
                     return d["value"]["ru_title"];
                 }
             })
@@ -1005,7 +1004,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
                 eventFocus.selectAll(".highlighter_line").remove();
 
                 if (selected_line_coordinates && d.key == selected_line_coordinates.key) {
-                    selected_line_coordinates.key="xyz";
+                    selected_line_coordinates.key = "xyz";
 
                 } else {
                     d3.select(this).style('color', '#ff0014');
@@ -1026,6 +1025,103 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
     buildAllEvents();
 
     buildTitlesList();
+
+    // eventFocus.append("text")
+    //     .attr('class', 'svg_navigation')
+    //     .attr("y", 0)
+    //     .attr("x", 0)
+    //     .attr("dy", "1em")
+    //     .style("text-anchor", "middle")
+    //     .text("reset").on('click', function (d) {
+    //     myBrash.transition()       // apply a transition
+    //         .duration(1000)
+    //         .call(brush.move, [x3(predefinedDates[0]), x3(predefinedDates[1])]);
+    // });
+
+
+    function generateResetButton() {
+
+        var circle_g = eventFocus.append("g").attr("width", 45)
+            .attr("height", 45);
+
+        circle_g.attr('transform', 'translate(0, 0)');
+
+        var filter = circle_g.append("defs")
+            .append("filter")
+            .attr("id", "drop-shadow");
+
+        filter.append("feGaussianBlur")
+            .attr("stdDeviation", 2)
+            .attr("in", "SourceAlpha");
+
+        filter.append("feOffset")
+            .attr("dx", 1)
+            .attr("dy", 1);
+
+        var feMerge = filter.append("feMerge");
+
+        feMerge.append("feMergeNode");
+
+        feMerge.append("feMergeNode")
+            .attr("in", "SourceGraphic");
+
+
+        var circle = eventFocus.append("circle")
+            .attr("class", "reset_circle")
+            .attr("cx", 22).attr("cy", 22)
+            .attr("r", 20);
+
+
+        circle.on("mouseover", function (d, i) {
+            d3.select(this).style("filter", "url(#drop-shadow)");
+
+        });
+
+        circle.on("mouseout", function (d, i) {
+            d3.select(this).style("filter", null);
+
+        }).on('click', function (d) {
+
+            myBrash.transition()
+                .duration(1000)
+                .call(brush.move, [x3(predefinedDates[0]), x3(predefinedDates[1])]);
+        });
+
+        var helpText = circle_g.append("text")
+            .attr("class", "svg_navigation")
+            .attr("x", 22)
+            .attr("y", 22)
+            .text(function(){
+                if ("ru" === location)
+                {
+                    return "сброс";
+                } else  {
+                    return "reset";
+                }
+            });
+
+        helpText.on("mouseover", function (d) {
+
+            toolTipdiv.transition()
+                .duration(100)
+                .style("opacity", .9);
+            toolTipdiv.html("Reset the scale.")
+                .style("left", (d3.event.pageX) - 120 + "px")
+                .style("top", (d3.event.pageY - 10) + "px");
+        })
+            .on("mouseout", function (d) {
+                toolTipdiv.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            });
+
+
+    }
+
+
+
+    generateResetButton();
+
 
 
 }

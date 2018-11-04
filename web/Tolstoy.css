@@ -157,8 +157,8 @@ html, body {
     color: #09352e;
     opacity: 0.94;
     filter: alpha(opacity=94);
-     height: 90vh;
-        overflow: auto;   
+    height: 90vh;
+    overflow: auto;
 
 }
 
@@ -170,8 +170,8 @@ html, body {
     color: #09352e;
     opacity: 0.95;
     filter: alpha(opacity=90);
-     height: 90vh;
-        overflow: auto;
+    height: 90vh;
+    overflow: auto;
 }
 
 .titleBar {
@@ -283,7 +283,6 @@ html, body {
     cursor: pointer;
     /*text-decoration-line: underline;*/
 }
-
 
 .textTitle {
 
@@ -601,15 +600,18 @@ html, body {
     color: #1e584c;
 }
 
-
 /* The animation code */
 
 @keyframes workSelection {
 
-    from {background-color: #feab11;}
+    from {
+        background-color: #feab11;
+    }
 
-    to {background-color: lightyellow}
-    
+    to {
+        background-color: lightyellow
+    }
+
 }
 
 :target {
@@ -617,7 +619,7 @@ html, body {
     background-color: lightyellow;
 
     animation-name: workSelection;
-        animation-duration: 5s;
+    animation-duration: 5s;
 }
 
 /*.gwt-SplitLayoutPanel {  }*/
@@ -896,17 +898,17 @@ gwt-PopupPanelGlass {
     background: transparent;
 
     height: 100%;
-       overflow: auto;    
+    overflow: auto;
 }
 
 /*.comment_panel_style {*/
 
-    /*background: whitesmoke url(images/bckg-comment.jpg) no-repeat center center fixed;*/
+/*background: whitesmoke url(images/bckg-comment.jpg) no-repeat center center fixed;*/
 
-    /*-webkit-background-size: cover;*/
-    /*-moz-background-size: cover;*/
-    /*-o-background-size: cover;*/
-    /*background-size: cover;*/
+/*-webkit-background-size: cover;*/
+/*-moz-background-size: cover;*/
+/*-o-background-size: cover;*/
+/*background-size: cover;*/
 
 /*}*/
 
@@ -924,7 +926,7 @@ gwt-PopupPanelGlass {
     /*left: 0;*/
     width: 100%;
     height: 100vh;
-       overflow: auto;
+    overflow: auto;
 }
 
 .initial_background {
@@ -1032,8 +1034,8 @@ gwt-PopupPanelGlass {
 }
 
 .comment_main {
-      height: 100%;
-      overflow: auto;
+    height: 100%;
+    overflow: auto;
 }
 
 .feedback_panel {
@@ -1045,9 +1047,9 @@ gwt-PopupPanelGlass {
 
 .feedback_disabled {
 
-     font: 0.8em "Open Sans", sans-serif;
-        font-weight: lighter;
-        color: #007c77;
+    font: 0.8em "Open Sans", sans-serif;
+    font-weight: lighter;
+    color: #007c77;
 }
 
 .options_tab {
@@ -1065,10 +1067,10 @@ gwt-PopupPanelGlass {
     border-bottom: none;
 
     border-top-left-radius: 10px 5px;
-    border-top-right-radius:  10px 5px;
+    border-top-right-radius: 10px 5px;
     padding: 3px;
 
-    white-space:nowrap;
+    white-space: nowrap;
     display: inline-block;
 
     -webkit-user-select: none; /* Safari 3.1+ */
@@ -1076,42 +1078,52 @@ gwt-PopupPanelGlass {
     -ms-user-select: none; /* IE 10+ */
     user-select: none; /* Standard syntax */
 
-
 }
 
 .options_tab_sel {
 
     background-color: white;
     border-color: black;
+    font-weight: bold;
 }
 
 .deck_panel_for_options {
-    
+
     background-color: white;
     height: 90vh;
     width: 100%;
 
 }
 
-.highlighter_line{
+.highlighter_line {
 
     stroke: lightgray;
     stroke-width: 15px;
 
 }
 
-
-
-.book_list{
+.book_list {
 
     overflow-y: scroll;
 
     height: 90vh;
     width: 100%;
-    text-overflow:ellipsis;
+    text-overflow: ellipsis;
     text-wrap: none;
     white-space: nowrap;
     overflow-x: hidden;
+}
+
+.book_list ::selection {
+    background-color: #2dbeff;
+    outline: none;
+    color: white;
+}
+
+.book_list:focus {
+    background-color: #2dbeff;
+    outline: none;
+    color: white;
 }
 
 .book_list_items {
@@ -1120,7 +1132,6 @@ gwt-PopupPanelGlass {
     font-size: 0.8em;
 
     /*font-variant: small-caps;*/
-
 
     cursor: pointer;
 
@@ -1132,12 +1143,72 @@ gwt-PopupPanelGlass {
     text-overflow: ellipsis;
     color: #256f6a;
 
-
-
 }
 
-.book_list_items:hover{
-    text-overflow:clip;
-    width:auto;
+.book_list_items:hover {
+    text-overflow: clip;
+    width: auto;
     white-space: normal;
 }
+
+.video-container {
+
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 30px;
+    height: 0;
+    overflow: hidden;
+
+    margin-top: 1vh;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    text-align: center;
+    display: block;
+
+}
+
+.video-container iframe, .video-container object, .video-container embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+}
+
+.svg_navigation {
+
+    font-size: 0.8em;
+    font-variant: small-caps;
+   fill: #0a55a7;
+
+
+    font-family: "Open Sans", sans-serif;
+    font-weight: bold;
+    pointer-events: none;
+    text-anchor: middle;
+    dominant-baseline: central;
+
+    -webkit-user-select: none; /* Safari 3.1+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
+}
+
+.svg_navigation:hover {
+
+    cursor: pointer;
+
+}
+
+.reset_circle {
+    opacity: .55;
+    stroke: #e6e6e0;
+    fill: white;
+
+}
+
+
+
+
+
