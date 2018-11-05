@@ -163,4 +163,8 @@ public interface TolstoyConstants extends Constants {
     String titleSampleSearch();
 
     String parSampleSearch();
+
+    String searchExampleEight();
+
+    String searchExampleEightExp();
 }

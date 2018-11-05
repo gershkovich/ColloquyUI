@@ -33,11 +33,12 @@ html, body {
 
 .titleLabel {
 
-    font-size: 2vw;
+    font-family: 'Abel', sans-serif;
+    font-weight: bolder;
 
+    font-size: 2vw;
     margin-left: 2em;
-    font-family: 'Open Sans Condensed', sans-serif;
-    font-weight: normal;
+
     text-align: left;
 
     text-wrap: normal;
@@ -45,6 +46,26 @@ html, body {
     color: white;
 
     margin-top: 1em;
+}
+
+
+.titleLabel:lang(ru) 	{
+
+    font-family: 'Open Sans Condensed', sans-serif;
+    /*font-family: 'Abel', sans-serif;*/
+    font-weight: normal;
+
+    font-size: 2vw;
+    margin-left: 2em;
+
+    text-align: left;
+
+    text-wrap: normal;
+
+    color: white;
+
+    margin-top: 1em;
+
 }
 
 .titleSmallLabel {

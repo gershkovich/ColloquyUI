@@ -141,6 +141,7 @@ public class SearchExamplesPopUp
         examples.add(new String[]{constants.searchExampleThree(), constants.searchExampleThreeExp()});
         examples.add(new String[]{constants.searchExampleFour(), constants.searchExampleFourExp()});
         examples.add(new String[]{constants.searchExampleFive(), constants.searchExampleFiveExp()});
+        examples.add(new String[]{constants.searchExampleEight(), constants.searchExampleEightExp()});
 
 
         for (String[] ex : examples)

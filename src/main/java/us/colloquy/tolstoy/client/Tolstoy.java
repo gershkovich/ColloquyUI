@@ -265,6 +265,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         Label projectTitle = new Label(constants.projectTitle());
 
         projectTitle.addStyleName("titleLabel");
+        projectTitle.getElement().setAttribute("lang", localeName);
 
         titlePanel.add(projectTitle);
         titlePanel.setCellVerticalAlignment(projectTitle, HasVerticalAlignment.ALIGN_MIDDLE);
