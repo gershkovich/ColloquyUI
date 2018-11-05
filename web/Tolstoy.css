@@ -36,8 +36,8 @@ html, body {
     font-size: 2vw;
 
     margin-left: 2em;
-    font-family: 'Abel', sans-serif;
-    font-weight: bolder;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: normal;
     text-align: left;
 
     text-wrap: normal;
@@ -258,15 +258,13 @@ html, body {
 
 .subtitle {
     color: white;
-    /*font-family: 'Oranienbaum', serif;*/
     font-family: 'Yanone Kaffeesatz', sans-serif;
-    /*font-family: 'Oswald', sans-serif;*/
-    /*font-weight: 200; */
+    font-weight: 200;
     font-style: normal;
     font-size: 5vw;
 
-    /*margin-left: 2em;*/
     margin-top: 6em;
+    margin-bottom: 2em;
 
     overflow-wrap: break-spaces;
     width: 100%;
@@ -274,7 +272,6 @@ html, body {
 
     text-underline: thick;
     text-underline-color: #f8a600;
-    /*text-underline-position: below;*/
 
 }
 

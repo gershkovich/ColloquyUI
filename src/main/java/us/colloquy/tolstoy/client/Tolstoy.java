@@ -70,6 +70,8 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
     private final FlowPanel flowPanelMain = new FlowPanel();
 
+    HorizontalPanel titleBar = new HorizontalPanel();
+
     private final HorizontalPanel titlePanel = new HorizontalPanel();
 
     private final Label smallTitle = new Label();
@@ -90,13 +92,12 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         Window.setTitle(constants.projectTitle());
 
-        HorizontalPanel titleBar = new HorizontalPanel();
 
         titleBar.setStyleName("titleBar");
 
         titleBar.setWidth("100%");
 
-        dockLayoutPanel.addNorth(titleBar, 6);
+        dockLayoutPanel.addNorth(titleBar, 7);
 
         localeName = LocaleInfo.getCurrentLocale().getLocaleName();
 
@@ -546,6 +547,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         {
             dockLayoutPanel.setWidgetSize(contentPanel, 0);
             // descriptionLink.setTargetHistoryToken("show");
+            dockLayoutPanel.setWidgetSize(titleBar, 7);
 
             clearStyles();
 
@@ -611,6 +613,7 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
             //set content
             dockLayoutPanel.setWidgetSize(contentPanel, 0);
             //  descriptionLink.setTargetHistoryToken("show");
+            dockLayoutPanel.setWidgetSize(titleBar, 7);
 
             setIntroduction();
             manageMenuStyles(value);
@@ -620,6 +623,8 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         } else if ("search".equalsIgnoreCase(value))
         {
+
+
             clearStyles();
             //menuLink.setTargetHistoryToken("search");
             mainPanel.clear();
@@ -667,6 +672,8 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
             titlePanel.clear();
 
             dockLayoutPanel.setWidgetSize(contentPanel, 0);
+
+            dockLayoutPanel.setWidgetSize(titleBar, 6);
 
             HorizontalPanel searchPanel = new HorizontalPanel();
 
