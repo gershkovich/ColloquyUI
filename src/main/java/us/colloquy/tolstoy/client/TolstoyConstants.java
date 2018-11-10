@@ -114,9 +114,9 @@ public interface TolstoyConstants extends Constants {
 
         String searchExampleSixExp();
 
-        String searchExampleSever();
+    String searchExampleEight();
 
-        String searchExampleSevenExp();
+    String searchExampleEightExp();
 
     String diariesCheckboxLabel();
     String lettersCheckboxLabel();
@@ -164,7 +164,11 @@ public interface TolstoyConstants extends Constants {
 
     String parSampleSearch();
 
-    String searchExampleEight();
 
-    String searchExampleEightExp();
+
+    String searchExampleNote();
+
+    String searchExampleSeven();
+
+    String searchExampleSevenExp();
 }

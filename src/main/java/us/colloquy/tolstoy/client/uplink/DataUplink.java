@@ -90,7 +90,7 @@ public class DataUplink
     private static void performDocumentLookup( String documentId )
     {
 
-        consoleLog("looking for " + documentId);
+        //consoleLog("looking for " + documentId); todo!
 
     }
 

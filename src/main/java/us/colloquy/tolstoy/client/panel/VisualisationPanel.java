@@ -209,7 +209,6 @@ public class VisualisationPanel extends Composite
         lettersScroll.setSize(Window.getClientWidth() / 6 * 5 + "px", (Window.getClientHeight() / 4 * 3 - 90) + "px");
         chartScroll.setSize( Window.getClientWidth() / 6 * 5 + "px",  "400px");
 
-      consoleLog(Window.getClientHeight() + " height");
         lettersScroll.add(lettersContainer);
 
         lettersScroll.setStyleName("scrollPanel_smooth");

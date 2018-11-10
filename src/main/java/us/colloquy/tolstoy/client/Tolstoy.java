@@ -518,8 +518,6 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         String value = event.getValue();
 
-        consoleLog("event: " + value);
-
         //  dockLayoutPanel.setWidgetHidden(contentPanel, true);  //hide first
 
         if ("show".equalsIgnoreCase(value))
@@ -849,12 +847,9 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
     private void manageMenuStyles(String value)
     {
 
-        consoleLog("Manage Menu: " + value);
-
 
         for (Hyperlink menu : menuItems)
         {
-            consoleLog("History token for each item: " + menu.getTargetHistoryToken());
 
             if (value.equalsIgnoreCase(menu.getTargetHistoryToken()))
             {

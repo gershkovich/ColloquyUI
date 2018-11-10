@@ -56,13 +56,7 @@ public class SearchAdditionalLettersAsynchCallback implements AsyncCallback<Serv
 
         int numberOfPreviouslyLoadedDocuments = Integer.valueOf(Tolstoy.numberOfLoadedLetters.getValue());
 
-        consoleLog("fond " + result.getLetters().size());
-
-        consoleLog("loading additional letters - previously loaded: " + numberOfPreviouslyLoadedDocuments);
-
         Tolstoy.numberOfLoadedLetters.setValue((numberOfPreviouslyLoadedDocuments + result.getLetters().size()) + "");
-
-        consoleLog("searching for additional letters setting to " + Tolstoy.numberOfLoadedLetters.getValue() + " of total " +   Tolstoy.totalNumberOfLetters.getValue());
 
         Label feedbackLabel =  (Label) VisualisationPanel.resultsFeedbackPanel.getWidget(0);
 

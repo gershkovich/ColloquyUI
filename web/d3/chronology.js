@@ -128,7 +128,6 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
     x.domain(predefinedDates); //we hardcode it to avoid shift in diaries vs letters
 
-    //console.log(JSON.stringify(x.domain(), null, 2));
 
     y.domain([0, d3.max(dataByMonth, function (d) {
         return d.letters;
@@ -163,7 +162,6 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
         })
         .on("mouseover", function () { //<-A
             var position = d3.mouse(svg.node());
-            //console.log(x.invert(position[0]));
         });
 
     focus.append("g")
@@ -296,7 +294,6 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
             update(dataByMonth, yAxisLabel[0], "SteelBlue");
 
         }
-        // console.log(x.invert(position[0]));
 
         focus.selectAll(".bar")
             .attr("x", function (d) {
@@ -492,7 +489,6 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
         var selectedDate = x.invert(mx);
 
-        // console.log("range: " + x3(x.invert(mx)));
 
         if (Array.isArray(d)) {
 
@@ -510,7 +506,6 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
                 }
             }
 
-            // console.log( "min - " + minR + " " + maxR);
         }
 
         //we found date and then need to find the range and position
@@ -522,8 +517,6 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
     }
 
     function selectTimelineForPeriod(d) {
-
-        console.log(JSON.stringify(d, null, 2));
 
 
         myBrash.transition()       // apply a transition
@@ -642,22 +635,6 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
     function book_mouseover(book) {
 
-        // console.log(JSON.stringify(eventFocus.selectAll("ellipse")
-        //     .data(), null, 2));
-
-        // eventFocus.selectAll("line_event")
-        //     .attr("class", function (d) {
-        //
-        //         console.log(JSON.stringify(d, null, 2));
-        //         // if (d["ru_title"] === book["key"]) {
-        //         //     return "continuation highlight";
-        //         // }
-        //         // else {
-        //         //     return "continuation";
-        //         // }
-        //     });
-
-
     }
 
     function book_click(book) {
@@ -666,14 +643,6 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
         eventFocus.selectAll(".highlighter_line").remove();
 
-
-        // eventFocus.selectAll("path")
-        //     .attr("stroke", function (d, i) {
-        //
-        //         console.log(i + " - " + JSON.stringify(d, null, 2));
-        //         return "gray";
-        //     });
-        //insert("div",":first-child");
         var highlighter_line = eventFocus.insert("line", ":first-child").attr('class', 'highlighter_line');
 
         selected_line_coordinates = {
@@ -841,7 +810,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
                 bandMap.get(bandYpos).push(eventCompleteScale);
 
                 work.events.forEach(event => {
-                    //console.log(new Date(event.start));
+
 
                     //draw a line from start to end
                     var startPoint = {
@@ -939,15 +908,8 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
             }
         };
 
-
-        // d3.json("data/events.json").then(function (d) {
-
-        //console.log(JSON.stringify(allEventsParsed, null, 2));
-
         mapWorkEvents(JSON.parse(dataForEvents));
 
-
-        // });
     }
 
 
@@ -1209,7 +1171,7 @@ function buildScatterPlotChart(divId, dataIn, replace) {
                     .style("opacity", 0);
                 d3.select(this).style('fill', '#f2014f');
 
-                // console.log(JSON.stringify(d, null, 2));
+
                 goToAnchor(d.id);
                 // us.colloquy.tolstoy.client.uplink.DataUplink.lookupDocument(d.id);
 

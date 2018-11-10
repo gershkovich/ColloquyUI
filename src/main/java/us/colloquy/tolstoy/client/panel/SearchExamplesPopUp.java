@@ -142,6 +142,8 @@ public class SearchExamplesPopUp
         examples.add(new String[]{constants.searchExampleFour(), constants.searchExampleFourExp()});
         examples.add(new String[]{constants.searchExampleFive(), constants.searchExampleFiveExp()});
         examples.add(new String[]{constants.searchExampleEight(), constants.searchExampleEightExp()});
+        examples.add(new String[]{constants.searchExampleSix(), constants.searchExampleSixExp()});
+        examples.add(new String[]{constants.searchExampleSeven(), constants.searchExampleSevenExp()});
 
 
         for (String[] ex : examples)
@@ -198,6 +200,12 @@ public class SearchExamplesPopUp
         }
 
         //see details at http://www.lucenetutorial.com/lucene-query-syntax.html
+
+        HTML referencesForExamples = new HTML(constants.searchExampleNote());
+
+        referencesForExamples.setStyleName("interfaceLabelInstructions");
+
+        linksPanel.add(referencesForExamples);
 
         scrollPanelForExamples.setWidget(linksPanel);
 

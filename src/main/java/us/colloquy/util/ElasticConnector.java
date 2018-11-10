@@ -49,7 +49,7 @@ public class ElasticConnector
         {
 
             String filtered = searchString.replaceAll("\\sИ\\s", " AND ")
-                    .replaceAll("\\sИЛИ\\s", " OR ");
+                    .replaceAll("\\sИЛИ\\s", " OR ").replaceAll("\\sНЕТ\\s"," NOT ").replaceAll("\\sДО\\s"," TO ");
 
             String highlightedText = "highlightedText";
 
@@ -254,7 +254,8 @@ public class ElasticConnector
 
 
             String filtered = searchString.replaceAll("\\sИ\\s", " AND ")
-                    .replaceAll("\\sИЛИ\\s", " OR ");
+                    .replaceAll("\\sИЛИ\\s", " OR ").replaceAll("\\sНЕT\\s"," NOT ").replaceAll("\\sДО\\s"," TO ");
+
 
             String highlightedText = "highlightedText";
 
