@@ -1194,6 +1194,31 @@ gwt-PopupPanelGlass {
 
 }
 
+
+/*video-container_small {*/
+
+    /*position: relative;*/
+    /*padding-bottom: 56.25%;*/
+    /*padding-top: 30px;*/
+    /*height: 0;*/
+    /*overflow: hidden;*/
+
+    /*margin-top: 1vh;*/
+    /*margin-left: 5vw;*/
+    /*margin-right: 5vw;*/
+    /*text-align: center;*/
+    /*display: block;*/
+
+/*}*/
+
+/*.video-container_small iframe, .video-container object, .video-container embed {*/
+
+    /*width: 420px;*/
+    /*height: 345px;*/
+
+
+/*}*/
+
 .svg_navigation {
 
     font-size: 0.8em;

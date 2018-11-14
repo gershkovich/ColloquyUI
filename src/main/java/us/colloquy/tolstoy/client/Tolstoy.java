@@ -518,6 +518,8 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         String value = event.getValue();
 
+        consoleLog("event: " + value);
+
         //  dockLayoutPanel.setWidgetHidden(contentPanel, true);  //hide first
 
         if ("show".equalsIgnoreCase(value))
@@ -972,10 +974,6 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         parSampleSearch.addStyleName("textPara");
 
 
-        HTML captionIntro = new HTML(constants.captionIntro());
-
-        captionIntro.addStyleName("textTitle");
-
         HTML titleOnSources = new HTML(constants.titleOnSources());
 
         titleOnSources.addStyleName("textTitle");
@@ -1055,23 +1053,109 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 //        video.setWidth("80%");
         //<iframe width="560" height="315" src="https://www.youtube.com/embed/V88iwg3n9Xc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+
+        HTML captionIntro = new HTML(constants.captionIntro());
+
+        captionIntro.addStyleName("textTitle");
+
+
         SimplePanel sp = new SimplePanel();
         sp.setStyleName("video-container");
 
-        Frame video = new Frame("https://www.youtube.com/embed/V88iwg3n9Xc");
-        video.getElement().setId("ytplayer");
-
-        video.getElement().setAttribute("allow", "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture");
-        video.getElement().setAttribute("frameborder", "0");
-        video.getElement().setAttribute("allowfullscreen", "");
-
+//        Frame video = new Frame("https://www.youtube.com/embed/V88iwg3n9Xc");
+//        video.getElement().setId("ytplayer");
+//
+//        video.getElement().setAttribute("allow", "accelerometer; autoplay; encrypted-media; ");
+//        video.getElement().setAttribute("frameborder", "0");
+//        video.getElement().setAttribute("allowfullscreen", "");
 
         vp.add(captionIntro);
-        sp.setWidget(video);
+        //sp.setWidget(video)
+         //instead we are loading video here
+        Label player1 = new Label();
+        player1.getElement().setId("player1");
+        sp.setWidget(player1);
         vp.add(sp);
         vp.add(new HTML("&nbsp;"));
 
         vp.setCellHorizontalAlignment(sp, HasHorizontalAlignment.ALIGN_CENTER);
+
+
+        SimplePanel sp2 = new SimplePanel();
+        sp2.setStyleName("video-container");
+
+//        Frame video2 = new Frame("https://www.youtube.com/embed/uCGu7Sfll98");
+//
+//        video2.getElement().setId("ytplayer2");
+//
+//        video2.getElement().setAttribute("allow", "accelerometer; autoplay; encrypted-media;");
+//        video2.getElement().setAttribute("frameborder", "0");
+//        video2.getElement().setAttribute("allowfullscreen", "");
+
+
+        HTML captionOverview = new HTML(constants.captionOverview());
+
+        captionOverview.addStyleName("textTitle");
+
+        vp.add(captionOverview);
+
+//        sp2.setWidget(video2);
+        vp.add(sp2);
+
+        vp.add(new HTML("&nbsp;"));
+        vp.setCellHorizontalAlignment(sp2, HasHorizontalAlignment.ALIGN_CENTER);
+
+
+        SimplePanel sp3 = new SimplePanel();
+        sp3.setStyleName("video-container");
+
+//        Frame video3 = new Frame("https://www.youtube.com/embed/7_Ufozu--GA");
+//
+//        video3.getElement().setId("ytplayer3");
+//
+//        video3.getElement().setAttribute("allow", "accelerometer; autoplay; encrypted-media;");
+//        video3.getElement().setAttribute("frameborder", "0");
+//        video3.getElement().setAttribute("allowfullscreen", "");
+
+
+        HTML captionTimelines = new HTML(constants.captionTimelines());
+
+        captionTimelines.addStyleName("textTitle");
+
+        vp.add(captionTimelines);
+
+//        sp3.add(video3);
+        vp.add(sp3);
+
+        vp.add(new HTML("&nbsp;"));
+        vp.setCellHorizontalAlignment(sp3, HasHorizontalAlignment.ALIGN_CENTER);
+
+
+
+        SimplePanel sp4 = new SimplePanel();
+        sp4.setStyleName("video-container");
+
+//        Frame video4 = new Frame("https://www.youtube.com/embed/wJkPy66-Vmk");
+//
+//        video4.getElement().setId("ytplayer4");
+//
+//        video4.getElement().setAttribute("allow", "accelerometer; autoplay; encrypted-media;");
+//        video4.getElement().setAttribute("frameborder", "0");
+//        video4.getElement().setAttribute("allowfullscreen", "");
+
+
+        HTML captionSearch = new HTML(constants.captionSearch());
+
+        captionSearch.addStyleName("textTitle");
+
+        vp.add(captionSearch);
+
+       // sp4.setWidget(video4);
+        vp.add(sp4);
+
+        vp.add(new HTML("&nbsp;"));
+        vp.setCellHorizontalAlignment(sp4, HasHorizontalAlignment.ALIGN_CENTER);
+
 
         vp.add(titleSampleSearch);
 
@@ -1129,6 +1213,12 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         {
             generateIcons("#enter_icon_intro", constants.search(), "Some help text");
         }
+
+
+
+       String [] players = {"V88iwg3n9Xc","uCGu7Sfll98", "7_Ufozu--GA", "wJkPy66-Vmk"};
+
+        loadVideos(players);
 
     }
 
@@ -1380,6 +1470,10 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
     native void addDiscuss() /*-{
         $wnd.addDiscussBlock();
+    }-*/;
+
+    native void loadVideos(String [] players) /*-{
+        $wnd.loadYouTubeVideo(players);
     }-*/;
 
 }

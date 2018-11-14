@@ -171,4 +171,10 @@ public interface TolstoyConstants extends Constants {
     String searchExampleSeven();
 
     String searchExampleSevenExp();
+
+    String captionOverview();
+
+    String captionTimelines();
+
+    String captionSearch();
 }
