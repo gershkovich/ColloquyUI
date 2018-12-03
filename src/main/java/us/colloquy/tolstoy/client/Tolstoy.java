@@ -2,21 +2,17 @@ package us.colloquy.tolstoy.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.IFrameElement;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.VideoElement;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.i18n.client.LocaleInfo;
-import com.google.gwt.media.client.Video;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import sun.java2d.pipe.SpanShapeRenderer;
 import us.colloquy.tolstoy.client.async.LoadVisualisationChart;
 import us.colloquy.tolstoy.client.async.SearchMaterialAsynchCallback;
 import us.colloquy.tolstoy.client.model.SearchFacets;
@@ -40,6 +36,8 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
     private final VerticalPanel contentPanel = new VerticalPanel();
 
     private final VerticalPanel mainCentralVerticalPanel = new VerticalPanel();
+
+    private boolean youTubeScriptIsLoded = false;
 
     private final SimpleLayoutPanel mainPanel = new SimpleLayoutPanel();
 
@@ -518,8 +516,6 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         String value = event.getValue();
 
-        consoleLog("event: " + value);
-
         //  dockLayoutPanel.setWidgetHidden(contentPanel, true);  //hide first
 
         if ("show".equalsIgnoreCase(value))
@@ -701,7 +697,6 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
             searchExamplePanel.setCellVerticalAlignment(searchExamples, HasVerticalAlignment.ALIGN_TOP);
 
 
-
             Label worksTabLabel = new Label(constants.works());
 
             worksTabLabel.setStyleName("options_tab");
@@ -880,6 +875,17 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
     private void setIntroduction()
     {
         mainPanel.clear();
+
+        Element el = DOM.getElementById("you_tube_api_tag");
+
+        if (el != null && el.hasParentElement())
+        {
+            youTubeScriptIsLoded = true;
+
+        } else
+        {
+            youTubeScriptIsLoded = false;
+        }
 
         VerticalPanel commentBasePanel = new VerticalPanel(); //so we can align everything correctly
 
@@ -1071,11 +1077,13 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         vp.add(captionIntro);
         //sp.setWidget(video)
-         //instead we are loading video here
-        Label player1 = new Label();
-        player1.getElement().setId("player1");
-        sp.setWidget(player1);
+        //instead we are loading video here
+        Label player0 = new Label();
+        player0.getElement().setId("player0");
+        sp.setWidget(player0);
+
         vp.add(sp);
+
         vp.add(new HTML("&nbsp;"));
 
         vp.setCellHorizontalAlignment(sp, HasHorizontalAlignment.ALIGN_CENTER);
@@ -1099,6 +1107,9 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         vp.add(captionOverview);
 
+        Label player1 = new Label();
+        player1.getElement().setId("player1");
+        sp2.setWidget(player1);
 //        sp2.setWidget(video2);
         vp.add(sp2);
 
@@ -1124,12 +1135,14 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         vp.add(captionTimelines);
 
+        Label player2 = new Label();
+        player2.getElement().setId("player2");
+        sp3.setWidget(player2);
 //        sp3.add(video3);
         vp.add(sp3);
 
         vp.add(new HTML("&nbsp;"));
         vp.setCellHorizontalAlignment(sp3, HasHorizontalAlignment.ALIGN_CENTER);
-
 
 
         SimplePanel sp4 = new SimplePanel();
@@ -1150,7 +1163,11 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
 
         vp.add(captionSearch);
 
-       // sp4.setWidget(video4);
+        Label player3 = new Label();
+        player3.getElement().setId("player3");
+        sp4.setWidget(player3);
+
+        // sp4.setWidget(video4);
         vp.add(sp4);
 
         vp.add(new HTML("&nbsp;"));
@@ -1215,10 +1232,15 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         }
 
 
+        String[] players = {"V88iwg3n9Xc", "uCGu7Sfll98", "7_Ufozu--GA", "wJkPy66-Vmk"};
+        if (youTubeScriptIsLoded)
+        {
+            reloadVideos();
 
-       String [] players = {"V88iwg3n9Xc","uCGu7Sfll98", "7_Ufozu--GA", "wJkPy66-Vmk"};
-
-        loadVideos(players);
+        } else
+        {
+            loadVideos(players);
+        }
 
     }
 
@@ -1472,8 +1494,15 @@ public class Tolstoy implements EntryPoint, ValueChangeHandler<String>
         $wnd.addDiscussBlock();
     }-*/;
 
-    native void loadVideos(String [] players) /*-{
+    native void loadVideos(String[] players) /*-{
         $wnd.loadYouTubeVideo(players);
+
     }-*/;
+
+    native void reloadVideos() /*-{
+        $wnd.onYouTubeIframeAPIReady();
+
+    }-*/;
+
 
 }

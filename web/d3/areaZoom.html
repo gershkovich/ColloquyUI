@@ -145,7 +145,7 @@
         focus.select(".area").attr("d", area);
         focus.select(".axis--x").call(xAxis);
         context.select(".brush").call(brush.move, x.range().map(t.invertX, t));
-        console.log(x.domain());
+
     }
 
     function type(d) {

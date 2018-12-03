@@ -1,5 +1,7 @@
 package colloquy;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -11,10 +13,13 @@ import org.junit.Before;
 import org.junit.Test;
 import us.colloquy.model.IndexSearchResult;
 import us.colloquy.model.Letter;
+import us.colloquy.model.Work;
 import us.colloquy.util.ElasticConnector;
 import us.colloquy.util.PropertiesLoader;
 
 import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -119,11 +124,11 @@ public class ElasticSearch
 
         Calendar start = Calendar.getInstance();
 
-        start.set(1908,1,1);
+        start.set(1908, 1, 1);
 
         Calendar end = Calendar.getInstance();
 
-        end.set(1910,1,1);
+        end.set(1910, 1, 1);
 
 
         String[] indices = new String[2];
@@ -198,13 +203,19 @@ public class ElasticSearch
     @Test
     public void testAllEventSearch() throws Exception
     {
-        IndexSearchResult result = new IndexSearchResult();
-
         ElasticConnector ec = new ElasticConnector();
 
-        ec.queryAllEvents( properties, result);
+        List<Work> tolstoyWorks = new LinkedList<>();
 
-        System.out.println("Number of results: " + result.getNumberOfResults());
+        ec.queryAllEvents(properties, tolstoyWorks);
+
+        System.out.println("Number of results: " + tolstoyWorks.size());
+
+        //get json document
+        ObjectWriter ow = new com.fasterxml.jackson.databind.ObjectMapper().writer().withDefaultPrettyPrinter();
+
+        String json = ow.writeValueAsString(tolstoyWorks);
+        System.out.println(json);
 
     }
 

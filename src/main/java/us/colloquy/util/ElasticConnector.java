@@ -24,8 +24,10 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.joda.time.DateTime;
+import us.colloquy.model.Event;
 import us.colloquy.model.IndexSearchResult;
 import us.colloquy.model.Letter;
+import us.colloquy.model.Work;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -49,7 +51,7 @@ public class ElasticConnector
         {
 
             String filtered = searchString.replaceAll("\\sИ\\s", " AND ")
-                    .replaceAll("\\sИЛИ\\s", " OR ").replaceAll("\\sНЕТ\\s"," NOT ").replaceAll("\\sДО\\s"," TO ");
+                    .replaceAll("\\sИЛИ\\s", " OR ").replaceAll("\\sНЕТ\\s", " NOT ").replaceAll("\\sДО\\s", " TO ");
 
             String highlightedText = "highlightedText";
 
@@ -254,7 +256,7 @@ public class ElasticConnector
 
 
             String filtered = searchString.replaceAll("\\sИ\\s", " AND ")
-                    .replaceAll("\\sИЛИ\\s", " OR ").replaceAll("\\sНЕT\\s"," NOT ").replaceAll("\\sДО\\s"," TO ");
+                    .replaceAll("\\sИЛИ\\s", " OR ").replaceAll("\\sНЕT\\s", " NOT ").replaceAll("\\sДО\\s", " TO ");
 
 
             String highlightedText = "highlightedText";
@@ -421,14 +423,12 @@ public class ElasticConnector
     }
 
 
-    public void queryAllEvents(Properties properties, IndexSearchResult result)
+    public void queryAllEvents(Properties properties, List<Work> tolstoyWorks)
     {
-
 
         try (RestHighLevelClient elasticClient = new RestHighLevelClient(
                 RestClient.builder(
-                        new HttpHost("localhost", 9200, "http"),
-                        new HttpHost("localhost", 9201, "http"))))
+                        new HttpHost("localhost", 9200, "http"))))
         {
 
             SearchRequest searchRequest = new SearchRequest("tolstoy_composition");
@@ -445,26 +445,79 @@ public class ElasticConnector
 
             SearchHits hits = searchResponse.getHits();
 
-            result.setNumberOfResults(hits.getTotalHits());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
             for (SearchHit hit : hits)
             {
+                Work work = new Work();
+
                 Map<String, Object> fieldsMap = hit.getSourceAsMap();
 
-                for (String key : fieldsMap.keySet())
+                if (fieldsMap.containsKey("title"))
                 {
-                    System.out.println(fieldsMap.get(key));
+                    Map<String, String> title = (HashMap) fieldsMap.get("title");
 
-                    List<Map<String, Object>> activities = (List) fieldsMap.get("activityList");
+                    work.getTitle().putAll(title);
 
-                    for (Map<String, Object> map : activities)
-                    {
-                        for (String k : map.keySet())
-                        {
-                            System.out.println(map.get(k));
-                        }
-                    }
                 }
+
+                if (fieldsMap.containsKey("originalTitle"))
+                {
+                    work.setOriginalTitle((String) fieldsMap.getOrDefault("originalTitle", "no title"));
+                }
+
+                List<Map<String, Object>> activities = (List) fieldsMap.get("events");
+
+                for (Map<String, Object> activityMap : activities)
+                {
+                    Event event = new Event();
+
+                    if (activityMap.containsKey("event"))
+                    {
+                        Map<String, String> value = (HashMap) activityMap.get("event");
+
+                        event.getEvent().putAll(value);
+
+                    }
+
+                    if (activityMap.containsKey("comment"))
+                    {
+                        Map<String, String> value = (HashMap) activityMap.get("comment");
+
+                        event.getComment().putAll(value);
+
+                    }
+
+                    if (activityMap.containsKey("precision"))
+                    {
+                        Map<String, String> value = (HashMap) activityMap.get("precision");
+
+                        event.getPrecision().putAll(value);
+
+                    }
+
+                    if (activityMap.containsKey("start"))
+                    {
+                        Long date  = (Long) activityMap.get("start");
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTimeInMillis(date);
+                        event.setStart(sdf.format(cal.getTime()) + "T00:00:00.000Z");
+
+
+                    }
+
+                    if (activityMap.containsKey("end"))
+                    {
+                        Long date  = (Long) activityMap.get("end");
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTimeInMillis(date);
+                        event.setEnd(sdf.format(cal.getTime()) + "T00:00:00.000Z");
+                    }
+
+                    work.getEvents().add(event);
+                }
+
+                tolstoyWorks.add(work);
             }
 
         } catch (Throwable throwable)

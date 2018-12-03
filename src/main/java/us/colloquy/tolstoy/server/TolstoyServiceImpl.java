@@ -1,5 +1,7 @@
 package us.colloquy.tolstoy.server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -8,6 +10,7 @@ import org.junit.Before;
 import us.colloquy.model.DateRange;
 import us.colloquy.model.IndexSearchResult;
 import us.colloquy.model.Letter;
+import us.colloquy.model.Work;
 import us.colloquy.tolstoy.client.TolstoyService;
 import us.colloquy.tolstoy.client.model.LetterDisplay;
 import us.colloquy.tolstoy.client.model.SearchFacets;
@@ -264,7 +267,27 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
 
         sr.setCsvLetterData(ec.getLetterHistogram(properties, searchFacets.getIndexesList().toArray(new String[0])));
 
-        sr.setWorkEvents(events);
+        //get all events from ec
+        List<Work> tolstoyWorks = new LinkedList<>();
+
+        ec.queryAllEvents(properties, tolstoyWorks);
+
+        //get json document
+        ObjectWriter ow = new com.fasterxml.jackson.databind.ObjectMapper().writer().withDefaultPrettyPrinter();
+
+        String allEvents = null;
+        try
+        {
+            allEvents = ow.writeValueAsString(tolstoyWorks);
+
+        } catch (JsonProcessingException e)
+        {
+            sr.setFeedback("Unable to parse events. Please try reloading the page.");
+
+            e.printStackTrace();
+        }
+
+        sr.setWorkEvents(allEvents);
 
         HttpSession session = getThreadLocalRequest().getSession();
 
@@ -376,6 +399,7 @@ public class TolstoyServiceImpl extends RemoteServiceServlet implements TolstoyS
 
         return sr;
     }
+
 
     String events = "[\n" +
             "  {\n" +

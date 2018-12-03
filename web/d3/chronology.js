@@ -19,13 +19,15 @@ var svg;
 var book_titles = [];
 
 
-function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAndEndDates, location) {
+function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAndEndDates, locale) {
 
     var predefinedDates = [new Date(1840, 1, 1), new Date(1911, 1, 1)];
 
     var parseDate = d3.timeParse("%Y-%m-%d");
 
     var formatDate = d3.timeFormat("%Y-%m-%d");
+
+    var formatUsDate = d3.timeFormat("%m/%d/%Y");
 
     var monthFormatter = d3.timeFormat('%Y-%b');
 
@@ -107,6 +109,22 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
             .style("opacity", 0);
         toolTip.html("")
     }
+
+
+    var tooltipNew = d3.tip()
+        .attr('class', 'd3-tip')
+        .html(function (d) {
+
+
+
+            return `<div class="tip_title">${(d.end - d.start == 0) ? d.start.toLocaleDateString(locale) : `${d.start.toLocaleDateString(locale)} - ${d.end.toLocaleDateString(locale)}`}
+<span>${d.title}</span>
+</div>
+                                ${d.comment ?
+                `<div class="details">${d.comment}</div>` : (d.comment ? `<div class="tip_details">${d.comment}</div>` : '')}`
+        })
+        .direction('n')
+        .offset([-10, 0]);
 
 
     var dataByMonth = [];
@@ -283,8 +301,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
             //switch to moths
             update(dataByWeek, yAxisLabel[1], "CadetBlue");
 
-        }
-        else if (monthsDiff >= 100 && agg !== "months") {
+        } else if (monthsDiff >= 100 && agg !== "months") {
             agg = "months";
 
             y.domain([0, d3.max(dataByMonth, function (d) {
@@ -377,7 +394,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
             })
             .text(function (d) {
-                if (location != "ru") {
+                if (locale != "ru") {
                     return d["value"]["en_title"];
                 } else {
                     return d["value"]["ru_title"];
@@ -663,7 +680,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
             toolTip.transition()
                 .duration(200)
                 .style("opacity", .9);
-            if (location != "ru") {
+            if (locale != "ru") {
 
                 toolTip.text(selected_line_coordinates.title)
                     .style("left", (d3.event.pageX) + "px")
@@ -729,25 +746,30 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
             var eventElipse = eventFocus.append("g");
 
+            eventElipse.call(tooltipNew);
+
             eventElipse.attr("clip-path", "url(#clip)");
 
             eventElipse.selectAll("ellipse.circle_event" + ind)
                 .data(events)
                 .enter().append("ellipse")
                 .attr("class", "circle_event" + ind)
-                .on("mouseover", function (d) {
-                    div.transition()
-                        .duration(200)
-                        .style("opacity", .9);
-                    div.html(title + " - " + d.name + " " + d.comment)
-                        .style("left", (d3.event.pageX) + "px")
-                        .style("top", (d3.event.pageY - 30) + "px");
-                })
-                .on("mouseout", function (d) {
-                    div.transition()
-                        .duration(500)
-                        .style("opacity", 0);
-                });
+                .on('mouseover', tooltipNew.show)
+                .on('mouseout', tooltipNew.hide);
+            //
+            // .on("mouseover", function (d) {
+            //     div.transition()
+            //         .duration(200)
+            //         .style("opacity", .9);
+            //     div.html(title + " - " + d.name + " " + d.comment)
+            //         .style("left", (d3.event.pageX) + "px")
+            //         .style("top", (d3.event.pageY - 30) + "px");
+            // })
+            // .on("mouseout", function (d) {
+            //     div.transition()
+            //         .duration(500)
+            //         .style("opacity", 0);
+            // });
 
             eventElipse.selectAll("ellipse.circle_event" + ind)
                 .data(events)
@@ -763,7 +785,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
         }
 
-        function mapWorkEvents(d) {
+        function mapWorkEvents(d, locale) {
 
             if (book_titles) {
                 book_titles.length = 0;
@@ -811,14 +833,16 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
                 work.events.forEach(event => {
 
+                    var dateStart = new Date(event.start);
+                    var dateEnd = new Date(event.end);
 
                     //draw a line from start to end
                     var startPoint = {
-                        x: new Date(event.start),
+                        x: dateStart,
                         y: bandYpos
                     };
                     var endPoint = {
-                        x: new Date(event.end),
+                        x: dateEnd,
                         y: bandYpos
                     };
 
@@ -826,29 +850,37 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
                     listOfEvents.push(endPoint);
                     listOfEvents.push(null);
 
+                    var commentary = (event.comment[locale] === undefined) ? event.event[locale] : event.comment[locale];
+
                     events.push({
-                        x: new Date(event.start),
+                        x: dateStart,
                         y: bandYpos,
-                        name: event.event_title,
-                        comment: event.comment + "[" + format(new Date(event.start)) + ":" + format(new Date(event.end)) + "]"
-                    });
-                    events.push({
-                        x: new Date(event.end),
-                        y: bandYpos,
-                        name: event.event_title,
-                        comment: event.comment + "[" + format(new Date(event.start)) + ":" + format(new Date(event.end)) + "]"
+                        start: dateStart,
+                        end: dateEnd,
+                        title: work.title[locale],
+                        comment: commentary
                     });
 
+                    if ((dateStart - dateEnd != 0)) {
+                        events.push({
+                            x: new Date(event.end),
+                            y: bandYpos,
+                            start: dateStart,
+                            end: dateEnd,
+                            title: work.title[locale],
+                            comment: commentary
+                        });
+                    }
 
                 });
 
                 var book_entry = {
-                    key: work.oritinalTitle,
+                    key: work.originalTitle,
                     value: {
                         max_extent: eMax,
                         min_extent: eMin,
-                        en_title: work.translation.en,
-                        ru_title: work.oritinalTitle,
+                        en_title: work.title.en,
+                        ru_title: work.title.ru,
                         band_y_pos: bandYpos,
                         events: work.events
                     }
@@ -856,22 +888,18 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
                 book_titles.push(book_entry);
 
-                var workTitle = work.oritinalTitle;
+                var workTitle = work.title[locale];
 
-                if (location != "ru") {
-                    //get translation from another language
-                    workTitle = work.translation[location];
-                }
+                var color = z(workTitle);
 
-
-                renderEvents(1, i, listOfEvents, events, z(work.oritinalTitle), workTitle);
+                renderEvents(1, i, listOfEvents, events, color, workTitle);
 
             });
 
             var regex1 = /^(the|a|an)\s/i;
 
             book_titles.sort(function (a, b) {
-                if (location == "en") {
+                if (locale == "en") {
                     a_title = a.value.en_title.replace(regex1, "");
                     b_title = b.value.en_title.replace(regex1, "");
                     return a_title.localeCompare(b_title, 'en');
@@ -908,7 +936,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
             }
         };
 
-        mapWorkEvents(JSON.parse(dataForEvents));
+        mapWorkEvents(JSON.parse(dataForEvents), locale);
 
     }
 
@@ -948,7 +976,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
 
             })
             .text(function (d) {
-                if (location != "ru") {
+                if (locale != "ru") {
                     return d["value"]["en_title"];
                 } else {
                     return d["value"]["ru_title"];
@@ -1053,11 +1081,10 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
             .attr("class", "svg_navigation")
             .attr("x", 22)
             .attr("y", 22)
-            .text(function(){
-                if ("ru" === location)
-                {
+            .text(function () {
+                if ("ru" === locale) {
                     return "сброс";
-                } else  {
+                } else {
                     return "reset";
                 }
             });
@@ -1081,9 +1108,7 @@ function buildChronologyChart(divId, dataIn, dataForEvents, yAxisLabel, startAnd
     }
 
 
-
     generateResetButton();
-
 
 
 }

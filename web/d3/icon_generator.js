@@ -48,7 +48,6 @@ function generateSiteIcons(divId, labelText, helpText) {
 
     });
 
-    console.log(circle.attr("cx"));
 
     var helpText = circle_g.append("text")
         .attr("class", "enter_text")
