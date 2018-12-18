@@ -1,0 +1,4 @@
+/var/spool/slurmd/job1373196/slurm_script: line 14: ./util/strip-square-brackets.sh: No such file or directory
+/var/spool/slurmd/job1373196/slurm_script: line 15: ./util/run-mystem.sh: No such file or directory
+/var/spool/slurmd/job1373196/slurm_script: line 16: ./util/clean-mallet-input.sh: No such file or directory
+/var/spool/slurmd/job1373196/slurm_script: line 17: ./util/mallet-import.sh: No such file or directory

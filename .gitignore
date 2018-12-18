@@ -1,1 +1,10 @@
+*.log
 target/*
+data/temp/clean/*
+data/temp/recip/*
+data/temp/lemma/*
+data/temp/
+data/out
+data/topics
+*~
+*.save

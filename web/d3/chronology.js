@@ -142,8 +142,13 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                 };
                         })
                         .entries(padded_data);
-
-                book_titles = data_extent
+                        
+                /* @peter: get the list of all books here */
+                book_titles = data_extent.sort(function (a, b){
+                        a_title = a["value"]["en_title"];
+                        b_title = b["value"]["en_title"];
+                        return a_title.localeCompare(b_title);
+                });
 
                 var endpoints = [];
                 data_extent.forEach(function (title) {
@@ -185,7 +190,6 @@ function buildChronologyChart(divId, dataIn, documentType) {
                 var open_works = {};
                 var closed_works = {};
                 endpoints.forEach(function (pt) {
-                        //console.log(JSON.stringify(open_works));
                         if (pt["type"] === "open") {
                                 var row_assm = Object.values(open_works);
                                 if (row_assm.length === 0) {
@@ -264,11 +268,12 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                         return y_event(d["row_number"]);
                                 })
                                 .attr("height", 7);
-
+                        
+                        /* @peter: calculate what books are visible right now, these get added to book list*/
                         var local_books = book_titles.filter(function (d) {
                                 return x(d["value"]["min_extent"]) < width && x(d["value"]["max_extent"]) > 0;
                         });
-
+                        /* @peter: the book list handlers is registered here */
                         bookUl.selectAll("li").remove();
                         bookUl.selectAll("li")
                                 .data(local_books)
@@ -279,7 +284,14 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                 })
                                 .on('mouseover', function (d) {
                                         book_mouseover(d);
+                                })
+                                .on('mouseout', function (d) {
+                                        book_mouseout(d);
+                                })
+                                .on('click', function(d){
+                                        book_click(d);
                                 });
+                                
                 };
                 render();
         });
@@ -536,6 +548,17 @@ function buildChronologyChart(divId, dataIn, documentType) {
 
                 });
         }
+        /* @peter: grab these three functions. I don't think you have a "continuation", 
+                   just the work periods marked. I turn the work periods yellow, but 
+                   you could do something else, like bolding them or turning them white 
+                   with a black border
+        */
+        function book_mouseout(book){
+                svg.selectAll('rect.continuation')
+                    .attr('class', 'continuation');
+                svg.selectAll('rect.work-period')
+                    .attr('class', 'work-period');
+        }
 
         function book_mouseover(book) {
                 svg.selectAll("rect.continuation")
@@ -551,6 +574,28 @@ function buildChronologyChart(divId, dataIn, documentType) {
                                 }
                         });
 
-                return false;
+                svg.selectAll("rect.work-period")
+                        .data(render_data)
+                        .transition().duration(duration)
+                        .ease(d3.easeLinear)
+                        .attr("class", function (d) {
+                                if (d["ru_title"] === book["key"]) {
+                                        return "work-period highlight";
+                                }
+                                else {
+                                        return "work-period";
+                                }
+                        });
+        }
+
+        function book_click(book) {
+                console.log(book);
+                var HALF_YEAR = new Date(2012, 6, 1) - new Date(2012, 1, 1);
+                var sel_start = x2(book["value"]["min_extent"].valueOf() - HALF_YEAR);
+                var sel_end = x2(book["value"]["max_extent"].valueOf() + HALF_YEAR);
+                console.log(sel_start)
+                brush.move(brush_g, [sel_start, sel_end])
+                     .transition()
+                     .duration(duration);
         }
 }
