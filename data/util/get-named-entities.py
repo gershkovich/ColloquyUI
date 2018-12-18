@@ -17,7 +17,7 @@ def process_ltr(ltr):
                           "filename": basename(ltr)})
     return names
 
-ltr_root = '../letters'
+ltr_root = './letters'
 letters = [join(ltr_root, f) for f in listdir(ltr_root) if isfile(join(ltr_root, f))]
 
 if len(sys.argv) < 2:
@@ -28,6 +28,6 @@ num_procs = int(sys.argv[1])
 pool = Pool(num_procs)
 all_names = pool.map(process_ltr, letters)
 
-with open('../names.json', 'w') as out_fp:
+with open('util/names.json', 'w') as out_fp:
     json.dump(all_names, out_fp, ensure_ascii=False)
 
