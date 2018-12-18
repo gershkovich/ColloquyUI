@@ -7,7 +7,7 @@ mkdir -p temp/recip
 doctor() {
 	ltrname=`basename $1`
 	echo $ltrname
-	python3 util/strip-recip.py "$1" temp/recip/$ltrname
+	python util/strip-recip.py "$1" temp/recip/$ltrname
 	mystem -d -c --format xml temp/recip/$ltrname temp/lemma/$ltrname
 
 }

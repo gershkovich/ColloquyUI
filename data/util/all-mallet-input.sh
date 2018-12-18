@@ -3,7 +3,7 @@ mkdir -p out
 flatten() {
 	ltrname=`basename $1`
 	echo $ltrname
-	saxon -s:$1 -o:out/$ltrname -xsl:util/gen-mallet-input.xslt
+	java -jar ~/oxygen/lib/saxon9ee.jar -s:$1 -o:out/$ltrname -xsl:gen-mallet-input.xslt
 }
 export -f flatten;
 
